@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "992950691620",
+    "project_id": "aba-analysis",
+    "storage_bucket": "aba-analysis.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:992950691620:android:08cf7529b80df3b6e2f5b1",
+        "android_client_info": {
+          "package_name": "com.annodomini.aba_analysis"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "992950691620-ef1hp6rsnviptj3u9hjru0ej65tbu63k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPT2CIKfV5_lkkOuWmHMWdIlcuyFALWIY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "992950691620-ef1hp6rsnviptj3u9hjru0ej65tbu63k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
