@@ -15,18 +15,18 @@ class _InputScreenState extends State<InputScreen> {
 
   controlSearching(str) {
     print(str);
-    Future<QuerySnapshot> allUsers =
-        useReference.where('profileName', isGreaterThanOrEqualTo: str).get();
-    setState(() {
-      futureSearchResults = allUsers;
-    });
+    // Future<QuerySnapshot> allUsers =
+    //     useReference.where('profileName', isGreaterThanOrEqualTo: str).get();
+    // setState(() {
+    //   futureSearchResults = allUsers;
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: searchPageHeader(),
-      body: futureSrearchResults == null
+      body: futureSearchResults == null
           ? displayNoSearchResultScreen()
           : displayUsersFoundScreen(),
     );
@@ -90,5 +90,51 @@ class _InputScreenState extends State<InputScreen> {
         onFieldSubmitted: controlSearching,
       ),
     );
+  }
+
+  displayNoSearchResultScreen() {
+    final Orientation orientation = MediaQuery.of(context).orientation;
+    return Container(
+      child: Center(
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Icon(
+              Icons.group,
+              color: Colors.grey,
+              size: 150,
+            ),
+            Text(
+              'Search Users',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 40),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  displayUsersFoundScreen() {
+    // return FutureBuilder(
+    //   future: futureSearchResults,
+    //   builder: (context, snapshot) {
+    //     if (!snapshot.hasData) {
+    //       return circularProgress;
+    //     }
+
+    //     List<UserResult> searchUserResult = [];
+    //     snapshot.data.documents.forEach((document) {
+    //       User users = User.fromDocument(document);
+    //       UserResult userResult = UserResult(users);
+    //       searchUserResult.add(userResult);
+    //     });
+
+    //     return ListView(children: searchUserResult);
+    //   },
+    // );
   }
 }
