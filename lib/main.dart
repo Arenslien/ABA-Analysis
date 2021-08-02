@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:aba_analysis/routes.dart';
 import 'package:aba_analysis/theme.dart';
-import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());
