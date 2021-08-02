@@ -123,7 +123,7 @@ class _InputScreenState extends State<InputScreen> {
     //   future: futureSearchResults,
     //   builder: (context, snapshot) {
     //     if (!snapshot.hasData) {
-    //       return circularProgress;
+    //       return circularProgress();
     //     }
 
     //     List<UserResult> searchUserResult = [];
@@ -138,3 +138,36 @@ class _InputScreenState extends State<InputScreen> {
     // );
   }
 }
+
+// class UserResultState extends StatelessWidget {
+//   late final User eachUser;
+//   UserResult(this.eachUser);
+  
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: EdgeInsets.all(3),
+//       child: Container(
+//         color: Colors.white54,
+//         child: Column(
+//           children: [
+//             GestureDetector(
+//               onTap: () {
+//                 print('tapped');
+//               },
+//               child: ListTile(
+//                 leading: CircleAvatar(
+//                   backgroundColor: Colors.black,
+//                   backgroundImage: eachUser.url == null 
+//                   ? circularProgress() 
+//                   : CachedNetworkImageProvider(eachUser.url),
+//                 ),
+//                 title: Text(eachUser.por),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
