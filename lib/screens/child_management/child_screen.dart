@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:aba_analysis/screens/child_management/search_bar.dart';
 
 class ChildScreen extends StatefulWidget {
   const ChildScreen({Key? key}) : super(key: key);
@@ -8,48 +9,32 @@ class ChildScreen extends StatefulWidget {
 }
 
 class _ChildScreenState extends State<ChildScreen> {
-  TextEditingController searchTextEditingController = TextEditingController();
-  controlSearching(str) {
-    print(str);
-    // Future<QuerySnapshot> allUsers =
-    //     useReference.where('profileName', isGreaterThanOrEqualTo: str).get();
-    // setState(() {
-    //   futureSearchResults = allUsers;
-    // });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: TextFormField(
-          controller: searchTextEditingController,
-          decoration: InputDecoration(
-            hintText: 'Search here...',
-            hintStyle: TextStyle(color: Colors.black),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.black),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.black),
-            ),
-            filled: true,
-            prefixIcon: Icon(
-              Icons.search_outlined,
-              color: Colors.black,
-              size: 30,
-            ),
-            suffixIcon: IconButton(
-              icon: Icon(Icons.clear, color: Colors.black),
-              onPressed: () {
-                searchTextEditingController.clear();
-              },
-            ),
+      appBar: SearchBar(),
+      body: Container(
+        child: Center(
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              Icon(
+                Icons.add_circle_outline_rounded,
+                color: Colors.black,
+                size: 150,
+              ),
+              Text(
+                'Add Child',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 40,
+                ),
+              ),
+            ],
           ),
-          style: TextStyle(fontSize: 18, color: Colors.black),
-          onFieldSubmitted: controlSearching,
         ),
-        backgroundColor: Colors.white,
       ),
     );
   }
