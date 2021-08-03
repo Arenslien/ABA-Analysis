@@ -15,6 +15,7 @@ class _WrapperState extends State<Wrapper> {
   Widget build(BuildContext context) {
     // return 홈스크린 or 인증스크린
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: HomeScreen(),
     );
   }
