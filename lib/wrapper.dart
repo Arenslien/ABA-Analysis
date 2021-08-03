@@ -1,5 +1,5 @@
 import 'package:aba_analysis/screens/authenticate/auth_screen.dart';
-import 'package:aba_analysis/screens/data_input/data_input_screen.dart';
+import 'package:aba_analysis/screens/child_management/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class Wrapper extends StatefulWidget {
@@ -15,7 +15,7 @@ class _WrapperState extends State<Wrapper> {
   Widget build(BuildContext context) {
     // return 홈스크린 or 인증스크린
     return MaterialApp(
-      home: InputScreen(),
+      home: HomeScreen(),
     );
   }
 }
