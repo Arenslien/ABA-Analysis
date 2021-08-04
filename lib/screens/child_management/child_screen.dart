@@ -13,27 +13,26 @@ class _ChildScreenState extends State<ChildScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: SearchBar(),
-      body: Container(
-        child: Center(
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              Icon(
-                Icons.add_circle_outline_rounded,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              icon: Icon(Icons.add_circle_outline_rounded),
+              iconSize: 150,
+              color: Colors.black,
+              onPressed: () {},
+            ),
+            Text(
+              'Add Child',
+              style: TextStyle(
                 color: Colors.black,
-                size: 150,
+                fontWeight: FontWeight.w500,
+                fontSize: 40,
               ),
-              Text(
-                'Add Child',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 40,
-                ),
-              ),
-            ],
-          ),
+              
+            ),
+          ],
         ),
       ),
     );
