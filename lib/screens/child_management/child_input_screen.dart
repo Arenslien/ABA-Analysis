@@ -25,47 +25,45 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Child'),
-      ),
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              buildTextField(name: 'Name'),
-              buildTextField(name: 'Age'),
-              buildTextField(name: 'Gender'),
-              // Padding(
-              //   padding: const EdgeInsets.all(16.0),
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Expanded(
-              //         child: DropdownButtonFormField(
-              //           decoration: InputDecoration(
-              //             border: OutlineInputBorder(),
-              //             labelText: 'Item',
-              //           ),
-              //           items: [],
-              //         ),
-              //       ),
-              //       IconButton(
-              //         icon: Icon(Icons.add_circle_outline_rounded),
-              //         onPressed: () {},
-              //       ),
-              //     ],
-              //   ),
-              // ),
-              RaisedButton(
-                child: Text('Save'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
-            ],
-          ),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Add Child'),
+        ),
+        body: Column(
+          children: [
+            buildTextField(name: 'Name'),
+            buildTextField(name: 'Age'),
+            buildTextField(name: 'Gender'),
+            // Padding(
+            //   padding: const EdgeInsets.all(16.0),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Expanded(
+            //         child: DropdownButtonFormField(
+            //           decoration: InputDecoration(
+            //             border: OutlineInputBorder(),
+            //             labelText: 'Item',
+            //           ),
+            //           items: [],
+            //         ),
+            //       ),
+            //       IconButton(
+            //         icon: Icon(Icons.add_circle_outline_rounded),
+            //         onPressed: () {},
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            RaisedButton(
+              child: Text('Save'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
         ),
       ),
     );
