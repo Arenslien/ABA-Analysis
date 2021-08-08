@@ -8,6 +8,12 @@ ThemeData theme() {
       centerTitle: true,
       elevation: 0,
       color: Colors.white,
-    )
+      textTheme: TextTheme(
+        headline6: TextStyle(
+          color: Colors.black,
+          fontSize: 20
+        )
+      ),
+    ),
   );
 }
