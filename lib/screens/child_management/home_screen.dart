@@ -10,11 +10,21 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-late PageController pageController;
-
 class _HomeScreenState extends State<HomeScreen> {
   int _page = 0;
   bool firebaseInitialized = false;
+  late PageController pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    //Firebase.initializeApp().then((_) {
+    setState(() {
+      firebaseInitialized = true;
+    });
+    //});
+    pageController = PageController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,16 +100,5 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       this._page = page;
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    //Firebase.initializeApp().then((_) {
-    setState(() {
-      firebaseInitialized = true;
-    });
-    //});
-    pageController = PageController();
   }
 }
