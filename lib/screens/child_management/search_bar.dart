@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-AppBar SearchBar() {
+AppBar searchBar() {
   TextEditingController searchTextEditingController = TextEditingController();
   controlSearching(str) {
     print(str);
@@ -39,6 +39,7 @@ AppBar SearchBar() {
           },
         ),
       ),
+      cursorColor: Colors.black,
       style: TextStyle(fontSize: 18, color: Colors.black),
       onFieldSubmitted: controlSearching,
     ),
