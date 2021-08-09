@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:aba_analysis/components/child_data.dart';
+import 'package:aba_analysis/components/test_data.dart';
 
-class ChildInputScreen extends StatefulWidget {
-  const ChildInputScreen({Key? key}) : super(key: key);
+class TestDataInputScreen extends StatefulWidget {
+  const TestDataInputScreen({Key? key}) : super(key: key);
 
   @override
-  _ChildInputScreenState createState() => _ChildInputScreenState();
+  _TestDataInputScreenState createState() => _TestDataInputScreenState();
 }
 
-class _ChildInputScreenState extends State<ChildInputScreen> {
-  _ChildInputScreenState();
+class _TestDataInputScreenState extends State<TestDataInputScreen> {
+  _TestDataInputScreenState();
 
   final formkey = GlobalKey<FormState>();
-  ChildData newChildData = ChildData();
-  final List<bool> gender = [false, false];
+  TestData newTestData = TestData();
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +24,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              'Add Child',
+              'Add Test',
               style: TextStyle(color: Colors.black),
             ),
             centerTitle: true,
@@ -46,7 +45,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                 ),
                 onPressed: () {
                   if (formkey.currentState!.validate()) {
-                    Navigator.pop(context, newChildData);
+                    Navigator.pop(context, newTestData);
                   }
                 },
               ),
@@ -59,29 +58,10 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: TextFormField(
-                  decoration: buildInputDecoration('Name'),
+                  decoration: buildInputDecoration('Date'),
                   onChanged: (val) {
                     setState(() {
-                      newChildData.name = val;
-                    });
-                  },
-                  validator: (val) {
-                    if (val!.length < 1) {
-                      return '이름은 필수사항입니다.';
-                    }
-                    return null;
-                  },
-                  autofocus: true,
-                  cursorColor: Colors.black,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextFormField(
-                  decoration: buildInputDecoration('Birth'),
-                  onChanged: (val) {
-                    setState(() {
-                      newChildData.age = val;
+                      newTestData.date = val;
                     });
                   },
                   validator: (val) {
@@ -94,42 +74,28 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp('[0-9]')),
                   ],
+                  autofocus: true,
                   cursorColor: Colors.black,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: ToggleButtons(
-                  children: [
-                    Text('남자'),
-                    Text('여자'),
-                  ],
-                  isSelected: gender,
-                  onPressed: (index) {
-                    if (!gender[index]) {
-                      setState(() {
-                        if (index == 0)
-                          newChildData.gender = '남자';
-                        else
-                          newChildData.gender = '여자';
-                        for (int buttonIndex = 0;
-                            buttonIndex < gender.length;
-                            buttonIndex++) {
-                          if (buttonIndex == index) {
-                            gender[buttonIndex] = !gender[buttonIndex];
-                          } else {
-                            gender[buttonIndex] = false;
-                          }
-                        }
-                      });
-                    }
+                child: TextFormField(
+                  decoration: buildInputDecoration('Name'),
+                  onChanged: (val) {
+                    setState(() {
+                      newTestData.name = val;
+                    });
                   },
-                  selectedColor: Colors.black,
-                  selectedBorderColor: Colors.black,
-                  fillColor: Colors.white,
-                  splashColor: Colors.white,
+                  validator: (val) {
+                    if (val!.length < 1) {
+                      return '이름은 필수사항입니다.';
+                    }
+                    return null;
+                  },
+                  cursorColor: Colors.black,
                 ),
-              )
+              ),
             ],
           ),
         ),

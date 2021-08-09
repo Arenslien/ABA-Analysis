@@ -1,3 +1,4 @@
+import 'package:aba_analysis/components/child_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:aba_analysis/screens/child_management/child_screen.dart';
