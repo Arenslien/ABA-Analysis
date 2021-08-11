@@ -1,4 +1,4 @@
-import 'package:aba_analysis/screens/child_management/graph_screen.dart';
+import 'package:aba_analysis/screens/setting/setting_screen.dart';
 import 'package:aba_analysis/screens/child_management/select_date_graph_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Container(
             color: Colors.white,
-            //child: ,
+            child: SettingScreen(),
           ),
         ],
         controller: pageController,
