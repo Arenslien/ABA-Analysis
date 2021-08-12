@@ -11,6 +11,7 @@ class DummyTestData {
   Map<String, String> item = {
     '하위1': '상위1',
   }; // 상위항목과 하위항목
+  List<String> lowerList = ['하위1']; // 하위항목 리스트
 }
 
 class GraphScreen extends StatefulWidget {
