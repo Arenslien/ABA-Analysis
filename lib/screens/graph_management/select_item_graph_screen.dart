@@ -16,10 +16,10 @@ class SelectItemScreen extends StatefulWidget {
 
 class _SelectItemScreenState extends State<SelectItemScreen> {
   List<ChildData> childData = []; // 순수 아이 데이터
-  List<dummy_TestData> testData = []; // 테스트 관련 데이터
+  List<DummyTestData> testData = []; // 테스트 관련 데이터
   ChildData dummy1 = new ChildData();
-  dummy_TestData dummy2 = new dummy_TestData();
-  dummy_TestData dummy3 = new dummy_TestData();
+  DummyTestData dummy2 = new DummyTestData();
+  DummyTestData dummy3 = new DummyTestData();
 
   void initState() {
     super.initState();
@@ -57,7 +57,6 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD:lib/screens/child_management/select_item_graph_screen.dart
     return Scaffold(
       appBar: AppBar(
         title: Text('${dummy1.name}의 회차 선택'),
@@ -78,22 +77,6 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
                 return DataTitle(testData[index]);
               },
             ),
-=======
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: searchBar(),
-        body: childData.length == 0
-            ? noTestData()
-            : ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: childData.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return childTile(childData[index], index);
-                },
-              ),
-      ),
->>>>>>> 05eccea8a62c6290d3e5489bd11eb8e552e1b3cb:lib/screens/graph_management/select_item_graph_screen.dart
     );
   }
 
@@ -120,8 +103,7 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
     );
   }
 
-<<<<<<< HEAD:lib/screens/child_management/select_item_graph_screen.dart
-  Widget DataTitle(dummy_TestData testData) {
+  Widget DataTitle(DummyTestData testData) {
     return ListTile(
         leading: Icon(
           Icons.auto_graph,
@@ -144,42 +126,5 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
           Navigator.pushNamed(context,
               '/date_graph'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
         });
-=======
-  Widget childTile(ChildData childData, int index) {
-    return ListTile(
-      leading: Icon(
-        Icons.person,
-        size: 50,
-      ),
-      title: Text(
-        childData.name,
-        style: TextStyle(fontSize: 25),
-      ),
-      subtitle: Text(
-        "${childData.age}세",
-        style: TextStyle(fontSize: 15),
-      ),
-      trailing: ToggleButtons(
-        children: [
-          Text('Date Graph'),
-          Text('항목 그래프'),
-        ],
-        isSelected: [false, false],
-        onPressed: (idx) {
-          if (idx == 0) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ChildTestScreen(childData: childData, index: index)),
-            );
-          }
-        },
-        constraints: BoxConstraints(minWidth: 80, minHeight: 50),
-        borderColor: Colors.black,
-        fillColor: Colors.white,
-        splashColor: Colors.black,
-      ),
-      dense: true,
-    );
->>>>>>> 05eccea8a62c6290d3e5489bd11eb8e552e1b3cb:lib/screens/graph_management/select_item_graph_screen.dart
   }
 }
