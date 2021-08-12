@@ -2,8 +2,12 @@ import 'package:aba_analysis/models/user.dart';
 import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
 import 'package:aba_analysis/size_config.dart';
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
+import 'package:aba_analysis/home_screen.dart';
+=======
 import 'package:aba_analysis/screens/child_management/home_screen.dart';
 import 'package:provider/provider.dart';
+>>>>>>> bc4961b931d12b17e7e92978a98b44d98b101e36
 
 class Wrapper extends StatefulWidget {
   static String routeName = '/wrapper';

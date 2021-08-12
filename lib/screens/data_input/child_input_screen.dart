@@ -71,6 +71,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                     }
                     return null;
                   },
+                  autofocus: true,
                   cursorColor: Colors.black,
                 ),
               ),

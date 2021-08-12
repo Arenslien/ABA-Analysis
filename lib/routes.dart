@@ -1,10 +1,14 @@
 import 'package:aba_analysis/screens/authenticate/auth_screen.dart';
+<<<<<<< HEAD
+import 'package:aba_analysis/home_screen.dart';
+=======
 import 'package:aba_analysis/screens/authenticate/find_password_screen.dart';
 import 'package:aba_analysis/screens/authenticate/register_screen.dart';
 import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
 import 'package:aba_analysis/screens/child_management/home_screen.dart';
 import 'package:aba_analysis/screens/child_management/select_date_graph_screen.dart';
 import 'package:aba_analysis/screens/child_management/select_item_graph_screen.dart';
+>>>>>>> bc4961b931d12b17e7e92978a98b44d98b101e36
 import 'package:aba_analysis/wrapper.dart';
 import 'package:flutter/widgets.dart';
 
