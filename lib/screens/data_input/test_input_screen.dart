@@ -2,18 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:aba_analysis/components/test_data.dart';
 
-class TestDataInputScreen extends StatefulWidget {
-  const TestDataInputScreen({Key? key}) : super(key: key);
+class TestInputScreen extends StatefulWidget {
+  const TestInputScreen({Key? key}) : super(key: key);
 
   @override
-  _TestDataInputScreenState createState() => _TestDataInputScreenState();
+  _TestInputScreenState createState() => _TestInputScreenState();
 }
 
-class _TestDataInputScreenState extends State<TestDataInputScreen> {
-  _TestDataInputScreenState();
+class _TestInputScreenState extends State<TestInputScreen> {
+  _TestInputScreenState();
 
   final formkey = GlobalKey<FormState>();
   TestData newTestData = TestData();
+  List<Widget> newTestList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    buildTestList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +60,7 @@ class _TestDataInputScreenState extends State<TestDataInputScreen> {
             backgroundColor: Colors.white,
             elevation: 0,
           ),
-          body: Column(
+          body: ListView(
             children: [
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -96,6 +103,32 @@ class _TestDataInputScreenState extends State<TestDataInputScreen> {
                   cursorColor: Colors.black,
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Text('Test List'),
+                    IconButton(
+                      icon: Icon(Icons.add_rounded),
+                      onPressed: () {
+                        setState(() {
+                          buildTestList();
+                        });
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.remove_rounded),
+                      onPressed: () {
+                        setState(() {
+                          newTestData.testList.removeLast();
+                          newTestList.removeLast();
+                        });
+                      },
+                    )
+                  ],
+                ),
+              ),
+              ...newTestList,
             ],
           ),
         ),
@@ -115,6 +148,31 @@ class _TestDataInputScreenState extends State<TestDataInputScreen> {
       ),
       focusedBorder: UnderlineInputBorder(
         borderSide: BorderSide(color: Colors.black),
+      ),
+    );
+  }
+
+  buildTestList() {
+    newTestData.testList.add(TestList());
+    newTestList.add(
+      Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: TextFormField(
+          decoration:
+              buildInputDecoration('Test-${newTestData.testList.length}'),
+          onChanged: (val) {
+            setState(() {
+              newTestData.testList[newTestData.testList.length - 1].name = val;
+            });
+          },
+          validator: (val) {
+            if (val!.length < 1) {
+              return '이름은 필수사항입니다.';
+            }
+            return null;
+          },
+          cursorColor: Colors.black,
+        ),
       ),
     );
   }
