@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/child_data.dart';
-import 'package:aba_analysis/components/test_data.dart';
+import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 
 class ChildTestScreen extends StatefulWidget {
@@ -59,31 +59,15 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
       body: ListView.builder(
         itemCount: childData.testData[index].testList.length,
         itemBuilder: (BuildContext context, int idx) {
-          return testListTile(childData.testData[index].testList[idx]);
+          return buildListTile(
+            titleText: childData.testData[index].testList[idx].name,
+            trailing: buildToggleButtons(
+              text: ['+', '-', 'P'],
+              minHeight: 40,
+              minWidth: 40,
+            ),
+          );
         },
-      ),
-    );
-  }
-
-  Widget testListTile(TestList testList) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: ListTile(
-        title: Text(
-          testList.name,
-          style: TextStyle(fontSize: 25),
-        ),
-        // subtitle: Text(
-        //   // testData.testList[index].,
-        //   // style: TextStyle(fontSize: 15),
-        // ),
-        trailing: buildToggleButtons(
-          text: ['+', '-', 'P'],
-          onPressrd: null,
-          minHeight: 40,
-          minWidth: 40,
-        ),
-        dense: true,
       ),
     );
   }

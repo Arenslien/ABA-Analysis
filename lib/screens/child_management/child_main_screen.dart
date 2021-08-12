@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/child_data.dart';
 import 'package:aba_analysis/components/search_bar.dart';
+import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/screens/data_input/child_input_screen.dart';
@@ -27,7 +28,22 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
             : ListView.builder(
                 itemCount: childData.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return buildChildTile(childData[index]);
+                  return buildListTile(
+                    icon: Icons.person,
+                    titleText: childData[index].name,
+                    subtitleText: childData[index].age,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChildTestDataScreen(
+                            childData: childData[index],
+                          ),
+                        ),
+                      );
+                    },
+                    trailing: buildToggleButtons(text: ['그래프', '설정']),
+                  );
                 },
               ),
         floatingActionButton: FloatingActionButton(
@@ -50,41 +66,6 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
           },
           backgroundColor: Colors.black,
         ),
-      ),
-    );
-  }
-
-  Widget buildChildTile(ChildData childData) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: ListTile(
-        leading: Icon(
-          Icons.person,
-          size: 50,
-        ),
-        title: Text(
-          childData.name,
-          style: TextStyle(fontSize: 25),
-        ),
-        subtitle: Text(
-          "${childData.age}세",
-          style: TextStyle(fontSize: 15),
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChildTestDataScreen(
-                childData: childData,
-              ),
-            ),
-          );
-        },
-        trailing: buildToggleButtons(
-          text: ['그래프', '설정'],
-          onPressrd: null,
-        ),
-        dense: true,
       ),
     );
   }

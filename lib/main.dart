@@ -1,11 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:aba_analysis/theme.dart';
+import 'package:aba_analysis/routes.dart';
 import 'package:aba_analysis/models/user.dart';
 import 'package:aba_analysis/services/auth.dart';
-import 'package:flutter/material.dart';
-import 'package:aba_analysis/routes.dart';
-import 'package:aba_analysis/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:provider/provider.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
