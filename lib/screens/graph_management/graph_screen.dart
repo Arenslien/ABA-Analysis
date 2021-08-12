@@ -1,18 +1,26 @@
-import 'package:aba_analysis/screens/child_management/child_test_list.dart';
 import 'package:flutter/material.dart';
+import 'package:aba_analysis/components/search_bar.dart';
 import 'package:aba_analysis/components/child_data.dart';
-import 'package:aba_analysis/screens/child_management/search_bar.dart';
-import 'package:aba_analysis/screens/child_management/child_input_screen.dart';
 
-class SelectItemScreen extends StatefulWidget {
-  const SelectItemScreen({Key? key}) : super(key: key);
-  static String routeName = '/select_item';
-
-  @override
-  _SelectItemScreenState createState() => _SelectItemScreenState();
+class DummyTestData {
+  // 테스트 데이터 더미 데이터 클래스
+  DummyTestData();
+  String date = "00.0/0"; // 날짜
+  String number = "0회"; // 회차
+  String average = "00"; // 평균값
+  Map<String, String> item = {
+    '하위1': '상위1',
+  }; // 상위항목과 하위항목
 }
 
-class _SelectItemScreenState extends State<SelectItemScreen> {
+class GraphScreen extends StatefulWidget {
+  const GraphScreen({Key? key}) : super(key: key);
+
+  @override
+  _GraphScreenState createState() => _GraphScreenState();
+}
+
+class _GraphScreenState extends State<GraphScreen> {
   List<ChildData> childData = []; // 순수 아이 데이터
   ChildData dummy1 = new ChildData();
 
@@ -36,7 +44,7 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
       child: Scaffold(
         appBar: searchBar(),
         body: childData.length == 0
-            ? noTestData()
+            ? noChildData()
             : ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: childData.length,
@@ -48,7 +56,7 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
     );
   }
 
-  Widget noTestData() {
+  Widget noChildData() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -59,7 +67,7 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
             size: 150,
           ),
           Text(
-            'No Test Data',
+            'No Child Data',
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w500,
@@ -88,15 +96,17 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
       trailing: ToggleButtons(
         children: [
           Text('Date Graph'),
-          Text('항목 그래프'),
+          Text('아이템 그래프'),
         ],
         isSelected: [false, false],
         onPressed: (index) {
           if (index == 0) {
-            Navigator.push(
+            Navigator.pushNamed(
               context,
-              MaterialPageRoute(builder: (context) => ChildTestListScreen()),
+              '/select_date',
             );
+          } else if (index == 1) {
+            Navigator.pushNamed(context, '/select_item');
           }
         },
         constraints: BoxConstraints(minWidth: 80, minHeight: 50),

@@ -1,8 +1,5 @@
-import 'package:aba_analysis/screens/child_management/child_test_list.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/child_data.dart';
-import 'package:aba_analysis/screens/child_management/search_bar.dart';
-import 'package:aba_analysis/screens/child_management/child_input_screen.dart';
 
 import 'graph_screen.dart';
 
@@ -16,9 +13,11 @@ class SelectDateScreen extends StatefulWidget {
 
 class _SelectDateScreenState extends State<SelectDateScreen> {
   List<ChildData> childData = []; // 순수 아이 데이터
-  List<dummy_TestData> testData = []; // 테스트 관련 데이터
+  List<DummyTestData> testData = []; // 테스트 관련 데이터
+  List<String> high_keys = [];
   ChildData dummy1 = new ChildData();
-  dummy_TestData dummy2 = new dummy_TestData();
+  DummyTestData dummy2 = new DummyTestData();
+  List<String> dummy3 = [];
   void initState() {
     super.initState();
     this.testInit();
@@ -38,8 +37,10 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
       '하위3': '상위2',
       '하위4': '상위2',
     });
+    dummy3 = dummy2.item.keys.toList();
     childData.add(dummy1);
     testData.add(dummy2);
+    high_keys = dummy3;
   }
 
   @override
@@ -48,7 +49,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('${dummy1.name}의 회차별 그래프'),
+          title: Text('${dummy1.name}의 항목별 그래프'),
           centerTitle: true,
           leading: IconButton(
               onPressed: () {
@@ -99,11 +100,11 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
           size: 50,
         ),
         title: Text(
-          testData[0].number,
+          '하위1', //toString( testData[0].item[high_keys[0]] ),
           style: TextStyle(fontSize: 25),
         ),
         subtitle: Text(
-          testData[0].date,
+          '상위1', //      assert(),
           style: TextStyle(fontSize: 15),
         ),
         trailing: Text(
@@ -112,7 +113,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
         ),
         dense: true,
         onTap: () {
-          // 클릭시 회차별(날짜별) 그래프 스크린으로 이동
+          // 클릭시 항목별 그래프 스크린으로 이동
         });
   }
 }
