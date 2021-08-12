@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Container(
             color: Colors.white,
-            child: SelectDateScreen(), //GraphScreen(), 테스트용
+            child: GraphScreen(), //SelectDateScreen(), 테스트용
           ),
           Container(
             color: Colors.white,
