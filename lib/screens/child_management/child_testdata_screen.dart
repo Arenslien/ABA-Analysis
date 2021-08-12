@@ -64,7 +64,7 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
                   },
                   trailing: buildToggleButtons(
                     text: ['복사', '설정'],
-                    onPressrd: (idx) {
+                    onPressed: (idx) {
                       if (idx == 0) {
                         setState(() {
                           childData.testData.add(childData.testData[index]);
