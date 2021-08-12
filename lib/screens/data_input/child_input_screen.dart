@@ -16,6 +16,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
   final formkey = GlobalKey<FormState>();
   ChildData newChildData = ChildData();
   final List<bool> gender = [false, false];
+  bool? isGenderSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,12 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  if (formkey.currentState!.validate()) {
+                  if (isGenderSelected != true)
+                    setState(() {
+                      isGenderSelected = false;
+                    });
+                  if (formkey.currentState!.validate() &&
+                      newChildData.gender != '성별') {
                     Navigator.pop(context, newChildData);
                   }
                 },
@@ -66,7 +72,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                 },
                 validator: (val) {
                   if (val!.length < 1) {
-                    return '이름은 필수사항입니다.';
+                    return '이름을 입력해 주세요.';
                   }
                   return null;
                 },
@@ -92,8 +98,9 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                   text: ['남자', '여자'],
                   isSelected: gender,
                   onPressed: (index) {
-                    if (!gender[index]) {
-                      setState(() {
+                    setState(() {
+                      if (!gender[index]) {
+                        isGenderSelected = true;
                         if (index == 0)
                           newChildData.gender = '남자';
                         else
@@ -107,11 +114,20 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                             gender[buttonIndex] = false;
                           }
                         }
-                      });
-                    }
+                      }
+                    });
                   },
                 ),
-              )
+              ),
+              Text(
+                '성별을 선택해 주세요.',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isGenderSelected == false
+                      ? Colors.redAccent[700]
+                      : Colors.white,
+                ),
+              ),
             ],
           ),
         ),
