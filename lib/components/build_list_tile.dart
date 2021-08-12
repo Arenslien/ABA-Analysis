@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget buildTile(
+Widget buildListTile(
       {IconData? icon,
       String? titleText,
       String? subtitleText,

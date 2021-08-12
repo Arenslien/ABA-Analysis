@@ -1,7 +1,7 @@
-import 'package:aba_analysis/components/build_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/test_data.dart';
 import 'package:aba_analysis/components/child_data.dart';
+import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/screens/data_input/test_input_screen.dart';
@@ -48,7 +48,7 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
           : ListView.builder(
               itemCount: childData.testData.length,
               itemBuilder: (BuildContext context, int index) {
-                return buildTile(
+                return buildListTile(
                   titleText: childData.testData[index].name,
                   subtitleText: childData.testData[index].date,
                   onTap: () async {

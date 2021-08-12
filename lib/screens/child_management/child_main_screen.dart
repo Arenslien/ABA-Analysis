@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/child_data.dart';
 import 'package:aba_analysis/components/search_bar.dart';
-import 'package:aba_analysis/components/build_tile.dart';
+import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/screens/data_input/child_input_screen.dart';
@@ -28,7 +28,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
             : ListView.builder(
                 itemCount: childData.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return buildTile(
+                  return buildListTile(
                     icon: Icons.person,
                     titleText: childData[index].name,
                     subtitleText: childData[index].age,
