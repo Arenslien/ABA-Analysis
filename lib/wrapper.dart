@@ -1,5 +1,13 @@
+import 'package:aba_analysis/models/user.dart';
+import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
+import 'package:aba_analysis/size_config.dart';
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:aba_analysis/home_screen.dart';
+=======
+import 'package:aba_analysis/screens/child_management/home_screen.dart';
+import 'package:provider/provider.dart';
+>>>>>>> bc4961b931d12b17e7e92978a98b44d98b101e36
 
 class Wrapper extends StatefulWidget {
   static String routeName = '/wrapper';
@@ -12,10 +20,13 @@ class Wrapper extends StatefulWidget {
 class _WrapperState extends State<Wrapper> {
   @override
   Widget build(BuildContext context) {
+    //SizeConfig를 사용하기 위해서 초기화
+    SizeConfig().init(context);
+
+    // provider ABAUser 정보
+    final user = Provider.of<ABAUser?>(context);
+
     // return 홈스크린 or 인증스크린
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
-    );
+    return user != null? HomeScreen() : SignInScreen();
   }
 }

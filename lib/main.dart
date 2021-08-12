@@ -1,8 +1,15 @@
+import 'package:aba_analysis/models/user.dart';
+import 'package:aba_analysis/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/routes.dart';
 import 'package:aba_analysis/theme.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -16,12 +23,16 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'ABA Analysis',
-      theme: theme(),
-      routes: routes,
-      initialRoute: '/wrapper',
+    return StreamProvider<ABAUser?>.value(
+      value: AuthService().user,
+      initialData: null,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'ABA Analysis',
+        theme: theme(),
+        routes: routes,
+        initialRoute: '/wrapper',
+      ),
     );
   }
 }

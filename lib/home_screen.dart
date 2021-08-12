@@ -1,3 +1,5 @@
+import 'package:aba_analysis/screens/setting/setting_screen.dart';
+import 'package:aba_analysis/screens/child_management/select_date_graph_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:aba_analysis/screens/child_management/child_main_screen.dart';
@@ -35,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Container(
             color: Colors.white,
-            //child: ,
+            child: SelectDateScreen(), //GraphScreen(), 테스트용
           ),
           Container(
             color: Colors.white,
@@ -47,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Container(
             color: Colors.white,
-            //child: ,
+            child: SettingScreen(),
           ),
         ],
         controller: pageController,
