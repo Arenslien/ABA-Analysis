@@ -1,7 +1,7 @@
-import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:aba_analysis/components/child_data.dart';
+import 'package:aba_analysis/components/build_toggle_buttons.dart';
+import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class ChildInputScreen extends StatefulWidget {
   const ChildInputScreen({Key? key}) : super(key: key);
@@ -26,7 +26,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              'Add Child',
+              '아동 추가',
               style: TextStyle(color: Colors.black),
             ),
             centerTitle: true,
@@ -57,51 +57,40 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
           ),
           body: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextFormField(
-                  decoration: buildInputDecoration('Name'),
-                  onChanged: (val) {
-                    setState(() {
-                      newChildData.name = val;
-                    });
-                  },
-                  validator: (val) {
-                    if (val!.length < 1) {
-                      return '이름은 필수사항입니다.';
-                    }
-                    return null;
-                  },
-                  autofocus: true,
-                  cursorColor: Colors.black,
-                ),
+              buildTextFormField(
+                text: '이름',
+                onChanged: (val) {
+                  setState(() {
+                    newChildData.name = val;
+                  });
+                },
+                validator: (val) {
+                  if (val!.length < 1) {
+                    return '이름은 필수사항입니다.';
+                  }
+                  return null;
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextFormField(
-                  decoration: buildInputDecoration('Birth'),
-                  onChanged: (val) {
-                    setState(() {
-                      newChildData.age = val;
-                    });
-                  },
-                  validator: (val) {
-                    if (val!.length != 8) {
-                      return 'YYYYMMDD';
-                    }
-                    return null;
-                  },
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp('[0-9]')),
-                  ],
-                  cursorColor: Colors.black,
-                ),
+              buildTextFormField(
+                text: '생년월일',
+                onChanged: (val) {
+                  setState(() {
+                    newChildData.age = val;
+                  });
+                },
+                validator: (val) {
+                  if (val!.length != 8) {
+                    return 'YYYYMMDD';
+                  }
+                  return null;
+                },
+                inputType: 'number',
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: buildToggleButtons(
                   text: ['남자', '여자'],
+                  isSelected: gender,
                   onPressed: (index) {
                     if (!gender[index]) {
                       setState(() {
@@ -122,56 +111,10 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                     }
                   },
                 ),
-                // child: ToggleButtons(
-                //   children: [
-                //     Text('남자'),
-                //     Text('여자'),
-                //   ],
-                //   isSelected: gender,
-                //   onPressed: (index) {
-                //     if (!gender[index]) {
-                //       setState(() {
-                //         if (index == 0)
-                //           newChildData.gender = '남자';
-                //         else
-                //           newChildData.gender = '여자';
-                //         for (int buttonIndex = 0;
-                //             buttonIndex < gender.length;
-                //             buttonIndex++) {
-                //           if (buttonIndex == index) {
-                //             gender[buttonIndex] = !gender[buttonIndex];
-                //           } else {
-                //             gender[buttonIndex] = false;
-                //           }
-                //         }
-                //       });
-                //     }
-                //   },
-                //   selectedColor: Colors.black,
-                //   selectedBorderColor: Colors.black,
-                //   fillColor: Colors.white,
-                //   splashColor: Colors.white,
-                // ),
               )
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  InputDecoration buildInputDecoration(String text) {
-    return InputDecoration(
-      labelText: text,
-      labelStyle: TextStyle(color: Colors.black),
-      hintStyle: TextStyle(color: Colors.grey),
-      enabledBorder: UnderlineInputBorder(
-        borderSide: BorderSide(
-          color: Colors.black,
-        ),
-      ),
-      focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: Colors.black),
       ),
     );
   }

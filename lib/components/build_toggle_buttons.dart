@@ -2,24 +2,28 @@ import 'package:flutter/material.dart';
 
 ToggleButtons buildToggleButtons(
     {required List<String> text,
+    List<bool>? isSelected,
     Function(int)? onPressed,
     double minWidth = 80,
     double minHeight = 50}) {
   List<Text> textList = [];
-  List<bool> select = [];
+  List<bool> selecte = [];
 
   for (int i = 0; i < text.length; i++) {
     textList.add(Text(text[i]));
-    select.add(false);
+    selecte.add(false);
   }
 
   return ToggleButtons(
     children: textList,
-    isSelected: select,
+    isSelected: isSelected == null ? selecte : isSelected,
     onPressed: onPressed,
     constraints: BoxConstraints(minWidth: minWidth, minHeight: minHeight),
-    borderColor: Colors.black,
+    color: Colors.grey,
     fillColor: Colors.white,
-    splashColor: Colors.black,
+    borderColor: Colors.black,
+    splashColor: Colors.white,
+    selectedColor: Colors.black,
+    selectedBorderColor: Colors.black,
   );
 }
