@@ -1,12 +1,10 @@
-import 'package:aba_analysis/screens/child_management/child_test_list.dart';
 import 'package:flutter/material.dart';
+import 'package:aba_analysis/components/search_bar.dart';
 import 'package:aba_analysis/components/child_data.dart';
-import 'package:aba_analysis/screens/child_management/search_bar.dart';
-import 'package:aba_analysis/screens/child_management/child_input_screen.dart';
 
-class dummy_TestData {
+class DummyTestData {
   // 테스트 데이터 더미 데이터 클래스
-  dummy_TestData();
+  DummyTestData();
   String date = "00.0/0"; // 날짜
   String number = "0회"; // 회차
   String average = "00"; // 평균값

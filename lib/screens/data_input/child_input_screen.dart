@@ -1,3 +1,4 @@
+import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:aba_analysis/components/child_data.dart';
@@ -71,6 +72,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                     }
                     return null;
                   },
+                  autofocus: true,
                   cursorColor: Colors.black,
                 ),
               ),
@@ -98,12 +100,8 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: ToggleButtons(
-                  children: [
-                    Text('남자'),
-                    Text('여자'),
-                  ],
-                  isSelected: gender,
+                child: buildToggleButtons(
+                  text: ['남자', '여자'],
                   onPressed: (index) {
                     if (!gender[index]) {
                       setState(() {
@@ -123,11 +121,37 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                       });
                     }
                   },
-                  selectedColor: Colors.black,
-                  selectedBorderColor: Colors.black,
-                  fillColor: Colors.white,
-                  splashColor: Colors.white,
                 ),
+                // child: ToggleButtons(
+                //   children: [
+                //     Text('남자'),
+                //     Text('여자'),
+                //   ],
+                //   isSelected: gender,
+                //   onPressed: (index) {
+                //     if (!gender[index]) {
+                //       setState(() {
+                //         if (index == 0)
+                //           newChildData.gender = '남자';
+                //         else
+                //           newChildData.gender = '여자';
+                //         for (int buttonIndex = 0;
+                //             buttonIndex < gender.length;
+                //             buttonIndex++) {
+                //           if (buttonIndex == index) {
+                //             gender[buttonIndex] = !gender[buttonIndex];
+                //           } else {
+                //             gender[buttonIndex] = false;
+                //           }
+                //         }
+                //       });
+                //     }
+                //   },
+                //   selectedColor: Colors.black,
+                //   selectedBorderColor: Colors.black,
+                //   fillColor: Colors.white,
+                //   splashColor: Colors.white,
+                // ),
               )
             ],
           ),

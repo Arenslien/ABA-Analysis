@@ -1,8 +1,5 @@
-import 'package:aba_analysis/screens/child_management/child_test_list.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/child_data.dart';
-import 'package:aba_analysis/screens/child_management/search_bar.dart';
-import 'package:aba_analysis/screens/child_management/child_input_screen.dart';
 
 import 'graph_screen.dart';
 
@@ -16,11 +13,9 @@ class SelectDateScreen extends StatefulWidget {
 
 class _SelectDateScreenState extends State<SelectDateScreen> {
   List<ChildData> childData = []; // 순수 아이 데이터
-  List<dummy_TestData> testData = []; // 테스트 관련 데이터
+  List<DummyTestData> testData = []; // 테스트 관련 데이터
   ChildData dummy1 = new ChildData();
-  dummy_TestData dummy2 = new dummy_TestData();
-  dummy_TestData dummy3 = new dummy_TestData();
-
+  DummyTestData dummy2 = new DummyTestData();
   void initState() {
     super.initState();
     this.testInit();
@@ -41,18 +36,8 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
       '하위4': '상위2',
     });
 
-    dummy3.date = "21.8/5";
-    dummy3.number = "2회";
-    dummy3.average = "50";
-    dummy3.item.addAll({
-      '하위1': '상위1',
-      '하위2': '상위1',
-      '하위3': '상위2',
-      '하위4': '상위2',
-    });
     childData.add(dummy1);
     testData.add(dummy2);
-    testData.add(dummy3);
   }
 
   @override
@@ -68,13 +53,15 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
             },
             icon: Icon(Icons.arrow_back)),
       ), // 검색 필요X
-      body: childData.length == 0
+
+// 검색 필요X
+      body: testData.length == 0
           ? noTestData()
           : ListView.builder(
               padding: const EdgeInsets.all(16),
               itemCount: testData.length,
               itemBuilder: (BuildContext context, int index) {
-                return DataTitle(testData[index]);
+                return dataTitle(testData[index]);
               },
             ),
     );
@@ -103,7 +90,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     );
   }
 
-  Widget DataTitle(dummy_TestData testData) {
+  Widget dataTitle(DummyTestData testData) {
     return ListTile(
         leading: Icon(
           Icons.auto_graph,
