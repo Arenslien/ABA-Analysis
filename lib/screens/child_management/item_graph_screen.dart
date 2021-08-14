@@ -28,7 +28,7 @@ class _ItemGraphState extends State<ItemGraph> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("< 영수의 날짜별 그래프 >"), // 아이의 이름값 갖고와야함.
+        title: Text("< 영수의 하위항목별 그래프 >"), // 아이의 이름값 갖고와야함.
         centerTitle: true,
         backgroundColor: Colors.grey,
         leading: IconButton(
@@ -43,20 +43,20 @@ class _ItemGraphState extends State<ItemGraph> {
           children: [
             SfCartesianChart(
               key: _cartesianKey,
-              title: ChartTitle(text: '1회차'), // testdata의 회차
+              title: ChartTitle(text: '존댓말하기'), // testdata의 회차
               legend: Legend(isVisible: true),
               tooltipBehavior: _tooltipBehavior,
               series: <ChartSeries>[
                 LineSeries<ExpenseData, String>(
                     name: '성공률',
                     dataSource: _chartData,
-                    xValueMapper: (ExpenseData exp, _) => exp.lowItem,
+                    xValueMapper: (ExpenseData exp, _) => exp.testDate,
                     yValueMapper: (ExpenseData exp, _) => exp.successRate),
                 LineSeries<ExpenseData, String>(
                     name: '평균 성공률',
                     dashArray: <double>[5, 5],
                     dataSource: _chartData,
-                    xValueMapper: (ExpenseData exp, _) => exp.lowItem,
+                    xValueMapper: (ExpenseData exp, _) => exp.testDate,
                     yValueMapper: (ExpenseData exp, _) => exp.averageRate)
               ],
               primaryXAxis: CategoryAxis(),
@@ -71,14 +71,18 @@ class _ItemGraphState extends State<ItemGraph> {
               children: [
                 FloatingActionButton.extended(
                   heroTag: 'btn1', // 버튼 구별을 위한 태그
-                  onPressed: () {}, // 누르면 엑셀 내보내기
+                  onPressed: () {
+                    _renderCartesianImage();
+                  }, // 누르면 엑셀 내보내기
                   label: Text('Export to Excel'),
                   icon: Icon(LineIcons.excelFile),
                 ),
                 FloatingActionButton.extended(
                   heroTag: 'btn2', // 버튼 구별을 위한 태그
-                  onPressed: () {}, // 누르면 PDF 내보내기
-                  label: Text('Export to Excel'),
+                  onPressed: () {
+                    _renderCartesianImage();
+                  }, // 누르면 PDF 내보내기
+                  label: Text('Export to PDF'),
                   icon: Icon(LineIcons.pdfFile),
                 ),
               ],
@@ -116,11 +120,11 @@ class _ItemGraphState extends State<ItemGraph> {
   }
 
   List<ExpenseData> getChartData() {
-    List<ExpenseData> chartData = []; // 그 날의 하위항목과 그 항목의 성공률 리스트
-    num average = 60; // 그 날의 평균 성공률 값
-    ExpenseData dummy1 = new ExpenseData('존댓말하기', 70, average);
-    ExpenseData dummy2 = new ExpenseData('세모따라그리기', 80, average);
-    ExpenseData dummy3 = new ExpenseData('네모따라그리기', 50, average);
+    List<ExpenseData> chartData = []; // 선택한 하위항목과 테스트한 날짜 리스트
+    num average = 50; // 선택한 하위항목의 전체 날짜 평균 성공률
+    ExpenseData dummy1 = new ExpenseData('07월01일', 30, average);
+    ExpenseData dummy2 = new ExpenseData('07월13일', 70, average);
+    ExpenseData dummy3 = new ExpenseData('07월31일', 50, average);
     chartData.add(dummy1);
     chartData.add(dummy2);
     chartData.add(dummy3);
@@ -130,8 +134,8 @@ class _ItemGraphState extends State<ItemGraph> {
 }
 
 class ExpenseData {
-  ExpenseData(this.lowItem, this.successRate, this.averageRate);
-  final String lowItem; // 하위항목
-  final num successRate; // 항목에 따른 성공률
+  ExpenseData(this.testDate, this.successRate, this.averageRate);
+  final String testDate; // 선택한 하위항목을 테스트한 날짜 또는 테스트한 회차
+  final num successRate; // 날짜 또는 회차에따른 성공률
   final num averageRate; // 평균 성공률
 }

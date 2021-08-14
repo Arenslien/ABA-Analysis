@@ -1,4 +1,5 @@
 import 'package:aba_analysis/screens/child_management/date_graph_screen.dart';
+import 'package:aba_analysis/screens/child_management/item_graph_screen.dart';
 import 'package:flutter/widgets.dart';
 import 'package:aba_analysis/wrapper.dart';
 import 'package:aba_analysis/home_screen.dart';
@@ -19,4 +20,5 @@ final Map<String, WidgetBuilder> routes = {
   SelectItemScreen.routeName: (context) => SelectItemScreen(),
   SelectDateScreen.routeName: (context) => SelectDateScreen(),
   DateGraph.routeName: (context) => DateGraph(),
+  ItemGraph.routeName: (context) => ItemGraph(),
 };
