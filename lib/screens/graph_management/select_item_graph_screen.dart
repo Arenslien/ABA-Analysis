@@ -18,9 +18,9 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
   List<ChildData> childData = []; // 순수 아이 데이터
   List<DummyTestData> testData = []; // 테스트 관련 데이터
   ChildData dummy1 = new ChildData();
-  DummyTestData dummy2 = new DummyTestData();
+  late DummyTestData dummy2 = new DummyTestData();
   DummyTestData dummy3 = new DummyTestData();
-
+  List<String> lowerList = [];
   void initState() {
     super.initState();
     this.testInit();
@@ -50,9 +50,15 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
       '하위3': '상위2',
       '하위4': '상위2',
     });
+
     childData.add(dummy1);
     testData.add(dummy2);
     testData.add(dummy3);
+
+    lowerList.add('하위1');
+    lowerList.add('하위2');
+    lowerList.add('하위3');
+    lowerList.add('하위4');
   }
 
   @override
@@ -72,9 +78,9 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
           ? noTestData()
           : ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: testData.length,
+              itemCount: lowerList.length,
               itemBuilder: (BuildContext context, int index) {
-                return DataTitle(testData[index]);
+                return DataTitle(lowerList[index], index);
               },
             ),
     );
@@ -103,28 +109,28 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
     );
   }
 
-  Widget DataTitle(DummyTestData testData) {
+  Widget DataTitle(String lowerList, int index) {
     return ListTile(
         leading: Icon(
           Icons.auto_graph,
           size: 50,
         ),
         title: Text(
-          testData.number,
+          lowerList,
           style: TextStyle(fontSize: 25),
         ),
         subtitle: Text(
-          testData.date,
+          '상위1', //testData[index][lowerList],
           style: TextStyle(fontSize: 15),
         ),
         trailing: Text(
-          "평균 ${testData.average}%",
+          "평균 ${dummy2.average}%",
           style: TextStyle(fontSize: 25),
         ),
         dense: true,
         onTap: () {
           Navigator.pushNamed(context,
-              '/date_graph'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
+              '/item_graph'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
         });
   }
 }

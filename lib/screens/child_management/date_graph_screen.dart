@@ -42,7 +42,7 @@ class _DateGraphState extends State<DateGraph> {
           children: [
             SfCartesianChart(
               key: _cartesianKey,
-              title: ChartTitle(text: '1회차'), // testdata의 회차
+              title: ChartTitle(text: '7월13일'), // testdata의 회차
               legend: Legend(isVisible: true),
               tooltipBehavior: _tooltipBehavior,
               series: <ChartSeries>[
@@ -79,7 +79,9 @@ class _DateGraphState extends State<DateGraph> {
                 ),
                 FloatingActionButton.extended(
                   heroTag: 'btn2', // 버튼 구별을 위한 태그
-                  onPressed: () {}, // 누르면 PDF 내보내기
+                  onPressed: () {
+                    _renderCartesianImage();
+                  }, // 누르면 PDF 내보내기
                   label: Text('Export to Excel'),
                   icon: Icon(LineIcons.pdfFile),
                 ),
