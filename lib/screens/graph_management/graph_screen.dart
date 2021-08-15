@@ -2,15 +2,16 @@ import 'package:aba_analysis/components/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/child_data.dart';
 
-class dummy_TestData {
+class DummyTestData {
   // 테스트 데이터 더미 데이터 클래스
-  dummy_TestData();
+  DummyTestData();
   String date = "00.0/0"; // 날짜
   String number = "0회"; // 회차
   String average = "00"; // 평균값
   Map<String, String> item = {
     '하위1': '상위1',
   }; // 상위항목과 하위항목
+  List<String> lowerList = ['하위1']; // 하위항목 리스트
 }
 
 class GraphScreen extends StatefulWidget {

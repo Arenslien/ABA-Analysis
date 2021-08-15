@@ -1,7 +1,6 @@
+import 'package:aba_analysis/screens/graph_management/graph_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/child_data.dart';
-
-import 'graph_screen.dart';
 
 class SelectDateScreen extends StatefulWidget {
   const SelectDateScreen({Key? key}) : super(key: key);
@@ -13,10 +12,10 @@ class SelectDateScreen extends StatefulWidget {
 
 class _SelectDateScreenState extends State<SelectDateScreen> {
   List<ChildData> childData = []; // 순수 아이 데이터
-  List<dummy_TestData> testData = []; // 테스트 관련 데이터
+  List<DummyTestData> testData = []; // 테스트 관련 데이터
   List<String> high_keys = [];
   ChildData dummy1 = new ChildData();
-  dummy_TestData dummy2 = new dummy_TestData();
+  DummyTestData dummy2 = new DummyTestData();
   List<String> dummy3 = [];
   void initState() {
     super.initState();

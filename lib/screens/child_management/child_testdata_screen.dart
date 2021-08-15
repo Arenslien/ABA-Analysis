@@ -1,8 +1,10 @@
-import 'package:aba_analysis/components/build_toggle_buttons.dart';
+import 'package:aba_analysis/screens/child_management/test_data_modify_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/components/child_data.dart';
 import 'package:aba_analysis/components/test_data.dart';
+import 'package:aba_analysis/components/child_data.dart';
+import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
+import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/screens/data_input/test_input_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_test_screen.dart';
 
@@ -47,7 +49,42 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
           : ListView.builder(
               itemCount: childData.testData.length,
               itemBuilder: (BuildContext context, int index) {
-                return testTile(childData.testData[index], index);
+                return buildListTile(
+                  titleText: childData.testData[index].name,
+                  subtitleText: childData.testData[index].date,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChildTestScreen(
+                          childData: childData,
+                          index: index,
+                        ),
+                      ),
+                    );
+                  },
+                  trailing: buildToggleButtons(
+                    text: ['복사', '설정'],
+                    onPressed: (idx) async {
+                      if (idx == 0) {
+                        setState(() {
+                          childData.testData.add(childData.testData[index]);
+                        });
+                      } else if (idx == 1) {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                TestDataModifyScreen(childData.testData[index]),
+                          ),
+                        );
+                        setState(() {
+                          
+                        });
+                      }
+                    },
+                  ),
+                );
               },
             ),
       floatingActionButton: FloatingActionButton(
@@ -69,44 +106,6 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
           }
         },
         backgroundColor: Colors.black,
-      ),
-    );
-  }
-
-  Widget testTile(TestData testData, int index) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: ListTile(
-        title: Text(
-          testData.name,
-          style: TextStyle(fontSize: 25),
-        ),
-        subtitle: Text(
-          testData.date,
-          style: TextStyle(fontSize: 15),
-        ),
-        onTap: () async {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChildTestScreen(
-                childData: childData,
-                index: index,
-              ),
-            ),
-          );
-        },
-        trailing: buildToggleButtons(
-          text: ['복사', '설정'],
-          onPressrd: (idx) {
-            if (idx == 0) {
-              setState(() {
-                childData.testData.add(testData);
-              });
-            }
-          },
-        ),
-        dense: true,
       ),
     );
   }

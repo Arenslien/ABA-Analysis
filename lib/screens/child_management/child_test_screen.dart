@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/child_data.dart';
-import 'package:aba_analysis/components/test_data.dart';
+import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 
 class ChildTestScreen extends StatefulWidget {
@@ -21,6 +21,27 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
   _ChildTestScreenState(this.childData, this.index);
   final ChildData childData;
   final int index;
+  List<String> newTestListResult = [];
+  List<List<bool>> testValue = [];
+  List<bool> isTestValueSelected = [];
+
+  @override
+  void initState() {
+    super.initState();
+    for (int i = 0; i < childData.testData[index].testList.length; i++) {
+      if (childData.testData[index].testList[i].result == '+')
+        testValue.add([true, false, false]);
+      else if (childData.testData[index].testList[i].result == '-')
+        testValue.add([false, true, false]);
+      else if (childData.testData[index].testList[i].result == 'P')
+        testValue.add([false, false, true]);
+      else
+        testValue.add([false, false, false]);
+      newTestListResult.add(childData.testData[index].testList[i].result);
+      isTestValueSelected.add(
+          childData.testData[index].testList[i].result == '' ? false : true);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +58,14 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
             color: Colors.black,
           ),
           onPressed: () {
+            setState(() {
+              for (int i = 0;
+                  i < childData.testData[index].testList.length;
+                  i++) {
+                childData.testData[index].testList[i].result =
+                    newTestListResult[i];
+              }
+            });
             Navigator.pop(context);
           },
         ),
@@ -47,9 +76,15 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
               color: Colors.black,
             ),
             onPressed: () {
-              // if (formkey.currentState!.validate()) {
-              //   Navigator.pop(context);
-              // }
+              bool flag = false;
+              for (int i = 0;
+                  i < childData.testData[index].testList.length;
+                  i++)
+                if (!isTestValueSelected[i]) {
+                  flag = true;
+                  break;
+                }
+              if (!flag) Navigator.pop(context);
             },
           ),
         ],
@@ -59,31 +94,36 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
       body: ListView.builder(
         itemCount: childData.testData[index].testList.length,
         itemBuilder: (BuildContext context, int idx) {
-          return testListTile(childData.testData[index].testList[idx]);
+          return buildListTile(
+            titleText: childData.testData[index].testList[idx].name,
+            trailing: buildToggleButtons(
+              text: ['+', '-', 'P'],
+              isSelected: testValue[idx],
+              onPressed: (i) {
+                if (!testValue[idx][i])
+                  setState(() {
+                    isTestValueSelected[idx] = true;
+                    if (i == 0)
+                      childData.testData[index].testList[idx].result = '+';
+                    else if (i == 1)
+                      childData.testData[index].testList[idx].result = '-';
+                    else
+                      childData.testData[index].testList[idx].result = 'P';
+                    for (int buttonIndex = 0;
+                        buttonIndex < testValue[idx].length;
+                        buttonIndex++) {
+                      if (buttonIndex == i)
+                        testValue[idx][buttonIndex] = true;
+                      else
+                        testValue[idx][buttonIndex] = false;
+                    }
+                  });
+              },
+              minHeight: 40,
+              minWidth: 40,
+            ),
+          );
         },
-      ),
-    );
-  }
-
-  Widget testListTile(TestList testList) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: ListTile(
-        title: Text(
-          testList.name,
-          style: TextStyle(fontSize: 25),
-        ),
-        // subtitle: Text(
-        //   // testData.testList[index].,
-        //   // style: TextStyle(fontSize: 15),
-        // ),
-        trailing: buildToggleButtons(
-          text: ['+', '-', 'P'],
-          onPressrd: null,
-          minHeight: 40,
-          minWidth: 40,
-        ),
-        dense: true,
       ),
     );
   }

@@ -13,9 +13,9 @@ class SelectDateScreen extends StatefulWidget {
 
 class _SelectDateScreenState extends State<SelectDateScreen> {
   List<ChildData> childData = []; // 순수 아이 데이터
-  List<dummy_TestData> testData = []; // 테스트 관련 데이터
+  List<DummyTestData> testData = []; // 테스트 관련 데이터
   ChildData dummy1 = new ChildData();
-  dummy_TestData dummy2 = new dummy_TestData();
+  DummyTestData dummy2 = new DummyTestData();
   void initState() {
     super.initState();
     this.testInit();
@@ -35,34 +35,35 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
       '하위3': '상위2',
       '하위4': '상위2',
     });
+
     childData.add(dummy1);
     testData.add(dummy2);
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('${dummy1.name}의 회차별 그래프'),
-          centerTitle: true,
-          leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('${dummy1.name}의 회차 선택'),
+        backgroundColor: Colors.grey,
+        centerTitle: true,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.arrow_back)),
+      ), // 검색 필요X
+
+// 검색 필요X
+      body: testData.length == 0
+          ? noTestData()
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: testData.length,
+              itemBuilder: (BuildContext context, int index) {
+                return dataTitle(testData[index]);
               },
-              icon: Icon(Icons.arrow_back)),
-        ), // 검색 필요X
-        body: childData.length == 0
-            ? noTestData()
-            : ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: childData.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return DataTitle(childData[index]);
-                },
-              ),
-      ),
+            ),
     );
   }
 
@@ -89,27 +90,28 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     );
   }
 
-  Widget DataTitle(ChildData childData) {
+  Widget dataTitle(DummyTestData testData) {
     return ListTile(
         leading: Icon(
           Icons.auto_graph,
           size: 50,
         ),
         title: Text(
-          testData[0].number,
+          testData.number,
           style: TextStyle(fontSize: 25),
         ),
         subtitle: Text(
-          testData[0].date,
+          testData.date,
           style: TextStyle(fontSize: 15),
         ),
         trailing: Text(
-          "평균 ${testData[0].average}%",
+          "평균 ${testData.average}%",
           style: TextStyle(fontSize: 25),
         ),
         dense: true,
         onTap: () {
-          // 클릭시 회차별(날짜별) 그래프 스크린으로 이동
+          Navigator.pushNamed(context,
+              '/date_graph'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
         });
   }
 }
