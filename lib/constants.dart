@@ -37,16 +37,14 @@
 // );
 // }
 
-// // Form Error
-// final RegExp emailValidatorRegExp =
-//     RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-// const String kEmailNullError = "Please Enter your email";
-// const String kInvalidEmailError = "Please Enter Valid Email";
-// const String kPassNullError = "Please Enter your password";
-// const String kConfirmPassNullError = "Please Enter your confirm password";
-// const String kShortPassError = "Password is too short";
-// const String kMatchPassError = "Password don't match";
-// const String kFirstNameNullError = "Please Enter your first name";
-// const String kLastNameNullError = "Please Enter your last name";
-// const String kPhoneNumberNullError = "Please Enter your phone number";
-// const String kAddressNullError = "Please Enter your address";
+// Form Error
+final RegExp emailValidatorRegExp =
+    RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+const String kEmailNullError = "이메일을 입력해 주세요";
+const String kInvalidEmailError = "이메일이 올바르지 않습니다";
+const String kPassNullError = "비밀번호를 입력해 주세요";
+const String kConfirmPassNullError = "비밀번호를 한 번 더 입력해주세요";
+const String kShortPassError = "비밀번호를 8자리 이상 입력해 주세요";
+const String kMatchPassError = "비밀번호가 일치하지 않습니다";
+const String kNameNullError = "이름을 입력해 주세요";
+const String kPhoneNumberNullError = "전화 번호를 입력해 주세요";

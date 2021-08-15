@@ -1,8 +1,7 @@
-import 'package:aba_analysis/screens/child_management/child_test_list.dart';
+import 'package:aba_analysis/components/search_bar.dart';
+import 'package:aba_analysis/screens/child_management/child_test_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/child_data.dart';
-import 'package:aba_analysis/screens/child_management/search_bar.dart';
-import 'package:aba_analysis/screens/child_management/child_input_screen.dart';
 
 class SelectItemScreen extends StatefulWidget {
   const SelectItemScreen({Key? key}) : super(key: key);
@@ -41,7 +40,7 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
                 padding: const EdgeInsets.all(16),
                 itemCount: childData.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return childTile(childData[index]);
+                  return childTile(childData[index], index);
                 },
               ),
       ),
@@ -71,7 +70,7 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
     );
   }
 
-  Widget childTile(ChildData childData) {
+  Widget childTile(ChildData childData, int index) {
     return ListTile(
       leading: Icon(
         Icons.person,
@@ -91,11 +90,11 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
           Text('항목 그래프'),
         ],
         isSelected: [false, false],
-        onPressed: (index) {
-          if (index == 0) {
+        onPressed: (idx) {
+          if (idx == 0) {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ChildTestListScreen()),
+              MaterialPageRoute(builder: (context) => ChildTestScreen(childData: childData, index: index)),
             );
           }
         },

@@ -1,8 +1,5 @@
-import 'package:aba_analysis/screens/child_management/child_test_list.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/child_data.dart';
-import 'package:aba_analysis/screens/child_management/search_bar.dart';
-import 'package:aba_analysis/screens/child_management/child_input_screen.dart';
 
 import 'graph_screen.dart';
 
