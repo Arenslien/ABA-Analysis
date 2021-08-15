@@ -52,7 +52,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                       isGenderSelected = false;
                     });
                   if (formkey.currentState!.validate() &&
-                      newChildData.gender != '성별') {
+                      isGenderSelected!) {
                     Navigator.pop(context, newChildData);
                   }
                 },
@@ -98,8 +98,8 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                   text: ['남자', '여자'],
                   isSelected: gender,
                   onPressed: (index) {
-                    setState(() {
-                      if (!gender[index]) {
+                    if (!gender[index])
+                      setState(() {
                         isGenderSelected = true;
                         if (index == 0)
                           newChildData.gender = '남자';
@@ -109,13 +109,12 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                             buttonIndex < gender.length;
                             buttonIndex++) {
                           if (buttonIndex == index) {
-                            gender[buttonIndex] = !gender[buttonIndex];
+                            gender[buttonIndex] = true;
                           } else {
                             gender[buttonIndex] = false;
                           }
                         }
-                      }
-                    });
+                      });
                   },
                 ),
               ),

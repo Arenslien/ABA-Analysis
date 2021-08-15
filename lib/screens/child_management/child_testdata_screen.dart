@@ -1,3 +1,4 @@
+import 'package:aba_analysis/screens/child_management/test_data_modify_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/test_data.dart';
 import 'package:aba_analysis/components/child_data.dart';
@@ -51,8 +52,8 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
                 return buildListTile(
                   titleText: childData.testData[index].name,
                   subtitleText: childData.testData[index].date,
-                  onTap: () async {
-                    await Navigator.push(
+                  onTap: () {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => ChildTestScreen(
@@ -64,10 +65,21 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
                   },
                   trailing: buildToggleButtons(
                     text: ['복사', '설정'],
-                    onPressed: (idx) {
+                    onPressed: (idx) async {
                       if (idx == 0) {
                         setState(() {
                           childData.testData.add(childData.testData[index]);
+                        });
+                      } else if (idx == 1) {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                TestDataModifyScreen(childData.testData[index]),
+                          ),
+                        );
+                        setState(() {
+                          
                         });
                       }
                     },
