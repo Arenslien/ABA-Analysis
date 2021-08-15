@@ -1,9 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:aba_analysis/models/user.dart';
 import 'package:aba_analysis/size_config.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:aba_analysis/home_screen.dart';
-import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
+import 'package:provider/provider.dart';
 
 class Wrapper extends StatefulWidget {
   static String routeName = '/wrapper';
@@ -20,7 +19,7 @@ class _WrapperState extends State<Wrapper> {
     SizeConfig().init(context);
 
     // provider ABAUser 정보
-    final user = Provider.of<ABAUser?>(context);
+    final user = Provider.of<User?>(context);
 
     // return 홈스크린 or 인증스크린
     return HomeScreen();
