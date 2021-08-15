@@ -51,8 +51,8 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
                 return buildListTile(
                   titleText: childData.testData[index].name,
                   subtitleText: childData.testData[index].date,
-                  onTap: () async {
-                    await Navigator.push(
+                  onTap: ()  {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => ChildTestScreen(
@@ -61,6 +61,11 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
                         ),
                       ),
                     );
+                    // if (newTestData != null) {
+                    //   setState(() {
+                    //     childData.testData.add(newTestData);
+                    //   });
+                    // }
                   },
                   trailing: buildToggleButtons(
                     text: ['복사', '설정'],

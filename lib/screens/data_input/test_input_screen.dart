@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:aba_analysis/components/test_data.dart';
+import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class TestInputScreen extends StatefulWidget {
   const TestInputScreen({Key? key}) : super(key: key);
@@ -15,6 +15,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
   final formkey = GlobalKey<FormState>();
   TestData newTestData = TestData();
   List<Widget> newTestList = [];
+  int cnt = 0;
 
   @override
   void initState() {
@@ -62,46 +63,34 @@ class _TestInputScreenState extends State<TestInputScreen> {
           ),
           body: ListView(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextFormField(
-                  decoration: buildInputDecoration('Date'),
-                  onChanged: (val) {
-                    setState(() {
-                      newTestData.date = val;
-                    });
-                  },
-                  validator: (val) {
-                    if (val!.length != 8) {
-                      return 'YYYYMMDD';
-                    }
-                    return null;
-                  },
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp('[0-9]')),
-                  ],
-                  autofocus: true,
-                  cursorColor: Colors.black,
-                ),
+              buildTextFormField(
+                text: 'Date',
+                onChanged: (val) {
+                  setState(() {
+                    newTestData.date = val;
+                  });
+                },
+                validator: (val) {
+                  if (val!.length != 8) {
+                    return 'YYYYMMDD';
+                  }
+                  return null;
+                },
+                inputType: 'number',
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextFormField(
-                  decoration: buildInputDecoration('Name'),
-                  onChanged: (val) {
-                    setState(() {
-                      newTestData.name = val;
-                    });
-                  },
-                  validator: (val) {
-                    if (val!.length < 1) {
-                      return '이름은 필수사항입니다.';
-                    }
-                    return null;
-                  },
-                  cursorColor: Colors.black,
-                ),
+              buildTextFormField(
+                text: 'Name',
+                onChanged: (val) {
+                  setState(() {
+                    newTestData.name = val;
+                  });
+                },
+                validator: (val) {
+                  if (val!.length < 1) {
+                    return '이름은 필수사항입니다.';
+                  }
+                  return null;
+                },
               ),
               Padding(
                 padding: const EdgeInsets.all(16),
@@ -119,10 +108,11 @@ class _TestInputScreenState extends State<TestInputScreen> {
                     IconButton(
                       icon: Icon(Icons.remove_rounded),
                       onPressed: () {
-                        setState(() {
-                          newTestData.testList.removeLast();
-                          newTestList.removeLast();
-                        });
+                        if (newTestData.testList.length != 1)
+                          setState(() {
+                            newTestData.testList.removeLast();
+                            newTestList.removeLast();
+                          });
                       },
                     )
                   ],
@@ -136,44 +126,22 @@ class _TestInputScreenState extends State<TestInputScreen> {
     );
   }
 
-  InputDecoration buildInputDecoration(String text) {
-    return InputDecoration(
-      labelText: text,
-      labelStyle: TextStyle(color: Colors.black),
-      hintStyle: TextStyle(color: Colors.grey),
-      enabledBorder: UnderlineInputBorder(
-        borderSide: BorderSide(
-          color: Colors.black,
-        ),
-      ),
-      focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: Colors.black),
-      ),
-    );
-  }
-
   buildTestList() {
+    int index = newTestData.testList.length;
     newTestData.testList.add(TestList());
-    newTestList.add(
-      Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: TextFormField(
-          decoration:
-              buildInputDecoration('Test-${newTestData.testList.length}'),
-          onChanged: (val) {
-            setState(() {
-              newTestData.testList[newTestData.testList.length - 1].name = val;
-            });
-          },
-          validator: (val) {
-            if (val!.length < 1) {
-              return '이름은 필수사항입니다.';
-            }
-            return null;
-          },
-          cursorColor: Colors.black,
-        ),
-      ),
-    );
+    newTestList.add(buildTextFormField(
+      text: 'Test-${newTestData.testList.length}',
+      onChanged: (val) {
+        setState(() {
+          newTestData.testList[index].name = val;
+        });
+      },
+      validator: (val) {
+        if (val!.length < 1) {
+          return '이름은 필수사항입니다.';
+        }
+        return null;
+      },
+    ));
   }
 }

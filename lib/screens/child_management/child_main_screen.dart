@@ -42,7 +42,19 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                         ),
                       );
                     },
-                    trailing: buildToggleButtons(text: ['그래프', '설정']),
+                    trailing: buildToggleButtons(
+                      text: ['그래프', '설정'],
+                      onPressed: (idx) {
+                        if (idx == 1) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChildInputScreen(),
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   );
                 },
               ),

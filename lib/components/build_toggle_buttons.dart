@@ -19,7 +19,7 @@ ToggleButtons buildToggleButtons(
     isSelected: isSelected == null ? selecte : isSelected,
     onPressed: onPressed,
     constraints: BoxConstraints(minWidth: minWidth, minHeight: minHeight),
-    color: Colors.grey,
+    color: isSelected == null ? null : Colors.grey,
     fillColor: Colors.white,
     borderColor: Colors.black,
     splashColor: Colors.white,
