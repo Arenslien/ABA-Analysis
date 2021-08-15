@@ -2,24 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/test_data.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
-class TestInputScreen extends StatefulWidget {
-  const TestInputScreen({Key? key}) : super(key: key);
-
+class TestDataModifyScreen extends StatefulWidget {
+  const TestDataModifyScreen(this.testData, {Key? key}) : super(key: key);
+  final TestData testData;
   @override
-  _TestInputScreenState createState() => _TestInputScreenState();
+  _TestDataModifyScreenState createState() =>
+      _TestDataModifyScreenState(testData);
 }
 
-class _TestInputScreenState extends State<TestInputScreen> {
-  _TestInputScreenState();
+class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
+  _TestDataModifyScreenState(this.testData);
+
+  final TestData testData;
 
   final formkey = GlobalKey<FormState>();
   TestData newTestData = TestData();
-  List<Widget> newTestList = [];
+  List<Widget> testList = [];
 
   @override
   void initState() {
     super.initState();
-    buildTestList();
+    for (int i = 0; i < testData.testList.length; i++) buildTestList(i);
   }
 
   @override
@@ -31,7 +34,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              '테스트 추가',
+              '테스트 설정',
               style: TextStyle(color: Colors.black),
             ),
             centerTitle: true,
@@ -63,10 +66,10 @@ class _TestInputScreenState extends State<TestInputScreen> {
           body: ListView(
             children: [
               buildTextFormField(
-                text: 'Date',
+                text: '날짜',
                 onChanged: (val) {
                   setState(() {
-                    newTestData.date = val;
+                    testData.date = val;
                   });
                 },
                 validator: (val) {
@@ -75,13 +78,14 @@ class _TestInputScreenState extends State<TestInputScreen> {
                   }
                   return null;
                 },
+                initialValue: testData.date,
                 inputType: 'number',
               ),
               buildTextFormField(
-                text: 'Name',
+                text: '이름',
                 onChanged: (val) {
                   setState(() {
-                    newTestData.name = val;
+                    testData.name = val;
                   });
                 },
                 validator: (val) {
@@ -90,6 +94,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                   }
                   return null;
                 },
+                initialValue: testData.name,
               ),
               Padding(
                 padding: const EdgeInsets.all(16),
@@ -100,24 +105,25 @@ class _TestInputScreenState extends State<TestInputScreen> {
                       icon: Icon(Icons.add_rounded),
                       onPressed: () {
                         setState(() {
-                          buildTestList();
+                          testData.testList.add(TestList());
+                          buildTestList(testList.length);
                         });
                       },
                     ),
                     IconButton(
                       icon: Icon(Icons.remove_rounded),
                       onPressed: () {
-                        if (newTestData.testList.length != 1)
+                        if (testList.length != 1)
                           setState(() {
-                            newTestData.testList.removeLast();
-                            newTestList.removeLast();
+                            testData.testList.removeLast();
+                            testList.removeLast();
                           });
                       },
                     )
                   ],
                 ),
               ),
-              ...newTestList,
+              ...testList,
             ],
           ),
         ),
@@ -125,14 +131,12 @@ class _TestInputScreenState extends State<TestInputScreen> {
     );
   }
 
-  buildTestList() {
-    int index = newTestData.testList.length;
-    newTestData.testList.add(TestList());
-    newTestList.add(buildTextFormField(
-      text: 'Test-${newTestData.testList.length}',
+  buildTestList(int index) {
+    testList.add(buildTextFormField(
+      text: 'Test-${index + 1}',
       onChanged: (val) {
         setState(() {
-          newTestData.testList[index].name = val;
+          testData.testList[index].name = val;
         });
       },
       validator: (val) {
@@ -141,6 +145,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
         }
         return null;
       },
+      initialValue: testData.testList[index].name,
     ));
   }
 }

@@ -5,6 +5,7 @@ Widget buildTextFormField({
   required String text,
   required onChanged,
   required validator,
+  String? initialValue,
   String? inputType,
 }) {
   return Padding(
@@ -13,11 +14,11 @@ Widget buildTextFormField({
       decoration: buildInputDecoration(text),
       onChanged: onChanged,
       validator: validator,
+      initialValue: initialValue,
       keyboardType: inputType == 'number' ? TextInputType.number : null,
       inputFormatters: inputType == 'number'
           ? [FilteringTextInputFormatter.allow(RegExp('[0-9]'))]
           : null,
-      autofocus: true,
       cursorColor: Colors.black,
     ),
   );
