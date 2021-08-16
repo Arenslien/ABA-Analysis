@@ -63,7 +63,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
           body: ListView(
             children: [
               buildTextFormField(
-                text: 'Date',
+                text: '날짜',
                 onChanged: (val) {
                   setState(() {
                     newTestData.date = val;
@@ -78,7 +78,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                 inputType: 'number',
               ),
               buildTextFormField(
-                text: 'Name',
+                text: '이름',
                 onChanged: (val) {
                   setState(() {
                     newTestData.name = val;

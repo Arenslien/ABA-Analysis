@@ -12,9 +12,7 @@ class TestDataModifyScreen extends StatefulWidget {
 
 class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
   _TestDataModifyScreenState(this.testData);
-
   final TestData testData;
-
   final formkey = GlobalKey<FormState>();
   TestData newTestData = TestData();
   List<Widget> testList = [];
@@ -22,7 +20,14 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < testData.testList.length; i++) buildTestList(i);
+    newTestData.date = testData.date;
+    newTestData.name = testData.name;
+    for (int i = 0; i < testData.testList.length; i++) {
+      newTestData.testList.add(TestList());
+      newTestData.testList[i].name = testData.testList[i].name;
+      newTestData.testList[i].result = testData.testList[i].result;
+      buildTestList(i);
+    }
   }
 
   @override
@@ -69,7 +74,7 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
                 text: '날짜',
                 onChanged: (val) {
                   setState(() {
-                    testData.date = val;
+                    newTestData.date = val;
                   });
                 },
                 validator: (val) {
@@ -78,14 +83,14 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
                   }
                   return null;
                 },
-                initialValue: testData.date,
+                initialValue: newTestData.date,
                 inputType: 'number',
               ),
               buildTextFormField(
                 text: '이름',
                 onChanged: (val) {
                   setState(() {
-                    testData.name = val;
+                    newTestData.name = val;
                   });
                 },
                 validator: (val) {
@@ -94,7 +99,7 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
                   }
                   return null;
                 },
-                initialValue: testData.name,
+                initialValue: newTestData.name,
               ),
               Padding(
                 padding: const EdgeInsets.all(16),
@@ -105,8 +110,8 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
                       icon: Icon(Icons.add_rounded),
                       onPressed: () {
                         setState(() {
-                          testData.testList.add(TestList());
-                          buildTestList(testList.length);
+                          newTestData.testList.add(TestList());
+                          buildTestList(newTestData.testList.length - 1);
                         });
                       },
                     ),
@@ -115,7 +120,7 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
                       onPressed: () {
                         if (testList.length != 1)
                           setState(() {
-                            testData.testList.removeLast();
+                            newTestData.testList.removeLast();
                             testList.removeLast();
                           });
                       },
@@ -136,7 +141,7 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
       text: 'Test-${index + 1}',
       onChanged: (val) {
         setState(() {
-          testData.testList[index].name = val;
+          newTestData.testList[index].name = val;
         });
       },
       validator: (val) {
@@ -145,7 +150,7 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
         }
         return null;
       },
-      initialValue: testData.testList[index].name,
+      initialValue: newTestData.testList[index].name,
     ));
   }
 }
