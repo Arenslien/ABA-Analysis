@@ -1,3 +1,4 @@
+import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/child_data.dart';
 
@@ -18,7 +19,10 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
   ChildData dummy1 = new ChildData();
   late DummyTestData dummy2 = new DummyTestData();
   DummyTestData dummy3 = new DummyTestData();
+
   List<String> lowerList = [];
+  List<int> averageList = [];
+
   void initState() {
     super.initState();
     this.testInit();
@@ -30,7 +34,6 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
     dummy1.name = '영수';
 
     dummy2.date = "21.7/2";
-    dummy2.number = "1회";
     dummy2.average = "70";
     dummy2.item.addAll({
       '하위1': '상위1',
@@ -40,7 +43,6 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
     });
 
     dummy3.date = "21.8/5";
-    dummy3.number = "2회";
     dummy3.average = "50";
     dummy3.item.addAll({
       '하위1': '상위1',
@@ -57,13 +59,18 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
     lowerList.add('하위2');
     lowerList.add('하위3');
     lowerList.add('하위4');
+
+    averageList.add(70);
+    averageList.add(60);
+    averageList.add(30);
+    averageList.add(80);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${dummy1.name}의 회차 선택'),
+        title: Text('${dummy1.name}의 하위항목 선택'),
         backgroundColor: Colors.grey,
         centerTitle: true,
         leading: IconButton(
@@ -78,7 +85,7 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
               padding: const EdgeInsets.all(16),
               itemCount: lowerList.length,
               itemBuilder: (BuildContext context, int index) {
-                return DataTitle(lowerList[index], index);
+                return dataTile(lowerList[index], averageList[index], index);
               },
             ),
     );
@@ -107,28 +114,15 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
     );
   }
 
-  Widget DataTitle(String lowerList, int index) {
-    return ListTile(
-        leading: Icon(
-          Icons.auto_graph,
-          size: 50,
-        ),
-        title: Text(
-          lowerList,
-          style: TextStyle(fontSize: 25),
-        ),
-        subtitle: Text(
-          '상위1', //testData[index][lowerList],
-          style: TextStyle(fontSize: 15),
-        ),
-        trailing: Text(
-          "평균 ${dummy2.average}%",
-          style: TextStyle(fontSize: 25),
-        ),
-        dense: true,
-        onTap: () {
-          Navigator.pushNamed(context,
-              '/item_graph'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
-        });
+  Widget dataTile(String lower, int average, int index) {
+    return buildListTile(
+      titleText: lower,
+      subtitleText: "평균: $average",
+      onTap: () {
+        Navigator.pushNamed(context,
+            '/item_graph'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
+      },
+      trailing: Icon(Icons.keyboard_arrow_right),
+    );
   }
 }
