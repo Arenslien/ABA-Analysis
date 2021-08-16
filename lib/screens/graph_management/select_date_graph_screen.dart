@@ -1,3 +1,4 @@
+import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/child_data.dart';
 
@@ -16,6 +17,10 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
   List<DummyTestData> testData = []; // 테스트 관련 데이터
   ChildData dummy1 = new ChildData();
   DummyTestData dummy2 = new DummyTestData();
+
+  List<String> dateList = [];
+  List<int> averageList = [];
+
   void initState() {
     super.initState();
     this.testInit();
@@ -26,8 +31,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     dummy1.gender = '남자';
     dummy1.name = '영수';
 
-    dummy2.date = "21.7/2";
-    dummy2.number = "1회";
+    dummy2.date = "21.7/11";
     dummy2.average = "70";
     dummy2.item.addAll({
       '하위1': '상위1',
@@ -35,16 +39,56 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
       '하위3': '상위2',
       '하위4': '상위2',
     });
+    testData.add(dummy2);
 
     childData.add(dummy1);
+
+    dummy2.date = "21.7/22";
+    dummy2.average = "60";
+    dummy2.item.addAll({
+      '하위1': '상위1',
+      '하위2': '상위1',
+      '하위3': '상위2',
+      '하위4': '상위2',
+    });
     testData.add(dummy2);
+
+    dummy2.date = "21.7/29";
+    dummy2.average = "30";
+    dummy2.item.addAll({
+      '하위1': '상위1',
+      '하위2': '상위1',
+      '하위3': '상위2',
+      '하위4': '상위2',
+    });
+    testData.add(dummy2);
+
+    dummy2.date = "21.8/5";
+    dummy2.average = "80";
+    dummy2.item.addAll({
+      '하위1': '상위1',
+      '하위2': '상위1',
+      '하위3': '상위2',
+      '하위4': '상위2',
+    });
+    testData.add(dummy2);
+
+    dateList.add("2021년7월11일");
+    dateList.add("2021년7월22일");
+    dateList.add("2021년7월29일");
+    dateList.add("2021년8월5일");
+
+    averageList.add(70);
+    averageList.add(60);
+    averageList.add(30);
+    averageList.add(80);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${dummy1.name}의 회차 선택'),
+        title: Text('${dummy1.name}의 날짜 선택'),
         backgroundColor: Colors.grey,
         centerTitle: true,
         leading: IconButton(
@@ -61,7 +105,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
               padding: const EdgeInsets.all(16),
               itemCount: testData.length,
               itemBuilder: (BuildContext context, int index) {
-                return dataTitle(testData[index]);
+                return dataTile(dateList[index], averageList[index], index);
               },
             ),
     );
@@ -90,28 +134,15 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     );
   }
 
-  Widget dataTitle(DummyTestData testData) {
-    return ListTile(
-        leading: Icon(
-          Icons.auto_graph,
-          size: 50,
-        ),
-        title: Text(
-          testData.number,
-          style: TextStyle(fontSize: 25),
-        ),
-        subtitle: Text(
-          testData.date,
-          style: TextStyle(fontSize: 15),
-        ),
-        trailing: Text(
-          "평균 ${testData.average}%",
-          style: TextStyle(fontSize: 25),
-        ),
-        dense: true,
-        onTap: () {
-          Navigator.pushNamed(context,
-              '/date_graph'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
-        });
+  Widget dataTile(String lower, int average, int index) {
+    return buildListTile(
+      titleText: lower,
+      subtitleText: "평균: $average",
+      onTap: () {
+        Navigator.pushNamed(context,
+            '/date_graph'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
+      },
+      trailing: Icon(Icons.keyboard_arrow_right),
+    );
   }
 }
