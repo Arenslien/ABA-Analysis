@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:aba_analysis/components/build_list_tile.dart';
+import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/search_bar.dart';
+import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/child_data.dart';
 
 class DummyTestData {
   // 테스트 데이터 더미 데이터 클래스
   DummyTestData();
   String date = "00.0/0"; // 날짜
-  String number = "0회"; // 회차
   String average = "00"; // 평균값
   Map<String, String> item = {
     '하위1': '상위1',
@@ -50,7 +51,7 @@ class _GraphScreenState extends State<GraphScreen> {
                 padding: const EdgeInsets.all(16),
                 itemCount: childData.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return childTile(childData[index]);
+                  return dataTile(childData[index]);
                 },
               ),
       ),
@@ -80,42 +81,61 @@ class _GraphScreenState extends State<GraphScreen> {
     );
   }
 
-  Widget childTile(ChildData childData) {
-    return ListTile(
-      leading: Icon(
-        Icons.person,
-        size: 50,
-      ),
-      title: Text(
-        childData.name,
-        style: TextStyle(fontSize: 25),
-      ),
-      subtitle: Text(
-        "${childData.age}세",
-        style: TextStyle(fontSize: 15),
-      ),
-      trailing: ToggleButtons(
-        children: [
-          Text('Date Graph'),
-          Text('아이템 그래프'),
-        ],
-        isSelected: [false, false],
-        onPressed: (index) {
-          if (index == 0) {
-            Navigator.pushNamed(
-              context,
-              '/select_date',
-            );
-          } else if (index == 1) {
-            Navigator.pushNamed(context, '/select_item');
-          }
-        },
-        constraints: BoxConstraints(minWidth: 80, minHeight: 50),
-        borderColor: Colors.black,
-        fillColor: Colors.white,
-        splashColor: Colors.black,
-      ),
-      dense: true,
-    );
+  Widget dataTile(ChildData childData) {
+    return buildListTile(
+        titleText: childData.name,
+        subtitleText: "${childData.age}세",
+        trailing: buildToggleButtons(
+          text: ['Date Graph', 'Item Graph'],
+          onPressed: (index) {
+            if (index == 0) {
+              Navigator.pushNamed(
+                context,
+                '/select_date',
+              );
+            } else if (index == 1) {
+              Navigator.pushNamed(context, '/select_item');
+            }
+          },
+        ));
   }
+
+  // Widget childTile(ChildData childData) {
+  //   return ListTile(
+  //     leading: Icon(
+  //       Icons.person,
+  //       size: 50,
+  //     ),
+  //     title: Text(
+  //       childData.name,
+  //       style: TextStyle(fontSize: 25),
+  //     ),
+  //     subtitle: Text(
+  //       "${childData.age}세",
+  //       style: TextStyle(fontSize: 15),
+  //     ),
+  //     trailing: ToggleButtons(
+  //       children: [
+  //         Text('Date Graph'),
+  //         Text('아이템 그래프'),
+  //       ],
+  //       isSelected: [false, false],
+  //       onPressed: (index) {
+  //         if (index == 0) {
+  //           Navigator.pushNamed(
+  //             context,
+  //             '/select_date',
+  //           );
+  //         } else if (index == 1) {
+  //           Navigator.pushNamed(context, '/select_item');
+  //         }
+  //       },
+  //       constraints: BoxConstraints(minWidth: 80, minHeight: 50),
+  //       borderColor: Colors.black,
+  //       fillColor: Colors.white,
+  //       splashColor: Colors.black,
+  //     ),
+  //     dense: true,
+  //   );
+  // }
 }
