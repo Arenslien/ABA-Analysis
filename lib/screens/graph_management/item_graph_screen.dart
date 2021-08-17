@@ -3,6 +3,13 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'dart:ui' as dart_ui;
 
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:open_file/open_file.dart';
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xio;
+
 // date_graph 복붙한거라 item_graph버전으로 다시 코딩 필요
 class ItemGraph extends StatefulWidget {
   const ItemGraph({Key? key}) : super(key: key);
@@ -44,7 +51,7 @@ class _ItemGraphState extends State<ItemGraph> {
             SfCartesianChart(
               key: _cartesianKey,
               title: ChartTitle(text: '존댓말하기'), // testdata의 회차
-              legend: Legend(isVisible: true),
+              legend: Legend(isVisible: true, position: LegendPosition.bottom),
               tooltipBehavior: _tooltipBehavior,
               series: <ChartSeries>[
                 LineSeries<ExpenseData, String>(
@@ -73,7 +80,7 @@ class _ItemGraphState extends State<ItemGraph> {
                 FloatingActionButton.extended(
                   heroTag: 'btn1', // 버튼 구별을 위한 태그
                   onPressed: () {
-                    _renderCartesianImage();
+                    genExcel();
                   }, // 누르면 엑셀 내보내기
                   label: Text('Export to Excel'),
                   icon: Icon(LineIcons.excelFile),
@@ -84,7 +91,7 @@ class _ItemGraphState extends State<ItemGraph> {
                 FloatingActionButton.extended(
                   heroTag: 'btn2', // 버튼 구별을 위한 태그
                   onPressed: () {
-                    _renderCartesianImage();
+                    genPDF();
                   }, // 누르면 PDF 내보내기
                   label: Text('Export to PDF'),
                   icon: Icon(LineIcons.pdfFile),
@@ -100,6 +107,68 @@ class _ItemGraphState extends State<ItemGraph> {
         ),
       ),
     );
+  }
+
+  final pdf = pw.Document();
+
+  Future<void> genExcel() async {
+    // 파일이 안열림. 수정필요
+    dart_ui.Image data =
+        await _cartesianKey.currentState!.toImage(pixelRatio: 3.0);
+    final bytes = await data.toByteData(format: dart_ui.ImageByteFormat.png);
+    // final image = pw.MemoryImage(
+    //   bytes!.buffer.asUint8List(),
+    // );
+    final xio.Workbook workbook = new xio.Workbook();
+    final xio.Worksheet sheet = workbook.worksheets[0];
+    sheet.getRangeByName('A1').setText('Hello World');
+    sheet.getRangeByName('A3').setNumber(44);
+
+    final List<int> excelBytes = workbook.saveAsStream();
+    Directory? dir = await getApplicationDocumentsDirectory();
+    String filePath = dir.path + '/abaGraph/';
+    if (Directory(filePath).exists() != true) {
+      new Directory(filePath).createSync(recursive: true);
+      final File file = File(filePath + "excelSample.xlsx");
+      file.writeAsBytesSync(excelBytes);
+      await OpenFile.open(file.path);
+    } else {
+      final File file = File(filePath + "excelSample.xlsx");
+      file.writeAsBytesSync(excelBytes);
+      await OpenFile.open(file.path);
+    }
+    workbook.dispose();
+  }
+
+  Future<void> genPDF() async {
+    dart_ui.Image data =
+        await _cartesianKey.currentState!.toImage(pixelRatio: 3.0);
+    final bytes = await data.toByteData(format: dart_ui.ImageByteFormat.png);
+    final image = pw.MemoryImage(
+      bytes!.buffer.asUint8List(),
+    );
+
+    pdf.addPage(pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return pw.Center(
+              child: pw.Column(children: [
+            pw.Text("Hello World"),
+            pw.Image(image),
+          ]));
+        }));
+    Directory? dir = await getApplicationDocumentsDirectory();
+    String filePath = dir.path + '/abaGraph/';
+    if (Directory(filePath).exists() != true) {
+      new Directory(filePath).createSync(recursive: true);
+      final File file = File(filePath + "sample.pdf");
+      file.writeAsBytesSync(List.from(await pdf.save()));
+      await OpenFile.open(file.path);
+    } else {
+      final File file = File(filePath + "sample.pdf");
+      file.writeAsBytesSync(List.from(await pdf.save()));
+      await OpenFile.open(file.path);
+    }
   }
 
   Future<void> _renderCartesianImage() async {

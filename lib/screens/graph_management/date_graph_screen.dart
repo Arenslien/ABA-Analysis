@@ -43,7 +43,7 @@ class _DateGraphState extends State<DateGraph> {
             SfCartesianChart(
               key: _cartesianKey,
               title: ChartTitle(text: '7월13일'), // testdata의 회차
-              legend: Legend(isVisible: true),
+              legend: Legend(isVisible: true, position: LegendPosition.bottom),
               tooltipBehavior: _tooltipBehavior,
               series: <ChartSeries>[
                 LineSeries<ExpenseData, String>(
@@ -68,6 +68,7 @@ class _DateGraphState extends State<DateGraph> {
               ),
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FloatingActionButton.extended(
                   heroTag: 'btn1', // 버튼 구별을 위한 태그
@@ -76,6 +77,9 @@ class _DateGraphState extends State<DateGraph> {
                   }, // 누르면 엑셀 내보내기
                   label: Text('Export to Excel'),
                   icon: Icon(LineIcons.excelFile),
+                ),
+                SizedBox(
+                  width: 20,
                 ),
                 FloatingActionButton.extended(
                   heroTag: 'btn2', // 버튼 구별을 위한 태그
