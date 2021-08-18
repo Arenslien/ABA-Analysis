@@ -20,6 +20,7 @@ class ItemGraph extends StatefulWidget {
 
 class _ItemGraphState extends State<ItemGraph> {
   late List<ExpenseData> _chartData;
+  late List<String> _chartColumn;
   late TooltipBehavior _tooltipBehavior;
   final GlobalKey<SfCartesianChartState> _cartesianKey = GlobalKey();
 
@@ -27,7 +28,7 @@ class _ItemGraphState extends State<ItemGraph> {
   void initState() {
     _chartData = getChartData();
     _tooltipBehavior = TooltipBehavior(enable: true);
-
+    _chartColumn = ['testDate', 'success'];
     super.initState();
   }
 
@@ -91,7 +92,7 @@ class _ItemGraphState extends State<ItemGraph> {
                 FloatingActionButton.extended(
                   heroTag: 'btn2', // 버튼 구별을 위한 태그
                   onPressed: () {
-                    genPDF();
+                    genPDF(_chartColumn, genPDFData(_chartData));
                   }, // 누르면 PDF 내보내기
                   label: Text('Export to PDF'),
                   icon: Icon(LineIcons.pdfFile),
@@ -109,13 +110,11 @@ class _ItemGraphState extends State<ItemGraph> {
     );
   }
 
-  final pdf = pw.Document();
-
   Future<void> genExcel() async {
     // 파일이 안열림. 수정필요
-    dart_ui.Image data =
+    dart_ui.Image imgData =
         await _cartesianKey.currentState!.toImage(pixelRatio: 3.0);
-    final bytes = await data.toByteData(format: dart_ui.ImageByteFormat.png);
+    final bytes = await imgData.toByteData(format: dart_ui.ImageByteFormat.png);
     // final image = pw.MemoryImage(
     //   bytes!.buffer.asUint8List(),
     // );
@@ -140,22 +139,86 @@ class _ItemGraphState extends State<ItemGraph> {
     workbook.dispose();
   }
 
-  Future<void> genPDF() async {
-    dart_ui.Image data =
+  List<List<String>> genPDFData(List<ExpenseData> chartData) {
+    List<List<String>> pdfData = [];
+    for (ExpenseData d in chartData) {
+      pdfData.add(<String>[d.testDate, d.successRate.toString()]);
+    }
+    print(pdfData);
+    return pdfData;
+  }
+
+  final pdf = pw.Document();
+  PdfColor _darkColor = PdfColor.fromInt(0xff242424);
+  PdfColor _lightColor = PdfColor.fromInt(0xff9D9D9D);
+  PdfColor baseColor = PdfColor.fromInt(0xffD32D2D);
+  PdfColor _baseTextColor = PdfColor.fromInt(0xffffffff);
+  PdfColor accentColor = PdfColor.fromInt(0xfff1c0c0);
+  PdfColor green = PdfColor.fromInt(0xffe06c6c); //darker background color
+  PdfColor lightGreen = PdfColor.fromInt(0xffedabab); //light background color
+
+  Future<void> genPDF(
+      List<String> columns, List<List<String>> tableData) async {
+    dart_ui.Image imgData =
         await _cartesianKey.currentState!.toImage(pixelRatio: 3.0);
-    final bytes = await data.toByteData(format: dart_ui.ImageByteFormat.png);
+    final bytes = await imgData.toByteData(format: dart_ui.ImageByteFormat.png);
     final image = pw.MemoryImage(
       bytes!.buffer.asUint8List(),
     );
 
-    pdf.addPage(pw.Page(
-        pageFormat: PdfPageFormat.a4,
+    pw.PageTheme pageTheme = _myPageTheme(PdfPageFormat.a4);
+    pw.Widget headerWidget = pdfHeader();
+
+    pdf.addPage(pw.MultiPage(
+        pageTheme: pageTheme,
         build: (pw.Context context) {
-          return pw.Center(
-              child: pw.Column(children: [
-            pw.Text("Hello World"),
+          return <pw.Widget>[
+            pw.Header(
+              child: headerWidget,
+            ),
             pw.Image(image),
-          ]));
+            pw.Table.fromTextArray(
+              context: context,
+              border: null,
+              headerAlignment: pw.Alignment.centerLeft,
+              cellAlignment: pw.Alignment.centerLeft,
+              headerDecoration: pw.BoxDecoration(
+                borderRadius: pw.BorderRadius.all(pw.Radius.circular(6)),
+                color: accentColor,
+              ),
+              headerHeight: 25,
+              cellHeight: 30,
+              headerStyle: pw.TextStyle(
+                color: _baseTextColor,
+                fontSize: 10,
+                fontWeight: pw.FontWeight.bold,
+              ),
+              cellStyle: pw.TextStyle(
+                color: _darkColor,
+                fontSize: 10,
+              ),
+              rowDecoration: pw.BoxDecoration(
+                border: pw.Border(
+                  bottom: pw.BorderSide(color: accentColor, width: .5),
+                ),
+              ),
+              headers: List<String>.generate(
+                columns.length,
+                (col) {
+                  return columns[col];
+                },
+              ),
+              data: List<List<String>>.generate(
+                tableData.length,
+                (row) => List<String>.generate(
+                  columns.length,
+                  (col) {
+                    return tableData[row][col];
+                  },
+                ),
+              ),
+            ),
+          ];
         }));
     Directory? dir = await getApplicationDocumentsDirectory();
     String filePath = dir.path + '/abaGraph/';
@@ -195,14 +258,91 @@ class _ItemGraphState extends State<ItemGraph> {
   List<ExpenseData> getChartData() {
     List<ExpenseData> chartData = []; // 선택한 하위항목과 테스트한 날짜 리스트
     num average = 50; // 선택한 하위항목의 전체 날짜 평균 성공률
-    ExpenseData dummy1 = new ExpenseData('07월01일', 30, average);
-    ExpenseData dummy2 = new ExpenseData('07월13일', 70, average);
-    ExpenseData dummy3 = new ExpenseData('07월31일', 50, average);
+    ExpenseData dummy1 = new ExpenseData('1, July', 30, average);
+    ExpenseData dummy2 = new ExpenseData('13, July', 70, average);
+    ExpenseData dummy3 = new ExpenseData('31, July', 50, average);
     chartData.add(dummy1);
     chartData.add(dummy2);
     chartData.add(dummy3);
 
     return chartData;
+  }
+
+  pw.PageTheme _myPageTheme(PdfPageFormat format) {
+    return pw.PageTheme(
+      pageFormat: format.applyMargin(
+          left: 2.0 * PdfPageFormat.cm,
+          top: 4.0 * PdfPageFormat.cm,
+          right: 2.0 * PdfPageFormat.cm,
+          bottom: 2.0 * PdfPageFormat.cm),
+      theme: pw.ThemeData.withFont(
+//      base: pw.Font.ttf(await rootBundle.load('assets/fonts/nexa_bold.otf')),
+//      bold:
+//          pw.Font.ttf(await rootBundle.load('assets/fonts/raleway_medium.ttf')),
+          ),
+      buildBackground: (pw.Context context) {
+        return pw.FullPage(
+          ignoreMargins: true,
+          child: pw.CustomPaint(
+            size: PdfPoint(format.width, format.height),
+            painter: (PdfGraphics canvas, PdfPoint size) {
+              context.canvas
+                ..setColor(lightGreen)
+                ..moveTo(0, size.y)
+                ..lineTo(0, size.y - 230)
+                ..lineTo(60, size.y)
+                ..fillPath()
+                ..setColor(green)
+                ..moveTo(0, size.y)
+                ..lineTo(0, size.y - 100)
+                ..lineTo(100, size.y)
+                ..fillPath()
+                ..setColor(lightGreen)
+                ..moveTo(30, size.y)
+                ..lineTo(110, size.y - 50)
+                ..lineTo(150, size.y)
+                ..fillPath()
+                ..moveTo(size.x, 0)
+                ..lineTo(size.x, 230)
+                ..lineTo(size.x - 60, 0)
+                ..fillPath()
+                ..setColor(green)
+                ..moveTo(size.x, 0)
+                ..lineTo(size.x, 100)
+                ..lineTo(size.x - 100, 0)
+                ..fillPath()
+                ..setColor(lightGreen)
+                ..moveTo(size.x - 30, 0)
+                ..lineTo(size.x - 110, 50)
+                ..lineTo(size.x - 150, 0)
+                ..fillPath();
+            },
+          ),
+        );
+      },
+    );
+  }
+
+//pdf header body
+  pw.Widget pdfHeader() {
+    return pw.Container(
+        decoration: pw.BoxDecoration(
+            color: PdfColor.fromInt(0xffffffff),
+            borderRadius: pw.BorderRadius.all(pw.Radius.circular(60))),
+        margin: const pw.EdgeInsets.only(bottom: 8, top: 8),
+        padding: const pw.EdgeInsets.fromLTRB(10, 7, 10, 4),
+        child: pw.Column(
+            mainAxisAlignment: pw.MainAxisAlignment.center,
+            children: [
+              pw.Text(
+                "<Gyu's Item Graph>",
+                style: pw.TextStyle(
+                    fontSize: 16,
+                    color: _darkColor,
+                    fontWeight: pw.FontWeight.bold),
+              ),
+              pw.Divider(color: accentColor),
+            ]));
   }
 }
 
