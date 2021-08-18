@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'dart:ui' as dart_ui;
@@ -28,7 +31,7 @@ class _ItemGraphState extends State<ItemGraph> {
   void initState() {
     _chartData = getChartData();
     _tooltipBehavior = TooltipBehavior(enable: true);
-    _chartColumn = ['testDate', 'success'];
+    _chartColumn = ['날짜', '성공여부'];
     super.initState();
   }
 
@@ -149,13 +152,13 @@ class _ItemGraphState extends State<ItemGraph> {
   }
 
   final pdf = pw.Document();
-  PdfColor _darkColor = PdfColor.fromInt(0xff242424);
+  PdfColor _darkColor = PdfColor.fromInt(0xff242424); // 까만색
   PdfColor _lightColor = PdfColor.fromInt(0xff9D9D9D);
   PdfColor baseColor = PdfColor.fromInt(0xffD32D2D);
-  PdfColor _baseTextColor = PdfColor.fromInt(0xffffffff);
+  PdfColor _baseTextColor = PdfColor.fromInt(0xffffffff); //흰색
   PdfColor accentColor = PdfColor.fromInt(0xfff1c0c0);
   PdfColor green = PdfColor.fromInt(0xffe06c6c); //darker background color
-  PdfColor lightGreen = PdfColor.fromInt(0xffedabab); //light background color
+  PdfColor lightGreen = PdfColor.fromInt(0x0Dedabab); //light background color
 
   Future<void> genPDF(
       List<String> columns, List<List<String>> tableData) async {
@@ -167,14 +170,15 @@ class _ItemGraphState extends State<ItemGraph> {
     );
 
     pw.PageTheme pageTheme = _myPageTheme(PdfPageFormat.a4);
-    pw.Widget headerWidget = pdfHeader();
-
+    final ttf = await rootBundle.load('asset/font/tway_air.ttf');
+    pw.Widget headerWidget = pdfHeader(ttf);
     pdf.addPage(pw.MultiPage(
         pageTheme: pageTheme,
         build: (pw.Context context) {
           return <pw.Widget>[
             pw.Header(
               child: headerWidget,
+              level: 2,
             ),
             pw.Image(image),
             pw.Table.fromTextArray(
@@ -192,10 +196,12 @@ class _ItemGraphState extends State<ItemGraph> {
                 color: _baseTextColor,
                 fontSize: 10,
                 fontWeight: pw.FontWeight.bold,
+                font: pw.TtfFont(ttf),
               ),
               cellStyle: pw.TextStyle(
                 color: _darkColor,
                 fontSize: 10,
+                font: pw.TtfFont(ttf),
               ),
               rowDecoration: pw.BoxDecoration(
                 border: pw.Border(
@@ -206,6 +212,7 @@ class _ItemGraphState extends State<ItemGraph> {
                 columns.length,
                 (col) {
                   return columns[col];
+                  // return columns[col];
                 },
               ),
               data: List<List<String>>.generate(
@@ -224,43 +231,22 @@ class _ItemGraphState extends State<ItemGraph> {
     String filePath = dir.path + '/abaGraph/';
     if (Directory(filePath).exists() != true) {
       new Directory(filePath).createSync(recursive: true);
-      final File file = File(filePath + "sample.pdf");
+      final File file = File(filePath + "sample2.pdf");
       file.writeAsBytesSync(List.from(await pdf.save()));
       await OpenFile.open(file.path);
     } else {
-      final File file = File(filePath + "sample.pdf");
+      final File file = File(filePath + "sample2.pdf");
       file.writeAsBytesSync(List.from(await pdf.save()));
       await OpenFile.open(file.path);
     }
   }
 
-  Future<void> _renderCartesianImage() async {
-    // 그래프를 이미지로 바꿔주는 함수
-    dart_ui.Image data =
-        await _cartesianKey.currentState!.toImage(pixelRatio: 3.0);
-    final bytes = await data.toByteData(format: dart_ui.ImageByteFormat.png);
-
-    await Navigator.of(context).push(
-      MaterialPageRoute(builder: (BuildContext context) {
-        return Scaffold(
-          appBar: AppBar(),
-          body: Center(
-            child: Container(
-              color: Colors.white,
-              child: Image.memory(bytes!.buffer.asUint8List()),
-            ),
-          ),
-        );
-      }),
-    );
-  }
-
   List<ExpenseData> getChartData() {
     List<ExpenseData> chartData = []; // 선택한 하위항목과 테스트한 날짜 리스트
     num average = 50; // 선택한 하위항목의 전체 날짜 평균 성공률
-    ExpenseData dummy1 = new ExpenseData('1, July', 30, average);
-    ExpenseData dummy2 = new ExpenseData('13, July', 70, average);
-    ExpenseData dummy3 = new ExpenseData('31, July', 50, average);
+    ExpenseData dummy1 = new ExpenseData('7월1일', 30, average);
+    ExpenseData dummy2 = new ExpenseData('7월13일', 70, average);
+    ExpenseData dummy3 = new ExpenseData('7월31일', 50, average);
     chartData.add(dummy1);
     chartData.add(dummy2);
     chartData.add(dummy3);
@@ -324,24 +310,29 @@ class _ItemGraphState extends State<ItemGraph> {
   }
 
 //pdf header body
-  pw.Widget pdfHeader() {
+  pw.Widget pdfHeader(ByteData ttf) {
+    print(ttf);
     return pw.Container(
         decoration: pw.BoxDecoration(
-            color: PdfColor.fromInt(0xffffffff),
-            borderRadius: pw.BorderRadius.all(pw.Radius.circular(60))),
+          color: PdfColor.fromInt(0xffffffff),
+          // borderRadius: pw.BorderRadius.all(pw.Radius.circular(0))
+        ),
         margin: const pw.EdgeInsets.only(bottom: 8, top: 8),
         padding: const pw.EdgeInsets.fromLTRB(10, 7, 10, 4),
         child: pw.Column(
             mainAxisAlignment: pw.MainAxisAlignment.center,
+            crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
               pw.Text(
-                "<Gyu's Item Graph>",
+                "<영수의 항목별 그래프>",
                 style: pw.TextStyle(
-                    fontSize: 16,
-                    color: _darkColor,
-                    fontWeight: pw.FontWeight.bold),
+                  fontSize: 32,
+                  color: _darkColor,
+                  fontWeight: pw.FontWeight.bold,
+                  font: pw.TtfFont(ttf),
+                ),
               ),
-              pw.Divider(color: accentColor),
+              pw.Divider(color: accentColor, thickness: 2),
             ]));
   }
 }
