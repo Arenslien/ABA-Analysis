@@ -47,8 +47,6 @@ class AuthService {
     }
   }
 
-
-
   // 회원가입
   Future<User?> registerWithUserInformation(String email, String password) async {
     try {
@@ -74,6 +72,12 @@ class AuthService {
     }
     
   }
+
+  // 비밀번호 재설정
+  Future sendEmailForResetPassword(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
+  }
+
 
   // sign out
   Future signOut() async {

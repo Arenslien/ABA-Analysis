@@ -1,13 +1,25 @@
-import 'package:aba_analysis/components/authenticate/sign_in_screen/forgot_password_text.dart';
+import 'package:aba_analysis/services/auth.dart';
+import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/size_config.dart';
 import 'package:flutter/material.dart';
 
 import '../auth_default_button.dart';
+import '../auth_input_decoration.dart';
+import 'forgot_email_text.dart';
 
-class FindPasswordForm extends StatelessWidget {
-  const FindPasswordForm({
-    Key? key,
-  }) : super(key: key);
+class FindPasswordForm extends StatefulWidget {
+  const FindPasswordForm({ Key? key }) : super(key: key);
+
+  @override
+  _FindPasswordFormState createState() => _FindPasswordFormState();
+}
+
+class _FindPasswordFormState extends State<FindPasswordForm> {
+
+  AuthService _auth = AuthService();
+  FireStoreService _fireStore = FireStoreService();
+  String email = '';
+
 
   @override
   Widget build(BuildContext context) {
@@ -23,26 +35,41 @@ class FindPasswordForm extends StatelessWidget {
             ),
             TextField(
               keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Colors.grey[200],
-                hintText: '아이디',
-                prefixIcon: Icon(Icons.email, color: Colors.grey[600])
-              ),
+              decoration: buildAuthInputDecoration('이메일(아이디)', Icons.email),
+              onChanged: (String? val) {
+                setState(() => email = val!);
+              },
             ),
-            ForgotPasswordText(),
+            ForgotEmailText(),
             SizedBox(
               height: getProportionateScreenHeight(7),
             ),
             Spacer(),
             AuthDefaultButton(
               text: '비밀번호 찾기',
-              onPress: () {
+              onPress: () async {
+                // 존재하지 않는 이메일 체크
+                if (!(await _fireStore.checkUserWithEmail(email))) {
+                  final snackBar = SnackBar(
+                    content: Text('존재하지 않는 이메일입니다.'),
+                    backgroundColor: Colors.red,
+                    duration: Duration(milliseconds: 1300),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
+                else {
+                  // 비밀번호 재설정 이메일 보내기
+                  await _auth.sendEmailForResetPassword(email);
 
+                  // Navigator
+                  final snackBar = SnackBar(
+                    content: Text('해당 이메일로 비밀번호 재설정 메일을 보냈습니다.'),
+                    backgroundColor: Colors.green,
+                    duration: Duration(milliseconds: 1300),
+                  );
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
               },
             ),
             SizedBox(
