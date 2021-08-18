@@ -1,5 +1,6 @@
 import 'package:aba_analysis/screens/authenticate/auth_screen.dart';
 import 'package:aba_analysis/home_screen.dart';
+import 'package:aba_analysis/screens/authenticate/find_email_screen.dart';
 import 'package:aba_analysis/screens/authenticate/find_password_screen.dart';
 import 'package:aba_analysis/screens/authenticate/register_screen.dart';
 import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
@@ -21,4 +22,5 @@ final Map<String, WidgetBuilder> routes = {
   SelectDateScreen.routeName: (context) => SelectDateScreen(),
   DateGraph.routeName: (context) => DateGraph(),
   ItemGraph.routeName: (context) => ItemGraph(),
+  FindEmailScreen.routeName: (context) => FindEmailScreen(),
 };
