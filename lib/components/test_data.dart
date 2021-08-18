@@ -8,7 +8,8 @@ class TestData {
 }
 
 class TestList {
-  String name = '';
+  int? listId;
+  String? name;
   String result = '';
 
   TestList();
