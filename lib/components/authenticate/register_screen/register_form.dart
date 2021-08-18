@@ -1,11 +1,16 @@
+import 'dart:collection';
+
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/user.dart';
 import 'package:aba_analysis/services/auth.dart';
-import 'package:aba_analysis/services/cloud.dart';
+import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../auth_default_button.dart';
+import '../auth_input_decoration.dart';
+import '../form_error_text.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({ Key? key }) : super(key: key);
@@ -21,18 +26,16 @@ class _RegisterFormState extends State<RegisterForm> {
 
   // auth instance
   AuthService _auth = AuthService();
+  FireStoreService _fireStore = FireStoreService();
 
   // 이메일 & 패스워드 & 이름 휴대 전화 번호
   String email = '';
   String password = '';
   String confirmPassword = '';
-
   String name = '';
   String phone = '';
-  String department = '';
-  String duty = '';
 
-  String error = '';
+  HashSet<String> errors = new HashSet(); 
 
   @override
   Widget build(BuildContext context) {
@@ -44,141 +47,174 @@ class _RegisterFormState extends State<RegisterForm> {
         ),
         child: Column(
           children: [
-            SizedBox(
-              height: getProportionateScreenHeight(35),
-            ),
-            
+            SizedBox(height: getProportionateScreenHeight(35)),
             TextFormField(
               keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Colors.grey[200],
-                hintText: '이메일',
-                prefixIcon: Icon(Icons.email, color: Colors.grey[600])
-              ),
-              validator: (String? val) {
-                
-              },
+              textInputAction: TextInputAction.next,
+              decoration: buildAuthInputDecoration('이메일', Icons.email),
               onChanged: (String? val) {
-                setState(() => email = val!);
+                setState(() {
+                  email = val!;
+                  if (val.isNotEmpty) {
+                    setState(() => errors.remove(kEmailNullError));
+                  }
+                  if (emailValidatorRegExp.hasMatch(val)) {
+                    setState(() => errors.remove(kInvalidEmailError));
+                  }
+                });
               },
             ),
-            SizedBox(
-              height: getProportionateScreenHeight(20),
-            ),
+            SizedBox(height: getProportionateScreenHeight(20)),
             TextFormField(
+              textInputAction: TextInputAction.next,
               obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Colors.grey[200],
-                hintText: '비밀번호',
-                prefixIcon: Icon(Icons.lock, color: Colors.grey[600])
-              ),
-              validator: (String? value) {
-
-              },
+              decoration: buildAuthInputDecoration('비밀번호', Icons.lock),
               onChanged: (String? val) {
-                setState(() => password = val!);
+                setState(() {
+                  password = val!;
+                  if (val.isNotEmpty) {
+                    setState(() => errors.remove(kPassNullError));
+                  }
+                  if (val.length >= 8) {
+                    setState(() => errors.remove(kShortPassError));
+                  }
+                });
               },
             ),
-            SizedBox(
-              height: getProportionateScreenHeight(20),
-            ),
+            SizedBox(height: getProportionateScreenHeight(20)),
             TextFormField(
+              textInputAction: TextInputAction.next,
               obscureText: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Colors.grey[200],
-                hintText: '비밀번호 확인',
-                prefixIcon: Icon(Icons.check, color: Colors.grey[600])
-              ),
-              validator: (String? val) {
-                
-              },
+              decoration: buildAuthInputDecoration('비밀번호 확인', Icons.check),
               onChanged: (String? val) {
-                setState(() => confirmPassword = val!);
+                setState(() {
+                  confirmPassword = val!;
+                  if (val.isNotEmpty) {
+                    setState(() => errors.remove(kConfirmPassNullError));
+                  }
+                  if (password == confirmPassword) {
+                    setState(() => errors.remove(kMatchPassError));
+                  }
+                });
               },
             ),
-            SizedBox(
-              height: getProportionateScreenHeight(20),
-            ),
+            SizedBox(height: getProportionateScreenHeight(20)),
             TextFormField(
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Colors.grey[200],
-                hintText: '이름',
-                prefixIcon: Icon(Icons.person, color: Colors.grey[600])
-              ),
-              validator: (String? val) {
-
-              },
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next, 
+              decoration: buildAuthInputDecoration('이름', Icons.person),
               onChanged: (String? val) {
-                setState(() => name = val!);
+                setState(() {
+                  name = val!;
+                  if (val.isNotEmpty) {
+                    setState(() => errors.remove(kNameNullError));
+                  }
+                });
               },
             ),
-            SizedBox(
-              height: getProportionateScreenHeight(20),
-            ),
+            SizedBox(height: getProportionateScreenHeight(20)),
             TextFormField(
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Colors.grey[200],
-                hintText: '\'-\' 구분없이 입력',
-                prefixIcon: Icon(Icons.phone, color: Colors.grey[600])
-              ),
-              validator: (String? val) {
-                
-              },
+              textInputAction: TextInputAction.done, 
+              decoration: buildAuthInputDecoration('\'-\' 구분없이 입력', Icons.phone),
               onChanged: (String? val) {
-                setState(() => phone = val!);
+                setState(() {
+                  phone = val!;
+                  if (val.isNotEmpty) {
+                    setState(() => errors.remove(kPhoneNumberNullError));
+                  }
+                });
               },
             ),
-            
-            Spacer(),
+            SizedBox(height: getProportionateScreenHeight(10)),
+            Column(
+              children: errors.map((e) => FormErrorText(error: e)).toList(),
+            ),
+            SizedBox(height: getProportionateScreenHeight(10)),
             AuthDefaultButton(
               text: '회원 가입',
               onPress: () async {
-                if (_formKey.currentState!.validate()) {
+                if (await checkEmailForm() && checkPasswordAndConfirmPasswordForm() && 
+                    checkNameForm() && checkPhoneNumberForm()) {
                   // Auth 기반 User 생성
                   User? user = await _auth.registerWithUserInformation(email, password);
                   
                   // User 기반 ABAUser 생성
-                  ABAUser? abaUser = await _auth.userFromFirebaseUser(user, name, phone, department, duty);
+                  ABAUser? abaUser = _auth.userFromFirebaseUser(user, email, name, phone, '미정', '미정');
 
                   // CloudService 인스턴스 생성 & ABAUser 등록
-                  CloudService cloud = CloudService();
-                  cloud.createUser(abaUser!);
+                  FireStoreService fireStore = FireStoreService();
+                  fireStore.createUser(abaUser!);
+                  Navigator.pop(context);
                 }
               },
             ),
-            SizedBox(
-              height: getProportionateScreenHeight(35),
-            ),
+            Spacer(),
           ],
         ),
       ),
     );
+  }
+
+  Future<bool> checkEmailForm() async {
+    bool result = true;
+    if (email.isEmpty) {
+      setState(() => errors.add(kEmailNullError));
+      result = false;
+    }
+    else if (!emailValidatorRegExp.hasMatch(email)) {
+      setState(() => errors.add(kInvalidEmailError));
+      result = false;
+    }
+    else if ((await _fireStore.checkUserWithEmail(email))) {
+      setState(() => errors.add(kExistedEmailError));
+      result = false;
+    }
+    else if (!(await _fireStore.checkUserWithEmail(email))) {
+      setState(() => errors.remove(kExistedEmailError));
+    }
+    
+    return result;
+  }
+
+  bool checkPasswordAndConfirmPasswordForm() {
+    bool result = true;
+
+    if(password.isEmpty) {
+      setState(() => errors.add(kPassNullError));
+      result = false;
+    }
+    else if(password.length < 8) {
+      setState(() => errors.add(kShortPassError));
+      result = false;
+
+    }
+    else if (confirmPassword.isEmpty) {
+      setState(() => errors.add(kConfirmPassNullError));
+      result = false;
+    }
+    else if (password != confirmPassword) {
+      setState(() => errors.add(kMatchPassError));
+      result = false;
+    }
+    return result;
+  }
+
+  bool checkNameForm() {
+    bool result = true;
+    if (name.isEmpty) {
+      setState(() => errors.add(kNameNullError));
+      result = false;
+    }
+    return result;
+  }
+
+  bool checkPhoneNumberForm() {
+    bool result = true;
+    if(phone.isEmpty) {
+      setState(() => errors.add(kPhoneNumberNullError));
+      result = false;
+    }
+    return result;
   }
 }

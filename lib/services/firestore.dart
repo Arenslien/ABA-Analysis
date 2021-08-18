@@ -1,9 +1,7 @@
 import 'package:aba_analysis/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class CloudService {
-
-  FirebaseFirestore _firestore = FirebaseFirestore.instance;
+class FireStoreService {
 
   CollectionReference user = FirebaseFirestore.instance.collection('User');
 
@@ -11,6 +9,7 @@ class CloudService {
   Future createUser(ABAUser abaUser) async {
     return user.add({
       'uid': abaUser.uid,
+      'email': abaUser.email,
       'name': abaUser.name,
       'phone': abaUser.phone,
       'department': abaUser.department,
@@ -22,7 +21,7 @@ class CloudService {
 
   // 사용자 읽기
   Future readUser() async {
-
+  
   }
 
   // 사용자 수정
@@ -35,8 +34,15 @@ class CloudService {
 
   }
 
-
-
-
-
+  Future<bool> checkUserWithEmail(String email) async {
+    try {
+      QueryDocumentSnapshot abaUser = await user
+          .where('email', isEqualTo: email).get()
+          .then((snapshot) => snapshot.docs[0]);
+      return abaUser.exists;
+    } catch (e) {
+      print('해당 이메일을 지닌 유저가 없음');
+      return false;
+    }
+  }
 }

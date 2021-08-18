@@ -1,3 +1,4 @@
+import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
 import 'package:aba_analysis/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,6 @@ class _WrapperState extends State<Wrapper> {
     final user = Provider.of<User?>(context);
 
     // return 홈스크린 or 인증스크린
-    return HomeScreen();
+    return user == null? SignInScreen(): HomeScreen();
   }
 }

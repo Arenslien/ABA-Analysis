@@ -42,6 +42,7 @@ final RegExp emailValidatorRegExp =
     RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 const String kEmailNullError = "이메일을 입력해 주세요";
 const String kInvalidEmailError = "이메일이 올바르지 않습니다";
+const String kExistedEmailError = "이미 존재하는 이메일입니다.";
 const String kPassNullError = "비밀번호를 입력해 주세요";
 const String kConfirmPassNullError = "비밀번호를 한 번 더 입력해주세요";
 const String kShortPassError = "비밀번호를 8자리 이상 입력해 주세요";
