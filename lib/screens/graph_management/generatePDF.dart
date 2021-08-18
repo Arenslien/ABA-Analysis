@@ -1,3 +1,28 @@
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+
+final pdf = pw.Document();
+
+final image = pw.MemoryImage(
+  File('test.webp').readAsBytesSync(),
+);
+
+void genPDF() async {
+  pdf.addPage(pw.Page(
+      pageFormat: PdfPageFormat.a4,
+      build: (pw.Context context) {
+        return pw.Center(
+            child: pw.Column(children: [
+          pw.Text("Hello World"),
+          pw.Image(image),
+        ]));
+      }));
+  final output = await getTemporaryDirectory();
+  final file = File('${output.path}/example.pdf');
+  await file.writeAsBytes(await pdf.save());
+}
 // import 'dart:typed_data';
 // import 'dart:ui';
 

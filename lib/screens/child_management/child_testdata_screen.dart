@@ -71,16 +71,17 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
                           childData.testData.add(childData.testData[index]);
                         });
                       } else if (idx == 1) {
-                        await Navigator.push(
+                        final TestData? newTestData = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
                                 TestDataModifyScreen(childData.testData[index]),
                           ),
                         );
-                        setState(() {
-                          
-                        });
+                        if (newTestData != null)
+                          setState(() {
+                            childData.testData[index] = newTestData;
+                          });
                       }
                     },
                   ),
@@ -99,11 +100,10 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
               builder: (context) => TestInputScreen(),
             ),
           );
-          if (newTestData != null) {
+          if (newTestData != null)
             setState(() {
               childData.testData.add(newTestData);
             });
-          }
         },
         backgroundColor: Colors.black,
       ),

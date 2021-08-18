@@ -3,15 +3,29 @@ import 'package:flutter/services.dart';
 
 Widget buildTextFormField({
   required String text,
-  required onChanged,
-  required validator,
+  required Function(String)? onChanged,
+  required String? Function(String?)? validator,
+  String? hintText,
   String? initialValue,
   String? inputType,
 }) {
   return Padding(
     padding: const EdgeInsets.all(16.0),
     child: TextFormField(
-      decoration: buildInputDecoration(text),
+      decoration: InputDecoration(
+        labelText: hintText == null ? text : null,
+        hintText: hintText,
+        labelStyle: TextStyle(color: Colors.black),
+        hintStyle: TextStyle(color: Colors.grey),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.black,
+          ),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.black),
+        ),
+      ),
       onChanged: onChanged,
       validator: validator,
       initialValue: initialValue,
@@ -20,22 +34,6 @@ Widget buildTextFormField({
           ? [FilteringTextInputFormatter.allow(RegExp('[0-9]'))]
           : null,
       cursorColor: Colors.black,
-    ),
-  );
-}
-
-InputDecoration buildInputDecoration(String text) {
-  return InputDecoration(
-    labelText: text,
-    labelStyle: TextStyle(color: Colors.black),
-    hintStyle: TextStyle(color: Colors.grey),
-    enabledBorder: UnderlineInputBorder(
-      borderSide: BorderSide(
-        color: Colors.black,
-      ),
-    ),
-    focusedBorder: UnderlineInputBorder(
-      borderSide: BorderSide(color: Colors.black),
     ),
   );
 }
