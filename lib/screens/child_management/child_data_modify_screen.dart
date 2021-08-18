@@ -16,7 +16,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
   final ChildData childData;
   final formkey = GlobalKey<FormState>();
   ChildData newChildData = ChildData();
-  final List<bool> gender = [false, false];
+  List<bool> gender = [false, false];
 
   @override
   void initState() {
@@ -51,6 +51,15 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
               },
             ),
             actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.delete,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.pop(context, ChildData());
+                },
+              ),
               IconButton(
                 icon: Icon(
                   Icons.check_rounded,

@@ -47,16 +47,19 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                       text: ['그래프', '설정'],
                       onPressed: (idx) async {
                         if (idx == 1) {
-                          final ChildData? newChildData = await Navigator.push(
+                          final ChildData? editChildData = await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
                                   ChildModifyScreen(childData[index]),
                             ),
                           );
-                          if (newChildData != null) {
+                          if (editChildData != null) {
                             setState(() {
-                              childData[index] = newChildData;
+                              childData[index] = editChildData;
+                              if (editChildData.name == '') {
+                                childData.removeAt(index);
+                              }
                             });
                           }
                         }
