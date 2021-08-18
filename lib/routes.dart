@@ -5,10 +5,10 @@ import 'package:aba_analysis/screens/authenticate/register_screen.dart';
 import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
 import 'package:aba_analysis/screens/graph_management/date_graph_screen.dart';
 import 'package:aba_analysis/screens/graph_management/item_graph_screen.dart';
+import 'package:aba_analysis/screens/graph_management/select_item_graph_screen.dart';
+import 'package:aba_analysis/screens/graph_management/select_date_graph_screen.dart';
 import 'package:aba_analysis/wrapper.dart';
 import 'package:flutter/widgets.dart';
-import 'package:aba_analysis/screens/graph_management/select_date_graph_screen.dart';
-import 'package:aba_analysis/screens/graph_management/select_item_graph_screen.dart';
 
 final Map<String, WidgetBuilder> routes = {
   Wrapper.routeName: (context) => Wrapper(),

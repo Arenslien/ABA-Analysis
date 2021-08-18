@@ -6,17 +6,16 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // create user obj based on User
-  ABAUser? userFromFirebaseUser(User? user, String name, String phone, String department, String duty) {
+  ABAUser? userFromFirebaseUser(User? user, String email, String name, String phone, String department, String duty) {
     if (user == null) {
       print('올바른 User가 입력되지 않았습니다.');
       return null;
     } else {
       // ABAUser 인스턴스 생성
-      ABAUser newUser = ABAUser(user.uid, name, phone, department, duty);
+      ABAUser newUser = ABAUser(user.uid, email, name, phone, department, duty);
 
       // ABAUser 반환
       return newUser;
-
     }
   }
 
@@ -25,28 +24,26 @@ class AuthService {
     return _auth.authStateChanges();
   }
 
-  // 이메일 & 패스워드 기반  로그인
-  Future signInWithUserInformation(String email, String password) async {
+  // 이메일 & 패스워드 기반 로그인
+  Future<String?> signInWithUserInformation(String email, String password) async {
     try {
-      // 비밀번호 암호화
-
-
-      // 이메일 & 패스워드 정보를 기반으로 Auth 계정 생성
+      // 이메일 & 패스워드 정보를 기반으로 Auth 계정 로그인
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email, 
         password: password
       );
 
       // Auth 계정을 기반으로 User 데이터 생성
-
-      return user;
+      return '로그인 성공';
 
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('존재하지 않는 이메일입니다');
+        return '존재하지 않는 이메일입니다.';
       } else if (e.code == 'wrong-password') {
-        print('비밀번호가 틀립니다.');
+        return '비밀번호가 틀립니다.';
       }
+      print(e.code);
+      return '비밀번호가 틀립니다.';
     }
   }
 
@@ -55,9 +52,6 @@ class AuthService {
   // 회원가입
   Future<User?> registerWithUserInformation(String email, String password) async {
     try {
-      // 비밀번호 암호화
-
-
       // Firebase 제공 계정 만들기
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
