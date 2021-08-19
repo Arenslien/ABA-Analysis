@@ -1,7 +1,15 @@
+import 'package:aba_analysis/screens/graph_management/generatePDF.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'dart:ui' as dart_ui;
+
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:open_file/open_file.dart';
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xio;
 
 class DateGraph extends StatefulWidget {
   const DateGraph({Key? key}) : super(key: key);
@@ -14,12 +22,13 @@ class _DateGraphState extends State<DateGraph> {
   late List<ExpenseData> _chartData;
   late TooltipBehavior _tooltipBehavior;
   late GlobalKey<SfCartesianChartState> _cartesianKey = GlobalKey();
+  late List<String> _pdfColumn;
 
   @override
   void initState() {
     _chartData = getChartData();
     _tooltipBehavior = TooltipBehavior(enable: true);
-
+    _pdfColumn = ['하위항목', '성공여부'];
     super.initState();
   }
 
@@ -42,7 +51,7 @@ class _DateGraphState extends State<DateGraph> {
           children: [
             SfCartesianChart(
               key: _cartesianKey,
-              title: ChartTitle(text: '7월13일'), // testdata의 회차
+              title: ChartTitle(text: '7월13일'), // testdata의 날짜
               legend: Legend(isVisible: true, position: LegendPosition.bottom),
               tooltipBehavior: _tooltipBehavior,
               series: <ChartSeries>[
@@ -72,9 +81,7 @@ class _DateGraphState extends State<DateGraph> {
               children: [
                 FloatingActionButton.extended(
                   heroTag: 'btn1', // 버튼 구별을 위한 태그
-                  onPressed: () {
-                    _renderCartesianImage();
-                  }, // 누르면 엑셀 내보내기
+                  onPressed: () {}, // 누르면 엑셀 내보내기
                   label: Text('Export to Excel'),
                   icon: Icon(LineIcons.excelFile),
                 ),
@@ -84,53 +91,61 @@ class _DateGraphState extends State<DateGraph> {
                 FloatingActionButton.extended(
                   heroTag: 'btn2', // 버튼 구별을 위한 태그
                   onPressed: () {
-                    _renderCartesianImage();
+                    exportPDF(_pdfColumn, genPDFData(_chartData));
                   }, // 누르면 PDF 내보내기
-                  label: Text('Export to Excel'),
+                  label: Text('Export to PDF'),
                   icon: Icon(LineIcons.pdfFile),
                 ),
               ],
             ),
           ],
-          // FloatingActionButton.extended(
-          //   onPressed: (){},
-          //   label: Text('Export to Excel'),
-          // )
-          // ,
         ),
       ),
     );
   }
 
-  Future<void> _renderCartesianImage() async {
-    dart_ui.Image data =
+  List<List<String>> genPDFData(List<ExpenseData> chartData) {
+    List<List<String>> pdfData = [];
+    for (ExpenseData d in chartData) {
+      pdfData.add(<String>[d.lowItem, d.successRate.toString()]);
+    }
+    print(pdfData);
+    return pdfData;
+  }
+
+  Future<void> exportPDF(
+      List<String> columns, List<List<String>> tableData) async {
+    dart_ui.Image imgData =
         await _cartesianKey.currentState!.toImage(pixelRatio: 3.0);
-    final bytes = await data.toByteData(format: dart_ui.ImageByteFormat.png);
-    if (data != null) {
-      await Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (BuildContext context) {
-            return Scaffold(
-              appBar: AppBar(),
-              body: Center(
-                child: Container(
-                  color: Colors.white,
-                  child: Image.memory(bytes!.buffer.asUint8List()),
-                ),
-              ),
-            );
-          },
-        ),
-      );
-    } else {}
+    final bytes = await imgData.toByteData(format: dart_ui.ImageByteFormat.png);
+    final graphImage = pw.MemoryImage(
+      bytes!.buffer.asUint8List(),
+    );
+    final ttf = await rootBundle.load('asset/font/tway_air.ttf');
+
+    pw.Document graphPDF = genPDF(columns, tableData, graphImage, ttf);
+
+    Directory? dir = await getApplicationDocumentsDirectory();
+    String filePath = dir.path + '/abaGraph/';
+    if (Directory(filePath).exists() != true) {
+      // 폴더가 없다
+      new Directory(filePath).createSync(recursive: true);
+      final File file = File(filePath + "sample2.pdf");
+      file.writeAsBytesSync(List.from(await graphPDF.save()));
+      await OpenFile.open(file.path);
+    } else {
+      final File file = File(filePath + "sample2.pdf");
+      file.writeAsBytesSync(List.from(await pdf.save()));
+      await OpenFile.open(file.path);
+    }
   }
 
   List<ExpenseData> getChartData() {
     List<ExpenseData> chartData = []; // 그 날의 하위항목과 그 항목의 성공률 리스트
-    num average = 60; // 그 날의 평균 성공률 값
-    ExpenseData dummy1 = new ExpenseData('존댓말하기', 70, average);
-    ExpenseData dummy2 = new ExpenseData('세모따라그리기', 80, average);
-    ExpenseData dummy3 = new ExpenseData('네모그리기', 30, average);
+    num average = 66; // 그 날의 평균 성공률 값
+    ExpenseData dummy1 = new ExpenseData('존댓말하기', 100, average);
+    ExpenseData dummy2 = new ExpenseData('세모따라그리기', 0, average);
+    ExpenseData dummy3 = new ExpenseData('네모그리기', 100, average);
     chartData.add(dummy1);
     chartData.add(dummy2);
     chartData.add(dummy3);
