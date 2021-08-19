@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:aba_analysis/screens/graph_management/generatePDF.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -8,7 +7,6 @@ import 'dart:ui' as dart_ui;
 
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:open_file/open_file.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xio;
@@ -23,7 +21,7 @@ class ItemGraph extends StatefulWidget {
 
 class _ItemGraphState extends State<ItemGraph> {
   late List<ExpenseData> _chartData;
-  late List<String> _chartColumn;
+  late List<String> _pdfColumn;
   late TooltipBehavior _tooltipBehavior;
   final GlobalKey<SfCartesianChartState> _cartesianKey = GlobalKey();
 
@@ -31,7 +29,7 @@ class _ItemGraphState extends State<ItemGraph> {
   void initState() {
     _chartData = getChartData();
     _tooltipBehavior = TooltipBehavior(enable: true);
-    _chartColumn = ['날짜', '성공여부'];
+    _pdfColumn = ['날짜', '성공여부'];
     super.initState();
   }
 
@@ -95,7 +93,7 @@ class _ItemGraphState extends State<ItemGraph> {
                 FloatingActionButton.extended(
                   heroTag: 'btn2', // 버튼 구별을 위한 태그
                   onPressed: () {
-                    genPDF(_chartColumn, genPDFData(_chartData));
+                    exportPDF(_pdfColumn, genPDFData(_chartData));
                   }, // 누르면 PDF 내보내기
                   label: Text('Export to PDF'),
                   icon: Icon(LineIcons.pdfFile),
@@ -151,88 +149,25 @@ class _ItemGraphState extends State<ItemGraph> {
     return pdfData;
   }
 
-  final pdf = pw.Document();
-  PdfColor _darkColor = PdfColor.fromInt(0xff242424); // 까만색
-  PdfColor _lightColor = PdfColor.fromInt(0xff9D9D9D);
-  PdfColor baseColor = PdfColor.fromInt(0xffD32D2D);
-  PdfColor _baseTextColor = PdfColor.fromInt(0xffffffff); //흰색
-  PdfColor accentColor = PdfColor.fromInt(0xfff1c0c0);
-  PdfColor green = PdfColor.fromInt(0xffe06c6c); //darker background color
-  PdfColor lightGreen = PdfColor.fromInt(0x0Dedabab); //light background color
-
-  Future<void> genPDF(
+  Future<void> exportPDF(
       List<String> columns, List<List<String>> tableData) async {
     dart_ui.Image imgData =
         await _cartesianKey.currentState!.toImage(pixelRatio: 3.0);
     final bytes = await imgData.toByteData(format: dart_ui.ImageByteFormat.png);
-    final image = pw.MemoryImage(
+    final graphImage = pw.MemoryImage(
       bytes!.buffer.asUint8List(),
     );
-
-    pw.PageTheme pageTheme = _myPageTheme(PdfPageFormat.a4);
     final ttf = await rootBundle.load('asset/font/tway_air.ttf');
-    pw.Widget headerWidget = pdfHeader(ttf);
-    pdf.addPage(pw.MultiPage(
-        pageTheme: pageTheme,
-        build: (pw.Context context) {
-          return <pw.Widget>[
-            pw.Header(
-              child: headerWidget,
-              level: 2,
-            ),
-            pw.Image(image),
-            pw.Table.fromTextArray(
-              context: context,
-              border: null,
-              headerAlignment: pw.Alignment.centerLeft,
-              cellAlignment: pw.Alignment.centerLeft,
-              headerDecoration: pw.BoxDecoration(
-                borderRadius: pw.BorderRadius.all(pw.Radius.circular(6)),
-                color: accentColor,
-              ),
-              headerHeight: 25,
-              cellHeight: 30,
-              headerStyle: pw.TextStyle(
-                color: _baseTextColor,
-                fontSize: 10,
-                fontWeight: pw.FontWeight.bold,
-                font: pw.TtfFont(ttf),
-              ),
-              cellStyle: pw.TextStyle(
-                color: _darkColor,
-                fontSize: 10,
-                font: pw.TtfFont(ttf),
-              ),
-              rowDecoration: pw.BoxDecoration(
-                border: pw.Border(
-                  bottom: pw.BorderSide(color: accentColor, width: .5),
-                ),
-              ),
-              headers: List<String>.generate(
-                columns.length,
-                (col) {
-                  return columns[col];
-                  // return columns[col];
-                },
-              ),
-              data: List<List<String>>.generate(
-                tableData.length,
-                (row) => List<String>.generate(
-                  columns.length,
-                  (col) {
-                    return tableData[row][col];
-                  },
-                ),
-              ),
-            ),
-          ];
-        }));
+
+    pw.Document graphPDF = genPDF(columns, tableData, graphImage, ttf);
+
     Directory? dir = await getApplicationDocumentsDirectory();
     String filePath = dir.path + '/abaGraph/';
     if (Directory(filePath).exists() != true) {
+      // 폴더가 없다
       new Directory(filePath).createSync(recursive: true);
       final File file = File(filePath + "sample2.pdf");
-      file.writeAsBytesSync(List.from(await pdf.save()));
+      file.writeAsBytesSync(List.from(await graphPDF.save()));
       await OpenFile.open(file.path);
     } else {
       final File file = File(filePath + "sample2.pdf");
@@ -252,88 +187,6 @@ class _ItemGraphState extends State<ItemGraph> {
     chartData.add(dummy3);
 
     return chartData;
-  }
-
-  pw.PageTheme _myPageTheme(PdfPageFormat format) {
-    return pw.PageTheme(
-      pageFormat: format.applyMargin(
-          left: 2.0 * PdfPageFormat.cm,
-          top: 4.0 * PdfPageFormat.cm,
-          right: 2.0 * PdfPageFormat.cm,
-          bottom: 2.0 * PdfPageFormat.cm),
-      theme: pw.ThemeData.withFont(
-//      base: pw.Font.ttf(await rootBundle.load('assets/fonts/nexa_bold.otf')),
-//      bold:
-//          pw.Font.ttf(await rootBundle.load('assets/fonts/raleway_medium.ttf')),
-          ),
-      buildBackground: (pw.Context context) {
-        return pw.FullPage(
-          ignoreMargins: true,
-          child: pw.CustomPaint(
-            size: PdfPoint(format.width, format.height),
-            painter: (PdfGraphics canvas, PdfPoint size) {
-              context.canvas
-                ..setColor(lightGreen)
-                ..moveTo(0, size.y)
-                ..lineTo(0, size.y - 230)
-                ..lineTo(60, size.y)
-                ..fillPath()
-                ..setColor(green)
-                ..moveTo(0, size.y)
-                ..lineTo(0, size.y - 100)
-                ..lineTo(100, size.y)
-                ..fillPath()
-                ..setColor(lightGreen)
-                ..moveTo(30, size.y)
-                ..lineTo(110, size.y - 50)
-                ..lineTo(150, size.y)
-                ..fillPath()
-                ..moveTo(size.x, 0)
-                ..lineTo(size.x, 230)
-                ..lineTo(size.x - 60, 0)
-                ..fillPath()
-                ..setColor(green)
-                ..moveTo(size.x, 0)
-                ..lineTo(size.x, 100)
-                ..lineTo(size.x - 100, 0)
-                ..fillPath()
-                ..setColor(lightGreen)
-                ..moveTo(size.x - 30, 0)
-                ..lineTo(size.x - 110, 50)
-                ..lineTo(size.x - 150, 0)
-                ..fillPath();
-            },
-          ),
-        );
-      },
-    );
-  }
-
-//pdf header body
-  pw.Widget pdfHeader(ByteData ttf) {
-    print(ttf);
-    return pw.Container(
-        decoration: pw.BoxDecoration(
-          color: PdfColor.fromInt(0xffffffff),
-          // borderRadius: pw.BorderRadius.all(pw.Radius.circular(0))
-        ),
-        margin: const pw.EdgeInsets.only(bottom: 8, top: 8),
-        padding: const pw.EdgeInsets.fromLTRB(10, 7, 10, 4),
-        child: pw.Column(
-            mainAxisAlignment: pw.MainAxisAlignment.center,
-            crossAxisAlignment: pw.CrossAxisAlignment.center,
-            children: [
-              pw.Text(
-                "<영수의 항목별 그래프>",
-                style: pw.TextStyle(
-                  fontSize: 32,
-                  color: _darkColor,
-                  fontWeight: pw.FontWeight.bold,
-                  font: pw.TtfFont(ttf),
-                ),
-              ),
-              pw.Divider(color: accentColor, thickness: 2),
-            ]));
   }
 }
 
