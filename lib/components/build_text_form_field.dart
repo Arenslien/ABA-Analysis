@@ -5,6 +5,7 @@ Widget buildTextFormField({
   required String text,
   required Function(String)? onChanged,
   required String? Function(String?)? validator,
+  TextEditingController? controller,
   String? hintText,
   String? initialValue,
   String? inputType,
@@ -12,6 +13,7 @@ Widget buildTextFormField({
   return Padding(
     padding: const EdgeInsets.all(16.0),
     child: TextFormField(
+      controller: controller,
       decoration: InputDecoration(
         labelText: hintText == null ? text : null,
         hintText: hintText,

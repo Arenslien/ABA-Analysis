@@ -19,6 +19,63 @@ class _TestInputScreenState extends State<TestInputScreen> {
   @override
   void initState() {
     super.initState();
+    testListTile.add(
+      TestListTile(
+        tileWidget: buildTextFormField(
+          text: '날짜',
+          onChanged: (val) {
+            setState(() {
+              newTestData.date = val;
+            });
+          },
+          validator: (val) {
+            if (val!.length != 8) {
+              return 'YYYYMMDD';
+            }
+            return null;
+          },
+          inputType: 'number',
+        ),
+      ),
+    );
+    testListTile.add(
+      TestListTile(
+        tileWidget: buildTextFormField(
+          text: '이름',
+          onChanged: (val) {
+            setState(() {
+              newTestData.name = val;
+            });
+          },
+          validator: (val) {
+            if (val!.length < 1) {
+              return '이름은 필수사항입니다.';
+            }
+            return null;
+          },
+        ),
+      ),
+    );
+    testListTile.add(
+      TestListTile(
+        tileWidget: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: Row(
+            children: [
+              Text('Test List'),
+              IconButton(
+                icon: Icon(Icons.add_rounded),
+                onPressed: () {
+                  setState(() {
+                    buildTestListTile();
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
     buildTestListTile();
   }
 
@@ -60,76 +117,11 @@ class _TestInputScreenState extends State<TestInputScreen> {
             backgroundColor: Colors.white,
             elevation: 0,
           ),
-          body: Column(
-            children: [
-              Column(
-                children: [
-                  buildTextFormField(
-                    text: '날짜',
-                    onChanged: (val) {
-                      setState(() {
-                        newTestData.date = val;
-                      });
-                    },
-                    validator: (val) {
-                      if (val!.length != 8) {
-                        return 'YYYYMMDD';
-                      }
-                      return null;
-                    },
-                    inputType: 'number',
-                  ),
-                  buildTextFormField(
-                    text: '이름',
-                    onChanged: (val) {
-                      setState(() {
-                        newTestData.name = val;
-                      });
-                    },
-                    validator: (val) {
-                      if (val!.length < 1) {
-                        return '이름은 필수사항입니다.';
-                      }
-                      return null;
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                    child: Row(
-                      children: [
-                        Text('Test List'),
-                        IconButton(
-                          icon: Icon(Icons.add_rounded),
-                          onPressed: () {
-                            setState(() {
-                              buildTestListTile();
-                            });
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.remove_rounded),
-                          onPressed: () {
-                            if (newTestData.testList.length != 1)
-                              setState(() {
-                                newTestData.testList.removeLast();
-                                testListTile.removeLast();
-                              });
-                          },
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Flexible(
-                child: ListView.builder(
-                  itemCount: testListTile.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return testListTile[index].tileWidget!;
-                  },
-                ),
-              ),
-            ],
+          body: ListView.builder(
+            itemCount: testListTile.length,
+            itemBuilder: (BuildContext context, int index) {
+              return testListTile[index].tileWidget!;
+            },
           ),
         ),
       ),
@@ -137,17 +129,23 @@ class _TestInputScreenState extends State<TestInputScreen> {
   }
 
   buildTestListTile() {
-    int len = testListTile.length;
+    int len = newTestData.testList.length;
     newTestData.testList.add(TestList());
+    TextEditingController textEditingController = TextEditingController();
+
     int tileId = 0;
     for (int i = 0; i < 100; i++) {
-      for (int j = 0; j < len; j++)
-        if (newTestData.testList[j].listId != i) {
-          newTestData.testList[len].listId = i;
-          tileId = i;
+      bool flag = false;
+      for (int j = 0; j < len + 1; j++)
+        if (newTestData.testList[j].listId == i) {
+          flag = true;
           break;
         }
-      if (newTestData.testList[len].listId != null) break;
+      if (!flag) {
+        newTestData.testList[len].listId = i;
+        tileId = i;
+        break;
+      }
     }
     testListTile.add(
       TestListTile(
@@ -156,15 +154,19 @@ class _TestInputScreenState extends State<TestInputScreen> {
           children: [
             Flexible(
               child: buildTextFormField(
-                text: '',
-                hintText: '테스트 이름을 입력하세요.',
+                text: textEditingController.text,
+                hintText: '테스트 이름을 입력하세요.$tileId',
+                controller: textEditingController,
                 onChanged: (val) {
-                  int index;
-                  for (int i = 0; i < testListTile.length; i++)
-                    if (testListTile[i].tileId == newTestData.testList)
-                      setState(() {
-                        newTestData.testList[len].name = val;
-                      });
+                  int index = 0;
+                  for (int i = 0; i < newTestData.testList.length; i++)
+                    if (newTestData.testList[i].listId == tileId) {
+                      index = i;
+                      break;
+                    }
+                  setState(() {
+                    newTestData.testList[index].name = val;
+                  });
                 },
                 validator: (val) {
                   if (val!.length < 1) {
@@ -177,20 +179,16 @@ class _TestInputScreenState extends State<TestInputScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
               child: IconButton(
-                icon: Icon(Icons.remove_rounded),
-                onPressed: () {
-                  if (newTestData.testList.length != 1) {
-                    int count = 0;
-                    for (int i = 0; i < newTestData.testList.length; i++)
-                      if (newTestData.testList[len].listId == i) count = i;
-                    setState(() {
-                      newTestData.testList
-                          .removeWhere((element) => element.listId == tileId);
-                      testListTile.removeAt(count);
-                    });
-                  }
-                },
-              ),
+                  icon: Icon(Icons.remove_rounded),
+                  onPressed: () {
+                    if (newTestData.testList.length != 1)
+                      setState(() {
+                        newTestData.testList
+                            .removeWhere((element) => element.listId == tileId);
+                        testListTile
+                            .removeWhere((element) => element.tileId == tileId);
+                      });
+                  }),
             ),
           ],
         ),
@@ -205,3 +203,14 @@ class TestListTile {
 
   TestListTile({this.tileId, this.tileWidget});
 }
+
+// IconButton(
+//                 icon: Icon(Icons.remove_rounded),
+//                 onPressed: () {
+//                   if (newTestData.testList.length != 1)
+//                     setState(() {
+//                       newTestData.testList.removeLast();
+//                       testListTile.removeLast();
+//                     });
+//                 },
+//               )
