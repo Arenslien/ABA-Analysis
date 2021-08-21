@@ -2,15 +2,15 @@ class TestData {
   String date = '';
   String name = 'default';
   int count = 0; // 테스트 회차
-  List<TestList> testList = [];
+  List<Item> itemList = [];
 
   TestData();
 }
 
-class TestList {
-  int? listId;
+class Item {
+  int? itemId;
   String? name;
   String? result;
 
-  TestList();
+  Item();
 }

@@ -129,20 +129,20 @@ class _TestInputScreenState extends State<TestInputScreen> {
   }
 
   buildItemListTile() {
-    int len = newTestData.testList.length;
-    newTestData.testList.add(TestList());
+    int len = newTestData.itemList.length;
+    newTestData.itemList.add(Item());
     TextEditingController textEditingController = TextEditingController();
 
     int tileId = 0;
     for (int i = 0; i < 100; i++) {
       bool flag = false;
       for (int j = 0; j < len + 1; j++)
-        if (newTestData.testList[j].listId == i) {
+        if (newTestData.itemList[j].itemId == i) {
           flag = true;
           break;
         }
       if (!flag) {
-        newTestData.testList[len].listId = i;
+        newTestData.itemList[len].itemId = i;
         tileId = i;
         break;
       }
@@ -159,13 +159,13 @@ class _TestInputScreenState extends State<TestInputScreen> {
                 controller: textEditingController,
                 onChanged: (val) {
                   int index = 0;
-                  for (int i = 0; i < newTestData.testList.length; i++)
-                    if (newTestData.testList[i].listId == tileId) {
+                  for (int i = 0; i < newTestData.itemList.length; i++)
+                    if (newTestData.itemList[i].itemId == tileId) {
                       index = i;
                       break;
                     }
                   setState(() {
-                    newTestData.testList[index].name = val;
+                    newTestData.itemList[index].name = val;
                   });
                 },
                 validator: (val) {
@@ -181,10 +181,10 @@ class _TestInputScreenState extends State<TestInputScreen> {
               child: IconButton(
                   icon: Icon(Icons.remove_rounded),
                   onPressed: () {
-                    if (newTestData.testList.length != 1)
+                    if (newTestData.itemList.length != 1)
                       setState(() {
-                        newTestData.testList
-                            .removeWhere((element) => element.listId == tileId);
+                        newTestData.itemList
+                            .removeWhere((element) => element.itemId == tileId);
                         itemListTile
                             .removeWhere((element) => element.tileId == tileId);
                       });

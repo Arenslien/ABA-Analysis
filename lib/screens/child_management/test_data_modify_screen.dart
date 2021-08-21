@@ -72,7 +72,7 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
                 icon: Icon(Icons.add_rounded),
                 onPressed: () {
                   setState(() {
-                    buildItemListTile(newTestData.testList.length);
+                    buildItemListTile(newTestData.itemList.length);
                   });
                 },
               ),
@@ -81,11 +81,11 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
         ),
       ),
     );
-    for (int i = 0; i < testData.testList.length; i++) {
-      newTestData.testList.add(TestList());
-      newTestData.testList[i].name = testData.testList[i].name;
-      newTestData.testList[i].result = testData.testList[i].result;
-      newTestData.testList[i].listId = testData.testList[i].listId;
+    for (int i = 0; i < testData.itemList.length; i++) {
+      newTestData.itemList.add(Item());
+      newTestData.itemList[i].name = testData.itemList[i].name;
+      newTestData.itemList[i].result = testData.itemList[i].result;
+      newTestData.itemList[i].itemId = testData.itemList[i].itemId;
       buildItemListTile(i);
     }
   }
@@ -149,25 +149,25 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
   }
 
   buildItemListTile(int index) {
-    if (index >= testData.testList.length) newTestData.testList.add(TestList());
+    if (index >= testData.itemList.length) newTestData.itemList.add(Item());
     TextEditingController textEditingController =
-        TextEditingController(text: newTestData.testList[index].name);
+        TextEditingController(text: newTestData.itemList[index].name);
 
-    int? tileId = newTestData.testList[index].listId;
+    int? tileId = newTestData.itemList[index].itemId;
     if (tileId == null) {
       for (int i = 0; i < 100; i++) {
         bool flag = false;
-        for (int j = 0; j < newTestData.testList.length; j++) {
-          if (newTestData.testList[j].listId == null) {
+        for (int j = 0; j < newTestData.itemList.length; j++) {
+          if (newTestData.itemList[j].itemId == null) {
             break;
           }
-          if (newTestData.testList[j].listId == i) {
+          if (newTestData.itemList[j].itemId == i) {
             flag = true;
             break;
           }
         }
         if (!flag) {
-          newTestData.testList[index].listId = i;
+          newTestData.itemList[index].itemId = i;
           tileId = i;
           break;
         }
@@ -186,13 +186,13 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
                 controller: textEditingController,
                 onChanged: (val) {
                   int idx = 0;
-                  for (int i = 0; i < newTestData.testList.length; i++)
-                    if (newTestData.testList[i].listId == tileId) {
+                  for (int i = 0; i < newTestData.itemList.length; i++)
+                    if (newTestData.itemList[i].itemId == tileId) {
                       idx = i;
                       break;
                     }
                   setState(() {
-                    newTestData.testList[idx].name = val;
+                    newTestData.itemList[idx].name = val;
                   });
                 },
                 validator: (val) {
@@ -208,10 +208,10 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
               child: IconButton(
                   icon: Icon(Icons.remove_rounded),
                   onPressed: () {
-                    if (newTestData.testList.length != 1)
+                    if (newTestData.itemList.length != 1)
                       setState(() {
-                        newTestData.testList
-                            .removeWhere((element) => element.listId == tileId);
+                        newTestData.itemList
+                            .removeWhere((element) => element.itemId == tileId);
                         itemListTile
                             .removeWhere((element) => element.tileId == tileId);
                       });

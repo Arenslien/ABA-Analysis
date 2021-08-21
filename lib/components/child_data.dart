@@ -5,7 +5,7 @@ class ChildData {
   String age = '00000000';
   String gender = '성별';
 
-  List<TestData> testData = [];
+  List<TestData> testDataList = [];
   
   ChildData();
 }
