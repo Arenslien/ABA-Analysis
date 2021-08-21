@@ -55,6 +55,15 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
             actions: [
               IconButton(
                 icon: Icon(
+                  Icons.delete,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.pop(context, TestData());
+                },
+              ),
+              IconButton(
+                icon: Icon(
                   Icons.check_rounded,
                   color: Colors.black,
                 ),

@@ -71,16 +71,19 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
                           childData.testData.add(childData.testData[index]);
                         });
                       } else if (idx == 1) {
-                        final TestData? newTestData = await Navigator.push(
+                        final TestData? editTestData = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
                                 TestDataModifyScreen(childData.testData[index]),
                           ),
                         );
-                        if (newTestData != null)
+                        if (editTestData != null)
                           setState(() {
-                            childData.testData[index] = newTestData;
+                            childData.testData[index] = editTestData;
+                            if (editTestData.date == '') {
+                              childData.testData.removeAt(index);
+                            }
                           });
                       }
                     },
