@@ -14,13 +14,13 @@ class _TestInputScreenState extends State<TestInputScreen> {
 
   final formkey = GlobalKey<FormState>();
   TestData newTestData = TestData();
-  List<TestListTile> testListTile = [];
+  List<ItemListTile> itemListTile = [];
 
   @override
   void initState() {
     super.initState();
-    testListTile.add(
-      TestListTile(
+    itemListTile.add(
+      ItemListTile(
         tileWidget: buildTextFormField(
           text: '날짜',
           onChanged: (val) {
@@ -38,8 +38,8 @@ class _TestInputScreenState extends State<TestInputScreen> {
         ),
       ),
     );
-    testListTile.add(
-      TestListTile(
+    itemListTile.add(
+      ItemListTile(
         tileWidget: buildTextFormField(
           text: '이름',
           onChanged: (val) {
@@ -56,8 +56,8 @@ class _TestInputScreenState extends State<TestInputScreen> {
         ),
       ),
     );
-    testListTile.add(
-      TestListTile(
+    itemListTile.add(
+      ItemListTile(
         tileWidget: Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: Row(
@@ -67,7 +67,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                 icon: Icon(Icons.add_rounded),
                 onPressed: () {
                   setState(() {
-                    buildTestListTile();
+                    buildItemListTile();
                   });
                 },
               ),
@@ -76,7 +76,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
         ),
       ),
     );
-    buildTestListTile();
+    buildItemListTile();
   }
 
   @override
@@ -118,9 +118,9 @@ class _TestInputScreenState extends State<TestInputScreen> {
             elevation: 0,
           ),
           body: ListView.builder(
-            itemCount: testListTile.length,
+            itemCount: itemListTile.length,
             itemBuilder: (BuildContext context, int index) {
-              return testListTile[index].tileWidget!;
+              return itemListTile[index].tileWidget!;
             },
           ),
         ),
@@ -128,7 +128,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
     );
   }
 
-  buildTestListTile() {
+  buildItemListTile() {
     int len = newTestData.testList.length;
     newTestData.testList.add(TestList());
     TextEditingController textEditingController = TextEditingController();
@@ -147,8 +147,8 @@ class _TestInputScreenState extends State<TestInputScreen> {
         break;
       }
     }
-    testListTile.add(
-      TestListTile(
+    itemListTile.add(
+      ItemListTile(
         tileId: tileId,
         tileWidget: Row(
           children: [
@@ -185,7 +185,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                       setState(() {
                         newTestData.testList
                             .removeWhere((element) => element.listId == tileId);
-                        testListTile
+                        itemListTile
                             .removeWhere((element) => element.tileId == tileId);
                       });
                   }),
@@ -195,13 +195,6 @@ class _TestInputScreenState extends State<TestInputScreen> {
       ),
     );
   }
-}
-
-class TestListTile {
-  int? tileId;
-  Widget? tileWidget;
-
-  TestListTile({this.tileId, this.tileWidget});
 }
 
 // IconButton(

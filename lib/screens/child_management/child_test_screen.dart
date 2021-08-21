@@ -37,7 +37,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
         testValue.add([false, false, true]);
       else
         testValue.add([false, false, false]);
-      newTestListResult.add(childData.testData[index].testList[i].result);
+      newTestListResult.add(childData.testData[index].testList[i].result!);
       isTestValueSelected.add(
           childData.testData[index].testList[i].result == '' ? false : true);
     }

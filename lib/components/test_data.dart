@@ -10,7 +10,7 @@ class TestData {
 class TestList {
   int? listId;
   String? name;
-  String result = '';
+  String? result;
 
   TestList();
 }

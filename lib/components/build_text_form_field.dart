@@ -39,3 +39,10 @@ Widget buildTextFormField({
     ),
   );
 }
+
+class ItemListTile {
+  int? tileId;
+  Widget? tileWidget;
+
+  ItemListTile({this.tileId, this.tileWidget});
+}
