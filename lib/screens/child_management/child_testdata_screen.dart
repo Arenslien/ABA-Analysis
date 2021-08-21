@@ -1,4 +1,3 @@
-import 'package:aba_analysis/screens/child_management/test_data_modify_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/test_data.dart';
 import 'package:aba_analysis/components/child_data.dart';
@@ -7,6 +6,7 @@ import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/screens/data_input/test_input_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_test_screen.dart';
+import 'package:aba_analysis/screens/child_management/test_data_modify_screen.dart';
 
 class ChildTestDataScreen extends StatefulWidget {
   const ChildTestDataScreen({Key? key, required this.childData})
@@ -44,14 +44,14 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: childData.testData.length == 0
+      body: childData.testDataList.length == 0
           ? noListData(Icons.library_add_outlined, '테스트 추가')
           : ListView.builder(
-              itemCount: childData.testData.length,
+              itemCount: childData.testDataList.length,
               itemBuilder: (BuildContext context, int index) {
                 return buildListTile(
-                  titleText: childData.testData[index].name,
-                  subtitleText: childData.testData[index].date,
+                  titleText: childData.testDataList[index].name,
+                  subtitleText: childData.testDataList[index].date,
                   onTap: () {
                     Navigator.push(
                       context,
@@ -68,19 +68,22 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
                     onPressed: (idx) async {
                       if (idx == 0) {
                         setState(() {
-                          childData.testData.add(childData.testData[index]);
+                          childData.testDataList.add(childData.testDataList[index]);
                         });
                       } else if (idx == 1) {
-                        final TestData? newTestData = await Navigator.push(
+                        final TestData? editTestData = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                TestDataModifyScreen(childData.testData[index]),
+                                TestDataModifyScreen(childData.testDataList[index]),
                           ),
                         );
-                        if (newTestData != null)
+                        if (editTestData != null)
                           setState(() {
-                            childData.testData[index] = newTestData;
+                            childData.testDataList[index] = editTestData;
+                            if (editTestData.date == '') {
+                              childData.testDataList.removeAt(index);
+                            }
                           });
                       }
                     },
@@ -102,7 +105,7 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
           );
           if (newTestData != null)
             setState(() {
-              childData.testData.add(newTestData);
+              childData.testDataList.add(newTestData);
             });
         },
         backgroundColor: Colors.black,

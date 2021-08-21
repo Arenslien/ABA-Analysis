@@ -24,7 +24,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
     newChildData.name = childData.name;
     newChildData.age = childData.age;
     newChildData.gender = childData.gender;
-    newChildData.testData = childData.testData;
+    newChildData.testDataList = childData.testDataList;
     gender[childData.gender == '남자' ? 0 : 1] = true;
   }
 

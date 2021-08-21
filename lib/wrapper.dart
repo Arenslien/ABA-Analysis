@@ -23,6 +23,6 @@ class _WrapperState extends State<Wrapper> {
     final user = Provider.of<User?>(context);
 
     // return 홈스크린 or 인증스크린
-    return user == null? SignInScreen(): HomeScreen();
+    return HomeScreen();
   }
 }
