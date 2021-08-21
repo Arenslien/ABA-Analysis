@@ -40,7 +40,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
       originalItemListResult
           .add(childData.testDataList[index].itemList[i].result);
       isItemValueSelected.add(
-          childData.testDataList[index].itemList[i].result == null
+          childData.testDataList[index].itemList[i].result == ''
               ? false
               : true);
     }
