@@ -1,8 +1,9 @@
-import 'package:aba_analysis/screens/graph_management/graph_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:aba_analysis/screens/setting/setting_screen.dart';
+import 'package:aba_analysis/screens/graph_management/graph_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_main_screen.dart';
+import 'package:aba_analysis/screens/test_management/test_main_screen.dart';
 import 'package:aba_analysis/screens/graph_management/select_date_graph_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -46,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Container(
             color: Colors.white,
-            //child: ,
+            child: DataInquiryScreen(),
           ),
           Container(
             color: Colors.white,

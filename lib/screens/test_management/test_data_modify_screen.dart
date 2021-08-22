@@ -149,7 +149,7 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
   }
 
   buildItemListTile(int index) {
-    if (index >= testData.itemList.length) newTestData.itemList.add(Item());
+    if (index >= newTestData.itemList.length) newTestData.itemList.add(Item());
     TextEditingController textEditingController =
         TextEditingController(text: newTestData.itemList[index].name);
 
