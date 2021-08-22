@@ -49,6 +49,7 @@ class _DataInquiryScreenState extends State<DataInquiryScreen> {
                             testData[index] = editTestData;
                             if (editTestData.date == '') {
                               testData.removeAt(index);
+                              
                             }
                           });
                       }
