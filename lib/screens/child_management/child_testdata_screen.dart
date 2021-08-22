@@ -68,14 +68,21 @@ class _ChildTestDataScreenState extends State<ChildTestDataScreen> {
                     onPressed: (idx) async {
                       if (idx == 0) {
                         setState(() {
-                          childData.testDataList.add(childData.testDataList[index]);
+                          childData.testDataList
+                              .add(childData.testDataList[index]);
+                          for (int i = 0;
+                              i < childData.testDataList[index].itemList.length;
+                              i++) {
+                            childData.testDataList[index].itemList[i].result =
+                                null;
+                          }
                         });
                       } else if (idx == 1) {
                         final TestData? editTestData = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                TestDataModifyScreen(childData.testDataList[index]),
+                            builder: (context) => TestDataModifyScreen(
+                                childData.testDataList[index]),
                           ),
                         );
                         if (editTestData != null)
