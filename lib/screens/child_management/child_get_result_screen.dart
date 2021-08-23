@@ -43,6 +43,30 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
           childData.testDataList[index].itemList[i].result == ''
               ? false
               : true);
+      countResult(childData.testDataList[index].itemList[i].name!, i);
+    }
+  }
+
+  void countResult(String itemName, int i) {
+    childData.testDataList[index].itemList[i].countPlus = 0;
+    childData.testDataList[index].itemList[i].countMinus = 0;
+    childData.testDataList[index].itemList[i].countP = 0;
+    for (int p = 0; p < childData.testDataList.length; p++) {
+      for (int q = 0; q < childData.testDataList[p].itemList.length; q++) {
+        if (itemName == childData.testDataList[p].itemList[q].name)
+          switch (childData.testDataList[p].itemList[q].result) {
+            case '+':
+              childData.testDataList[index].itemList[i].countPlus++;
+              break;
+            case '-':
+              childData.testDataList[index].itemList[i].countMinus++;
+              break;
+            case 'P':
+              childData.testDataList[index].itemList[i].countP++;
+              break;
+            default:
+          }
+      }
     }
   }
 
@@ -97,34 +121,57 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
       body: ListView.builder(
         itemCount: childData.testDataList[index].itemList.length,
         itemBuilder: (BuildContext context, int idx) {
-          return buildListTile(
-            titleText: childData.testDataList[index].itemList[idx].name,
-            trailing: buildToggleButtons(
-              text: ['+', '-', 'P'],
-              isSelected: itemValue[idx],
-              onPressed: (i) {
-                if (!itemValue[idx][i])
-                  setState(() {
-                    isItemValueSelected[idx] = true;
-                    if (i == 0)
-                      childData.testDataList[index].itemList[idx].result = '+';
-                    else if (i == 1)
-                      childData.testDataList[index].itemList[idx].result = '-';
-                    else
-                      childData.testDataList[index].itemList[idx].result = 'P';
-                    for (int buttonIndex = 0;
-                        buttonIndex < itemValue[idx].length;
-                        buttonIndex++) {
-                      if (buttonIndex == i)
-                        itemValue[idx][buttonIndex] = true;
-                      else
-                        itemValue[idx][buttonIndex] = false;
-                    }
-                  });
-              },
-              minHeight: 40,
-              minWidth: 40,
-            ),
+          return Column(
+            children: [
+              buildListTile(
+                titleText: childData.testDataList[index].itemList[idx].name,
+                trailing: buildToggleButtons(
+                  text: ['+', '-', 'P'],
+                  isSelected: itemValue[idx],
+                  onPressed: (i) {
+                    if (!itemValue[idx][i])
+                      setState(() {
+                        isItemValueSelected[idx] = true;
+                        if (i == 0) {
+                          childData.testDataList[index].itemList[idx].result =
+                              '+';
+                          childData
+                              .testDataList[index].itemList[idx].countPlus++;
+                        } else if (i == 1) {
+                          childData.testDataList[index].itemList[idx].result =
+                              '-';
+                        } else {
+                          childData.testDataList[index].itemList[idx].result =
+                              'P';
+                        }
+                        for (int buttonIndex = 0;
+                            buttonIndex < itemValue[idx].length;
+                            buttonIndex++) {
+                          if (buttonIndex == i)
+                            itemValue[idx][buttonIndex] = true;
+                          else
+                            itemValue[idx][buttonIndex] = false;
+                        }
+                        countResult(
+                            childData.testDataList[index].itemList[idx].name!,
+                            idx);
+                      });
+                  },
+                  minHeight: 40,
+                  minWidth: 40,
+                ),
+              ),
+              Row(
+                children: [
+                  Text(
+                      '+: ${childData.testDataList[index].itemList[idx].countPlus}'),
+                  Text(
+                      '-: ${childData.testDataList[index].itemList[idx].countMinus}'),
+                  Text(
+                      'P: ${childData.testDataList[index].itemList[idx].countP}'),
+                ],
+              )
+            ],
           );
         },
       ),

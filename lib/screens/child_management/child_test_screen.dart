@@ -9,13 +9,11 @@ import 'package:aba_analysis/screens/test_management/test_data_modify_screen.dar
 import 'package:aba_analysis/screens/child_management/child_get_result_screen.dart';
 
 class ChildTestScreen extends StatefulWidget {
-  const ChildTestScreen({Key? key, required this.childData})
-      : super(key: key);
+  const ChildTestScreen({Key? key, required this.childData}) : super(key: key);
   final ChildData childData;
 
   @override
-  _ChildTestScreenState createState() =>
-      _ChildTestScreenState(childData);
+  _ChildTestScreenState createState() => _ChildTestScreenState(childData);
 }
 
 class _ChildTestScreenState extends State<ChildTestScreen> {
@@ -68,13 +66,29 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                     onPressed: (idx) async {
                       if (idx == 0) {
                         setState(() {
-                          childData.testDataList
-                              .add(childData.testDataList[index]);
+                          childData.testDataList.add(TestData());
+                          childData
+                              .testDataList[childData.testDataList.length - 1]
+                              .name = childData.testDataList[index].name;
+                          childData
+                              .testDataList[childData.testDataList.length - 1]
+                              .date = childData.testDataList[index].date;
                           for (int i = 0;
                               i < childData.testDataList[index].itemList.length;
                               i++) {
-                            childData.testDataList[index].itemList[i].result =
-                                null;
+                            childData
+                                .testDataList[childData.testDataList.length - 1]
+                                .itemList
+                                .add(Item());
+                            childData
+                                    .testDataList[childData.testDataList.length - 1]
+                                    .itemList[i]
+                                    .name =
+                                childData.testDataList[index].itemList[i].name;
+                            childData
+                                .testDataList[childData.testDataList.length - 1]
+                                .itemList[i]
+                                .result = null;
                           }
                         });
                       } else if (idx == 1) {
