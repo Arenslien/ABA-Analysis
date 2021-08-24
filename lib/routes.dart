@@ -8,6 +8,7 @@ import 'package:aba_analysis/screens/graph_management/date_graph_screen.dart';
 import 'package:aba_analysis/screens/graph_management/item_graph_screen.dart';
 import 'package:aba_analysis/screens/graph_management/select_item_graph_screen.dart';
 import 'package:aba_analysis/screens/graph_management/select_date_graph_screen.dart';
+import 'package:aba_analysis/screens/graph_management/select_program_screen.dart';
 import 'package:aba_analysis/wrapper.dart';
 import 'package:flutter/widgets.dart';
 
@@ -18,6 +19,7 @@ final Map<String, WidgetBuilder> routes = {
   SignInScreen.routeName: (context) => SignInScreen(),
   RegisterScreen.routeName: (context) => RegisterScreen(),
   FindPasswordScreen.routeName: (context) => FindPasswordScreen(),
+  SelectProgramScreen.routeName: (context) => SelectProgramScreen(),
   SelectItemScreen.routeName: (context) => SelectItemScreen(),
   SelectDateScreen.routeName: (context) => SelectDateScreen(),
   DateGraph.routeName: (context) => DateGraph(),
