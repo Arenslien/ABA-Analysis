@@ -94,48 +94,9 @@ class _GraphScreenState extends State<GraphScreen> {
                 '/select_date',
               );
             } else if (index == 1) {
-              Navigator.pushNamed(context, '/select_item');
+              Navigator.pushNamed(context, '/select_program');
             }
           },
         ));
   }
-
-  // Widget childTile(ChildData childData) {
-  //   return ListTile(
-  //     leading: Icon(
-  //       Icons.person,
-  //       size: 50,
-  //     ),
-  //     title: Text(
-  //       childData.name,
-  //       style: TextStyle(fontSize: 25),
-  //     ),
-  //     subtitle: Text(
-  //       "${childData.age}세",
-  //       style: TextStyle(fontSize: 15),
-  //     ),
-  //     trailing: ToggleButtons(
-  //       children: [
-  //         Text('Date Graph'),
-  //         Text('아이템 그래프'),
-  //       ],
-  //       isSelected: [false, false],
-  //       onPressed: (index) {
-  //         if (index == 0) {
-  //           Navigator.pushNamed(
-  //             context,
-  //             '/select_date',
-  //           );
-  //         } else if (index == 1) {
-  //           Navigator.pushNamed(context, '/select_item');
-  //         }
-  //       },
-  //       constraints: BoxConstraints(minWidth: 80, minHeight: 50),
-  //       borderColor: Colors.black,
-  //       fillColor: Colors.white,
-  //       splashColor: Colors.black,
-  //     ),
-  //     dense: true,
-  //   );
-  // }
 }

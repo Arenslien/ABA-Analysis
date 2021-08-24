@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-final pdf = pw.Document();
 PdfColor _darkColor = PdfColor.fromInt(0xff242424); // 까만색
 PdfColor _lightColor = PdfColor.fromInt(0xff9D9D9D);
 PdfColor baseColor = PdfColor.fromInt(0xffD32D2D);
@@ -23,6 +22,7 @@ pw.Document genPDF(
   pw.PageTheme pageTheme = _myPageTheme(PdfPageFormat.a4); // PDF theme 받아옴
   pw.Widget headerWidget =
       pdfHeader(ttf, _graphType, _typeValue); // PDF header 받아옴
+  final pdf = pw.Document();
   pdf.addPage(pw.MultiPage(
       pageTheme: pageTheme,
       build: (pw.Context context) {

@@ -2,9 +2,11 @@ import 'package:aba_analysis/screens/graph_management/generateExcel.dart';
 import 'package:aba_analysis/screens/graph_management/generatePDF.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'dart:ui' as dart_ui;
+import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -26,7 +28,11 @@ class _DateGraphState extends State<DateGraph> {
   late List<String> _pdfColumn;
   late String _graphType;
   late String _typeValue;
+  late String _fileName = 'sample';
+  late String valueText; // Dialog에서 사용
+  bool _isCancle = true;
 
+  TextEditingController _textFieldController = TextEditingController();
   @override
   void initState() {
     _chartData = getChartData();
@@ -122,19 +128,20 @@ class _DateGraphState extends State<DateGraph> {
     final xio.Workbook graphWorkbook =
         genExcel(columns, excelChartData, graphImage, _graphType, _typeValue);
     final List<int> excelBytes = graphWorkbook.saveAsStream();
-    Directory? dir = await getApplicationDocumentsDirectory();
-    String filePath = dir.path + '/abaGraph/';
+    final dir = await DownloadsPathProvider.downloadsDirectory;
+    String filePath = dir!.path + '/abaGraph/';
     if (Directory(filePath).exists() != true) {
+      // 폴더가 없다
       new Directory(filePath).createSync(recursive: true);
-      final File file = File(filePath + "excelSample.xlsx");
-      file.writeAsBytesSync(excelBytes);
-      await OpenFile.open(file.path);
-    } else {
-      final File file = File(filePath + "excelSample.xlsx");
-      file.writeAsBytesSync(excelBytes);
-      await OpenFile.open(file.path);
     }
-    graphWorkbook.dispose();
+    await _displayTextInputDialog(context, filePath, 'xlsx');
+    if (_isCancle == false) {
+      // 확인을 눌렀을 때
+      final File file = File(filePath + _fileName + ".xlsx");
+      file.writeAsBytesSync(excelBytes);
+      await OpenFile.open(file.path);
+      graphWorkbook.dispose();
+    }
   }
 
   List<List<String>> genPDFData(List<ExpenseData> chartData) {
@@ -158,18 +165,17 @@ class _DateGraphState extends State<DateGraph> {
 
     pw.Document graphPDF =
         genPDF(columns, tableData, graphImage, ttf, _graphType, _typeValue);
-
-    Directory? dir = await getApplicationDocumentsDirectory();
-    String filePath = dir.path + '/abaGraph/';
+    final dir = await DownloadsPathProvider.downloadsDirectory;
+    String filePath = dir!.path + '/abaGraph/';
     if (Directory(filePath).exists() != true) {
       // 폴더가 없다
       new Directory(filePath).createSync(recursive: true);
-      final File file = File(filePath + "sample2.pdf");
+    }
+    await _displayTextInputDialog(context, filePath, "pdf");
+    if (_isCancle == false) {
+      // 확인을 눌렀을 때
+      final File file = File(filePath + _fileName + ".pdf");
       file.writeAsBytesSync(List.from(await graphPDF.save()));
-      await OpenFile.open(file.path);
-    } else {
-      final File file = File(filePath + "sample2.pdf");
-      file.writeAsBytesSync(List.from(await pdf.save()));
       await OpenFile.open(file.path);
     }
   }
@@ -185,6 +191,85 @@ class _DateGraphState extends State<DateGraph> {
     chartData.add(dummy3);
 
     return chartData;
+  }
+
+  Future<void> _displayTextInputDialog(
+      BuildContext context, String filePath, String exportType) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('저장할 파일이름 입력'),
+            content: TextField(
+              onChanged: (text) {
+                setState(() {
+                  valueText = text;
+                });
+              },
+              controller: _textFieldController,
+              decoration: InputDecoration(
+                hintText: "파일이름 입력",
+                hintStyle: TextStyle(
+                  fontSize: 10,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text("취소"),
+                style: TextButton.styleFrom(
+                  primary: Colors.white,
+                  backgroundColor: Colors.red,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isCancle = true;
+                    _textFieldController.clear();
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              TextButton(
+                child: Text("확인"),
+                style: TextButton.styleFrom(
+                  primary: Colors.white,
+                  backgroundColor: Colors.green,
+                ),
+                onPressed: () {
+                  if (File(filePath + valueText + "." + exportType)
+                          .existsSync() ==
+                      false) {
+                    setState(() {
+                      _fileName = valueText;
+                      _isCancle = false;
+                      _textFieldController.clear();
+                    });
+                    Navigator.pop(context);
+                  } else if (valueText == '') {
+                    Fluttertoast.showToast(
+                        msg: "파일 이름을 입력해주세요.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  } else {
+                    Fluttertoast.showToast(
+                        msg: "같은 이름의 파일이 이미 존재합니다.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  }
+                },
+              )
+            ],
+          );
+        });
   }
 }
 
