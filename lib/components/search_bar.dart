@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 
-AppBar searchBar() {
-  TextEditingController searchTextEditingController = TextEditingController();
-  controlSearching(str) {
-    print(str);
-    // Future<QuerySnapshot> allUsers =
-    //     useReference.where('profileName', isGreaterThanOrEqualTo: str).get();
-    // setState(() {
-    //   futureSearchResults = allUsers;
-    // });
-  }
-
+AppBar searchBar({
+  TextEditingController? controller,
+  Function(String)? controlSearching,
+}) {
   return AppBar(
     title: TextFormField(
-      controller: searchTextEditingController,
+      controller: controller,
       decoration: InputDecoration(
-        hintText: 'Search here...',
+        hintText: '검색하기',
         hintStyle: TextStyle(color: Colors.grey),
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.black),
@@ -35,13 +28,13 @@ AppBar searchBar() {
             color: Colors.black,
           ),
           onPressed: () {
-            searchTextEditingController.clear();
+            controller?.clear();
           },
         ),
       ),
       cursorColor: Colors.black,
       style: TextStyle(fontSize: 18, color: Colors.black),
-      onFieldSubmitted: controlSearching,
+      onChanged: controlSearching,
     ),
     backgroundColor: Colors.white,
   );

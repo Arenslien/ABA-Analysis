@@ -17,57 +17,118 @@ class ChildMainScreen extends StatefulWidget {
 
 class _ChildMainScreenState extends State<ChildMainScreen> {
   List<ChildData> childData = [];
+  List<ChildData> searchResult = [];
+  TextEditingController searchTextEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: searchBar(),
+        appBar: searchBar(
+          controller: searchTextEditingController,
+          controlSearching: (str) {
+            setState(() {
+              searchResult.clear();
+              for (int i = 0; i < childData.length; i++) {
+                bool flag = false;
+                if (childData[i].age == str) flag = true;
+                if (childData[i].name == str) flag = true;
+                if (flag) {
+                  searchResult.add(childData[i]);
+                }
+              }
+            });
+          },
+        ),
         body: childData.length == 0
             ? noListData(Icons.group, '아동 추가')
-            : ListView.builder(
-                itemCount: childData.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return buildListTile(
-                    icon: Icons.person,
-                    titleText: childData[index].name,
-                    subtitleText: childData[index].age,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ChildTestScreen(
-                            childData: childData[index],
-                          ),
+            : searchTextEditingController.text.isEmpty
+                ? ListView.builder(
+                    itemCount: childData.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return buildListTile(
+                        icon: Icons.person,
+                        titleText: childData[index].name,
+                        subtitleText: childData[index].age,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChildTestScreen(
+                                childData: childData[index],
+                              ),
+                            ),
+                          );
+                        },
+                        trailing: buildToggleButtons(
+                          text: ['그래프', '설정'],
+                          onPressed: (idx) async {
+                            if (idx == 1) {
+                              final ChildData? editChildData =
+                                  await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ChildModifyScreen(childData[index]),
+                                ),
+                              );
+                              if (editChildData != null) {
+                                setState(() {
+                                  childData[index] = editChildData;
+                                  if (editChildData.name == '') {
+                                    childData.removeAt(index);
+                                  }
+                                });
+                              }
+                            }
+                          },
                         ),
                       );
                     },
-                    trailing: buildToggleButtons(
-                      text: ['그래프', '설정'],
-                      onPressed: (idx) async {
-                        if (idx == 1) {
-                          final ChildData? editChildData = await Navigator.push(
+                  )
+                : ListView.builder(
+                    itemCount: searchResult.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return buildListTile(
+                        icon: Icons.person,
+                        titleText: searchResult[index].name,
+                        subtitleText: searchResult[index].age,
+                        onTap: () {
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  ChildModifyScreen(childData[index]),
+                              builder: (context) => ChildTestScreen(
+                                childData: searchResult[index],
+                              ),
                             ),
                           );
-                          if (editChildData != null) {
-                            setState(() {
-                              childData[index] = editChildData;
-                              if (editChildData.name == '') {
-                                childData.removeAt(index);
+                        },
+                        trailing: buildToggleButtons(
+                          text: ['그래프', '설정'],
+                          onPressed: (idx) async {
+                            if (idx == 1) {
+                              final ChildData? editChildData =
+                                  await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ChildModifyScreen(searchResult[index]),
+                                ),
+                              );
+                              if (editChildData != null) {
+                                setState(() {
+                                  searchResult[index] = editChildData;
+                                  if (editChildData.name == '') {
+                                    searchResult.removeAt(index);
+                                  }
+                                });
                               }
-                            });
-                          }
-                        }
-                      },
-                    ),
-                  );
-                },
-              ),
+                            }
+                          },
+                        ),
+                      );
+                    }),
         floatingActionButton: FloatingActionButton(
           child: Icon(
             Icons.add_rounded,
