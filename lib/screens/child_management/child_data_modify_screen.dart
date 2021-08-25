@@ -5,7 +5,7 @@ import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class ChildModifyScreen extends StatefulWidget {
   const ChildModifyScreen(this.childData, {Key? key}) : super(key: key);
-  final ChildData childData;
+  final Child childData;
   @override
   _ChildModifyScreenState createState() => _ChildModifyScreenState(childData);
 }
@@ -13,9 +13,9 @@ class ChildModifyScreen extends StatefulWidget {
 class _ChildModifyScreenState extends State<ChildModifyScreen> {
   _ChildModifyScreenState(this.childData);
 
-  final ChildData childData;
+  final Child childData;
   final formkey = GlobalKey<FormState>();
-  ChildData newChildData = ChildData();
+  Child newChildData = Child();
   List<bool> gender = [false, false];
 
   @override
@@ -24,7 +24,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
     newChildData.name = childData.name;
     newChildData.age = childData.age;
     newChildData.gender = childData.gender;
-    newChildData.testDataList = childData.testDataList;
+    newChildData.testList = childData.testList;
     gender[childData.gender == '남자' ? 0 : 1] = true;
   }
 
@@ -57,7 +57,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  Navigator.pop(context, ChildData());
+                  Navigator.pop(context, Child());
                 },
               ),
               IconButton(

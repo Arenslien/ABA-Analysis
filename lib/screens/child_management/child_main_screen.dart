@@ -16,8 +16,8 @@ class ChildMainScreen extends StatefulWidget {
 }
 
 class _ChildMainScreenState extends State<ChildMainScreen> {
-  List<ChildData> childData = [];
-  List<ChildData> searchResult = [];
+  List<Child> childData = [];
+  List<Child> searchResult = [];
   TextEditingController searchTextEditingController = TextEditingController();
 
   @override
@@ -32,8 +32,8 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
               searchResult.clear();
               for (int i = 0; i < childData.length; i++) {
                 bool flag = false;
-                if (childData[i].age == str) flag = true;
-                if (childData[i].name == str) flag = true;
+                if (childData[i].age.contains(str)) flag = true;
+                if (childData[i].name.contains(str)) flag = true;
                 if (flag) {
                   searchResult.add(childData[i]);
                 }
@@ -65,7 +65,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                           text: ['그래프', '설정'],
                           onPressed: (idx) async {
                             if (idx == 1) {
-                              final ChildData? editChildData =
+                              final Child? editChildData =
                                   await Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -108,7 +108,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                           text: ['그래프', '설정'],
                           onPressed: (idx) async {
                             if (idx == 1) {
-                              final ChildData? editChildData =
+                              final Child? editChildData =
                                   await Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -135,7 +135,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
             size: 40,
           ),
           onPressed: () async {
-            final ChildData? newChildData = await Navigator.push(
+            final Child? newChildData = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ChildInputScreen(),
@@ -144,6 +144,18 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
             if (newChildData != null) {
               setState(() {
                 childData.add(newChildData);
+                for (int i = 0; i < 100; i++) {
+                  bool flag = false;
+                  for (int j = 0; j < childData.length; j++)
+                    if (childData[j].childId == i) {
+                      flag = true;
+                      break;
+                    }
+                  if (!flag) {
+                    childData[childData.length - 1].childId = i;
+                    break;
+                  }
+                }
               });
             }
           },

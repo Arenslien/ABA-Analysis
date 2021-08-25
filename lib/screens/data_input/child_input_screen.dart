@@ -14,7 +14,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
   _ChildInputScreenState();
 
   final formkey = GlobalKey<FormState>();
-  ChildData newChildData = ChildData();
+  Child newChildData = Child();
   final List<bool> gender = [false, false];
   bool? isGenderSelected;
 

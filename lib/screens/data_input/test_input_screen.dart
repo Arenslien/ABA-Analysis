@@ -13,7 +13,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
   _TestInputScreenState();
 
   final formkey = GlobalKey<FormState>();
-  TestData newTestData = TestData();
+  Test newTestData = Test();
   List<ItemListTile> itemListTile = [];
 
   @override

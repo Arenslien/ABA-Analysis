@@ -4,7 +4,7 @@ import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class TestDataModifyScreen extends StatefulWidget {
   const TestDataModifyScreen(this.testData, {Key? key}) : super(key: key);
-  final TestData testData;
+  final Test testData;
   @override
   _TestDataModifyScreenState createState() =>
       _TestDataModifyScreenState(testData);
@@ -12,9 +12,9 @@ class TestDataModifyScreen extends StatefulWidget {
 
 class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
   _TestDataModifyScreenState(this.testData);
-  final TestData testData;
+  final Test testData;
   final formkey = GlobalKey<FormState>();
-  TestData newTestData = TestData();
+  Test newTestData = Test();
   List<ItemListTile> itemListTile = [];
 
   @override
@@ -119,7 +119,7 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  Navigator.pop(context, TestData());
+                  Navigator.pop(context, Test());
                 },
               ),
               IconButton(

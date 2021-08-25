@@ -16,7 +16,7 @@ class DataInquiryScreen extends StatefulWidget {
 
 class _DataInquiryScreenState extends State<DataInquiryScreen> {
   _DataInquiryScreenState();
-  List<TestData> testData = [];
+  List<Test> testData = [];
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class _DataInquiryScreenState extends State<DataInquiryScreen> {
                       if (idx == 0) {
                         
                       } else if (idx == 1) {
-                        final TestData? editTestData = await Navigator.push(
+                        final Test? editTestData = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
@@ -64,7 +64,7 @@ class _DataInquiryScreenState extends State<DataInquiryScreen> {
           size: 40,
         ),
         onPressed: () async {
-          final TestData? newTestData = await Navigator.push(
+          final Test? newTestData = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => TestInputScreen(),

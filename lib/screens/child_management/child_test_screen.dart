@@ -10,7 +10,7 @@ import 'package:aba_analysis/screens/child_management/child_get_result_screen.da
 
 class ChildTestScreen extends StatefulWidget {
   const ChildTestScreen({Key? key, required this.childData}) : super(key: key);
-  final ChildData childData;
+  final Child childData;
 
   @override
   _ChildTestScreenState createState() => _ChildTestScreenState(childData);
@@ -19,7 +19,7 @@ class ChildTestScreen extends StatefulWidget {
 class _ChildTestScreenState extends State<ChildTestScreen> {
   _ChildTestScreenState(this.childData);
 
-  final ChildData childData;
+  final Child childData;
 
   @override
   Widget build(BuildContext context) {
@@ -42,14 +42,14 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: childData.testDataList.length == 0
+      body: childData.testList.length == 0
           ? noListData(Icons.library_add_outlined, '테스트 추가')
           : ListView.builder(
-              itemCount: childData.testDataList.length,
+              itemCount: childData.testList.length,
               itemBuilder: (BuildContext context, int index) {
                 return buildListTile(
-                  titleText: childData.testDataList[index].name,
-                  subtitleText: childData.testDataList[index].date,
+                  titleText: childData.testList[index].name,
+                  subtitleText: childData.testList[index].date,
                   onTap: () {
                     Navigator.push(
                       context,
@@ -66,44 +66,44 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                     onPressed: (idx) async {
                       if (idx == 0) {
                         setState(() {
-                          childData.testDataList.add(TestData());
+                          childData.testList.add(Test());
                           childData
-                              .testDataList[childData.testDataList.length - 1]
-                              .name = childData.testDataList[index].name;
+                              .testList[childData.testList.length - 1]
+                              .name = childData.testList[index].name;
                           childData
-                              .testDataList[childData.testDataList.length - 1]
-                              .date = childData.testDataList[index].date;
+                              .testList[childData.testList.length - 1]
+                              .date = childData.testList[index].date;
                           for (int i = 0;
-                              i < childData.testDataList[index].itemList.length;
+                              i < childData.testList[index].itemList.length;
                               i++) {
                             childData
-                                .testDataList[childData.testDataList.length - 1]
+                                .testList[childData.testList.length - 1]
                                 .itemList
                                 .add(Item());
                             childData
-                                    .testDataList[childData.testDataList.length - 1]
+                                    .testList[childData.testList.length - 1]
                                     .itemList[i]
                                     .name =
-                                childData.testDataList[index].itemList[i].name;
+                                childData.testList[index].itemList[i].name;
                             childData
-                                .testDataList[childData.testDataList.length - 1]
+                                .testList[childData.testList.length - 1]
                                 .itemList[i]
                                 .result = null;
                           }
                         });
                       } else if (idx == 1) {
-                        final TestData? editTestData = await Navigator.push(
+                        final Test? editTestData = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => TestDataModifyScreen(
-                                childData.testDataList[index]),
+                                childData.testList[index]),
                           ),
                         );
                         if (editTestData != null)
                           setState(() {
-                            childData.testDataList[index] = editTestData;
+                            childData.testList[index] = editTestData;
                             if (editTestData.date == '') {
-                              childData.testDataList.removeAt(index);
+                              childData.testList.removeAt(index);
                             }
                           });
                       }
@@ -118,7 +118,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
           size: 40,
         ),
         onPressed: () async {
-          final TestData? newTestData = await Navigator.push(
+          final Test? newTestData = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => TestInputScreen(),
@@ -126,7 +126,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
           );
           if (newTestData != null)
             setState(() {
-              childData.testDataList.add(newTestData);
+              childData.testList.add(newTestData);
             });
         },
         backgroundColor: Colors.black,

@@ -23,8 +23,8 @@ class GraphScreen extends StatefulWidget {
 }
 
 class _GraphScreenState extends State<GraphScreen> {
-  List<ChildData> childData = []; // 순수 아이 데이터
-  ChildData dummy1 = new ChildData();
+  List<Child> childData = []; // 순수 아이 데이터
+  Child dummy1 = new Child();
 
   void initState() {
     super.initState();
@@ -81,7 +81,7 @@ class _GraphScreenState extends State<GraphScreen> {
     );
   }
 
-  Widget dataTile(ChildData childData) {
+  Widget dataTile(Child childData) {
     return buildListTile(
         titleText: childData.name,
         subtitleText: "${childData.age}세",

@@ -14,9 +14,9 @@ class SelectItemScreen extends StatefulWidget {
 }
 
 class _SelectItemScreenState extends State<SelectItemScreen> {
-  List<ChildData> childData = []; // 순수 아이 데이터
+  List<Child> childData = []; // 순수 아이 데이터
   List<DummyTestData> testData = []; // 테스트 관련 데이터
-  ChildData dummy1 = new ChildData();
+  Child dummy1 = new Child();
   late DummyTestData dummy2 = new DummyTestData();
   DummyTestData dummy3 = new DummyTestData();
 

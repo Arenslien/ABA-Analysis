@@ -9,7 +9,7 @@ class ChildGetResultScreen extends StatefulWidget {
     required this.childData,
     required this.index,
   }) : super(key: key);
-  final ChildData childData;
+  final Child childData;
   final int index;
 
   @override
@@ -19,7 +19,7 @@ class ChildGetResultScreen extends StatefulWidget {
 
 class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
   _ChildGetResultScreenState(this.childData, this.index);
-  final ChildData childData;
+  final Child childData;
   final int index;
   List<String?> originalItemListResult = [];
   List<List<bool>> itemValue = [];
@@ -28,41 +28,41 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < childData.testDataList[index].itemList.length; i++) {
-      if (childData.testDataList[index].itemList[i].result == '+')
+    for (int i = 0; i < childData.testList[index].itemList.length; i++) {
+      if (childData.testList[index].itemList[i].result == '+')
         itemValue.add([true, false, false]);
-      else if (childData.testDataList[index].itemList[i].result == '-')
+      else if (childData.testList[index].itemList[i].result == '-')
         itemValue.add([false, true, false]);
-      else if (childData.testDataList[index].itemList[i].result == 'P')
+      else if (childData.testList[index].itemList[i].result == 'P')
         itemValue.add([false, false, true]);
       else
         itemValue.add([false, false, false]);
       originalItemListResult
-          .add(childData.testDataList[index].itemList[i].result);
+          .add(childData.testList[index].itemList[i].result);
       isItemValueSelected.add(
-          childData.testDataList[index].itemList[i].result == ''
+          childData.testList[index].itemList[i].result == ''
               ? false
               : true);
-      countResult(childData.testDataList[index].itemList[i].name!, i);
+      countResult(childData.testList[index].itemList[i].name!, i);
     }
   }
 
   void countResult(String itemName, int i) {
-    childData.testDataList[index].itemList[i].countPlus = 0;
-    childData.testDataList[index].itemList[i].countMinus = 0;
-    childData.testDataList[index].itemList[i].countP = 0;
-    for (int p = 0; p < childData.testDataList.length; p++) {
-      for (int q = 0; q < childData.testDataList[p].itemList.length; q++) {
-        if (itemName == childData.testDataList[p].itemList[q].name)
-          switch (childData.testDataList[p].itemList[q].result) {
+    childData.testList[index].itemList[i].countPlus = 0;
+    childData.testList[index].itemList[i].countMinus = 0;
+    childData.testList[index].itemList[i].countP = 0;
+    for (int p = 0; p < childData.testList.length; p++) {
+      for (int q = 0; q < childData.testList[p].itemList.length; q++) {
+        if (itemName == childData.testList[p].itemList[q].name)
+          switch (childData.testList[p].itemList[q].result) {
             case '+':
-              childData.testDataList[index].itemList[i].countPlus++;
+              childData.testList[index].itemList[i].countPlus++;
               break;
             case '-':
-              childData.testDataList[index].itemList[i].countMinus++;
+              childData.testList[index].itemList[i].countMinus++;
               break;
             case 'P':
-              childData.testDataList[index].itemList[i].countP++;
+              childData.testList[index].itemList[i].countP++;
               break;
             default:
           }
@@ -75,7 +75,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '${childData.name} - ${childData.testDataList[index].name}',
+          '${childData.name} - ${childData.testList[index].name}',
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -87,9 +87,9 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
           onPressed: () {
             setState(() {
               for (int i = 0;
-                  i < childData.testDataList[index].itemList.length;
+                  i < childData.testList[index].itemList.length;
                   i++) {
-                childData.testDataList[index].itemList[i].result =
+                childData.testList[index].itemList[i].result =
                     originalItemListResult[i];
               }
             });
@@ -105,7 +105,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
             onPressed: () {
               bool flag = false;
               for (int i = 0;
-                  i < childData.testDataList[index].itemList.length;
+                  i < childData.testList[index].itemList.length;
                   i++)
                 if (!isItemValueSelected[i]) {
                   flag = true;
@@ -119,12 +119,12 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
         elevation: 0,
       ),
       body: ListView.builder(
-        itemCount: childData.testDataList[index].itemList.length,
+        itemCount: childData.testList[index].itemList.length,
         itemBuilder: (BuildContext context, int idx) {
           return Column(
             children: [
               buildListTile(
-                titleText: childData.testDataList[index].itemList[idx].name,
+                titleText: childData.testList[index].itemList[idx].name,
                 trailing: buildToggleButtons(
                   text: ['+', '-', 'P'],
                   isSelected: itemValue[idx],
@@ -133,15 +133,15 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
                       setState(() {
                         isItemValueSelected[idx] = true;
                         if (i == 0) {
-                          childData.testDataList[index].itemList[idx].result =
+                          childData.testList[index].itemList[idx].result =
                               '+';
                           childData
-                              .testDataList[index].itemList[idx].countPlus++;
+                              .testList[index].itemList[idx].countPlus++;
                         } else if (i == 1) {
-                          childData.testDataList[index].itemList[idx].result =
+                          childData.testList[index].itemList[idx].result =
                               '-';
                         } else {
-                          childData.testDataList[index].itemList[idx].result =
+                          childData.testList[index].itemList[idx].result =
                               'P';
                         }
                         for (int buttonIndex = 0;
@@ -153,7 +153,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
                             itemValue[idx][buttonIndex] = false;
                         }
                         countResult(
-                            childData.testDataList[index].itemList[idx].name!,
+                            childData.testList[index].itemList[idx].name!,
                             idx);
                       });
                   },
@@ -164,11 +164,11 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
               Row(
                 children: [
                   Text(
-                      '+: ${childData.testDataList[index].itemList[idx].countPlus}'),
+                      '+: ${childData.testList[index].itemList[idx].countPlus}'),
                   Text(
-                      '-: ${childData.testDataList[index].itemList[idx].countMinus}'),
+                      '-: ${childData.testList[index].itemList[idx].countMinus}'),
                   Text(
-                      'P: ${childData.testDataList[index].itemList[idx].countP}'),
+                      'P: ${childData.testList[index].itemList[idx].countP}'),
                 ],
               )
             ],

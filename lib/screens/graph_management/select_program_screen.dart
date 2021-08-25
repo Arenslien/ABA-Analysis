@@ -14,7 +14,7 @@ class SelectProgramScreen extends StatefulWidget {
 }
 
 class _SelectProgramScreenState extends State<SelectProgramScreen> {
-  List<ChildData> childData = []; // 순수 아이 데이터
+  List<Child> childData = []; // 순수 아이 데이터
   List<DummyTestData> testData = []; // 테스트 관련 데이터
   List<String> programList = [
     '수용언어',
@@ -27,7 +27,7 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
     '쓰기',
     '매칭'
   ];
-  ChildData dummy1 = new ChildData();
+  Child dummy1 = new Child();
   late DummyTestData dummy2 = new DummyTestData();
   DummyTestData dummy3 = new DummyTestData();
 

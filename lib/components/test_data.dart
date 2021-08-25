@@ -1,10 +1,10 @@
-class TestData {
+class Test {
   String date = '';
   String name = 'default';
   int count = 0; // 테스트 회차
   List<Item> itemList = [];
 
-  TestData();
+  Test();
 }
 
 class Item {
