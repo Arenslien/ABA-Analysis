@@ -5,8 +5,8 @@ import 'package:aba_analysis/components/class/child_class.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/screens/data_input/child_input_screen.dart';
+import 'package:aba_analysis/screens/child_management/child_modify_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_chapter_screen.dart';
-import 'package:aba_analysis/screens/child_management/child_data_modify_screen.dart';
 
 class ChildMainScreen extends StatefulWidget {
   const ChildMainScreen({Key? key}) : super(key: key);
@@ -55,7 +55,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ChildTestScreen(
+                              builder: (context) => ChildChapterScreen(
                                 child: childList[index],
                               ),
                             ),
@@ -97,7 +97,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ChildTestScreen(
+                              builder: (context) => ChildChapterScreen(
                                 child: searchResult[index],
                               ),
                             ),

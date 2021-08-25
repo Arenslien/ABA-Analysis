@@ -1,35 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/search_bar.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/components/class/chapter_class.dart';
+import 'package:aba_analysis/components/class/subject_class.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
-import 'package:aba_analysis/screens/data_input/chapter_input_screen.dart';
-import 'package:aba_analysis/screens/subject_management/subject_data_modify_screen.dart';
+import 'package:aba_analysis/screens/data_input/subject_input_screen.dart';
+import 'package:aba_analysis/screens/subject_management/subject_modify_screen.dart';
 
-class DataInquiryScreen extends StatefulWidget {
-  const DataInquiryScreen({Key? key}) : super(key: key);
+class SubjectMainScreen extends StatefulWidget {
+  const SubjectMainScreen({Key? key}) : super(key: key);
 
   @override
-  _DataInquiryScreenState createState() => _DataInquiryScreenState();
+  _SubjectMainScreenState createState() => _SubjectMainScreenState();
 }
 
-class _DataInquiryScreenState extends State<DataInquiryScreen> {
-  _DataInquiryScreenState();
-  List<Chapter> testData = [];
+class _SubjectMainScreenState extends State<SubjectMainScreen> {
+  _SubjectMainScreenState();
+  List<Subject> subjectList = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: searchBar(),
-      body: testData.length == 0
+      body: subjectList.length == 0
           ? noListData(Icons.library_add_outlined, '과목 추가')
           : ListView.builder(
-              itemCount: testData.length,
+              itemCount: subjectList.length,
               itemBuilder: (BuildContext context, int index) {
                 return buildListTile(
-                  titleText: testData[index].name,
-                  subtitleText: testData[index].date,
+                  titleText: subjectList[index].name,
                   onTap: () {},
                   trailing: buildToggleButtons(
                     text: ['적용', '설정'],
@@ -37,19 +36,18 @@ class _DataInquiryScreenState extends State<DataInquiryScreen> {
                       if (idx == 0) {
                         
                       } else if (idx == 1) {
-                        final Chapter? editTestData = await Navigator.push(
+                        final Subject? editsubject = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                TestDataModifyScreen(testData[index]),
+                                SubjectModifyScreen(subjectList[index]),
                           ),
                         );
-                        if (editTestData != null)
+                        if (editsubject != null)
                           setState(() {
-                            testData[index] = editTestData;
-                            if (editTestData.date == '') {
-                              testData.removeAt(index);
-                              
+                            subjectList[index] = editsubject;
+                            if (editsubject.name == null) {
+                              subjectList.removeAt(index);
                             }
                           });
                       }
@@ -64,15 +62,15 @@ class _DataInquiryScreenState extends State<DataInquiryScreen> {
           size: 40,
         ),
         onPressed: () async {
-          final Chapter? newTestData = await Navigator.push(
+          final Subject? newsubject = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TestInputScreen(),
+              builder: (context) => SubjectInputScreen(),
             ),
           );
-          if (newTestData != null)
+          if (newsubject != null)
             setState(() {
-              testData.add(newTestData);
+              subjectList.add(newsubject);
             });
         },
         backgroundColor: Colors.black,

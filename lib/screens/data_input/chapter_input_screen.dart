@@ -3,15 +3,15 @@ import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/class/content_class.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
-class TestInputScreen extends StatefulWidget {
-  const TestInputScreen({Key? key}) : super(key: key);
+class ChapterInputScreen extends StatefulWidget {
+  const ChapterInputScreen({Key? key}) : super(key: key);
 
   @override
-  _TestInputScreenState createState() => _TestInputScreenState();
+  _ChapterInputScreenState createState() => _ChapterInputScreenState();
 }
 
-class _TestInputScreenState extends State<TestInputScreen> {
-  _TestInputScreenState();
+class _ChapterInputScreenState extends State<ChapterInputScreen> {
+  _ChapterInputScreenState();
 
   final formkey = GlobalKey<FormState>();
   Chapter newChapter = Chapter();

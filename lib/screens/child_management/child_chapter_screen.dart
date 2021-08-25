@@ -7,18 +7,18 @@ import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/screens/data_input/chapter_input_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_get_result_screen.dart';
-import 'package:aba_analysis/screens/subject_management/subject_data_modify_screen.dart';
+import 'package:aba_analysis/screens/child_management/t.dart';
 
-class ChildTestScreen extends StatefulWidget {
-  const ChildTestScreen({Key? key, required this.child}) : super(key: key);
+class ChildChapterScreen extends StatefulWidget {
+  const ChildChapterScreen({Key? key, required this.child}) : super(key: key);
   final Child child;
 
   @override
-  _ChildTestScreenState createState() => _ChildTestScreenState(child);
+  _ChildChapterScreenState createState() => _ChildChapterScreenState(child);
 }
 
-class _ChildTestScreenState extends State<ChildTestScreen> {
-  _ChildTestScreenState(this.child);
+class _ChildChapterScreenState extends State<ChildChapterScreen> {
+  _ChildChapterScreenState(this.child);
 
   final Child child;
 
@@ -93,17 +93,17 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                           }
                         });
                       } else if (idx == 1) {
-                        final Chapter? editTestData = await Navigator.push(
+                        final Chapter? editChapter = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => TestDataModifyScreen(
+                            builder: (context) => T(
                                 child.chapterList[index]),
                           ),
                         );
-                        if (editTestData != null)
+                        if (editChapter != null)
                           setState(() {
-                            child.chapterList[index] = editTestData;
-                            if (editTestData.date == '') {
+                            child.chapterList[index] = editChapter;
+                            if (editChapter.date == '') {
                               child.chapterList.removeAt(index);
                             }
                           });
@@ -119,15 +119,15 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
           size: 40,
         ),
         onPressed: () async {
-          final Chapter? newTestData = await Navigator.push(
+          final Chapter? newChapter = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TestInputScreen(),
+              builder: (context) => ChapterInputScreen(),
             ),
           );
-          if (newTestData != null)
+          if (newChapter != null)
             setState(() {
-              child.chapterList.add(newTestData);
+              child.chapterList.add(newChapter);
             });
         },
         backgroundColor: Colors.black,

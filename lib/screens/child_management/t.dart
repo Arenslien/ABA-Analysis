@@ -3,16 +3,16 @@ import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/class/content_class.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
-class TestDataModifyScreen extends StatefulWidget {
-  const TestDataModifyScreen(this.testData, {Key? key}) : super(key: key);
+class T extends StatefulWidget {
+  const T(this.testData, {Key? key}) : super(key: key);
   final Chapter testData;
   @override
-  _TestDataModifyScreenState createState() =>
-      _TestDataModifyScreenState(testData);
+  _TState createState() =>
+      _TState(testData);
 }
 
-class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
-  _TestDataModifyScreenState(this.testData);
+class _TState extends State<T> {
+  _TState(this.testData);
   final Chapter testData;
   final formkey = GlobalKey<FormState>();
   Chapter newTestData = Chapter();

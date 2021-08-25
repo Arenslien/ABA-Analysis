@@ -37,7 +37,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              '아동 정보 수정',
+              '아동 수정',
               style: TextStyle(color: Colors.black),
             ),
             centerTitle: true,
