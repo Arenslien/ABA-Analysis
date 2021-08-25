@@ -1,3 +1,4 @@
+import 'package:aba_analysis/components/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/class/child_class.dart';
@@ -70,14 +71,22 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${dummy1.name}의 하위항목 선택'),
-        backgroundColor: Colors.grey,
-        centerTitle: true,
-        leading: IconButton(
+        title: searchBar().title, // 해당 하위영역의 하위목록에 따라 검색한다.
+        leadingWidth: 32,
+        leading: new IconButton(
+            padding: EdgeInsets.only(left: 1.0),
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(Icons.arrow_back)),
+            icon: new Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            )),
+        actions: <Widget>[
+          SizedBox(
+            width: 32,
+          ),
+        ],
       ), // 검색 필요X
       body: childData.length == 0
           ? noTestData()

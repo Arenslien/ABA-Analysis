@@ -1,3 +1,4 @@
+import 'package:aba_analysis/components/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/class/child_class.dart';
@@ -88,17 +89,23 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${dummy1.name}의 날짜 선택'),
-        backgroundColor: Colors.grey,
-        centerTitle: true,
-        leading: IconButton(
+        title: searchBar().title,
+        leadingWidth: 32,
+        leading: new IconButton(
+            padding: EdgeInsets.only(left: 1.0),
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(Icons.arrow_back)),
-      ), // 검색 필요X
-
-// 검색 필요X
+            icon: new Icon(
+              Icons.arrow_back,
+              color: Colors.black,
+            )),
+        actions: <Widget>[
+          SizedBox(
+            width: 32,
+          ),
+        ],
+      ),
       body: testData.length == 0
           ? noTestData()
           : ListView.builder(

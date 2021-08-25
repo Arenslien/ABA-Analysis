@@ -4,6 +4,7 @@ Widget buildListTile(
     {IconData? icon,
     String? titleText,
     String? subtitleText,
+    double? titleSize,
     Function()? onTap,
     Widget? trailing}) {
   return Padding(
@@ -17,7 +18,9 @@ Widget buildListTile(
             ),
       title: Text(
         titleText!,
-        style: TextStyle(fontSize: 25),
+        style: titleSize == null
+            ? TextStyle(fontSize: 25)
+            : TextStyle(fontSize: titleSize),
       ),
       subtitle: subtitleText == null
           ? null

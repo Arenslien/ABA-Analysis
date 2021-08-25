@@ -28,20 +28,21 @@ class _ItemGraphState extends State<ItemGraph> {
   late TooltipBehavior _tooltipBehavior;
   late String _graphType;
   late String _typeValue;
+  late num _averageRate;
   final GlobalKey<SfCartesianChartState> _cartesianKey = GlobalKey();
   late String _fileName = 'sample';
   late String valueText; // Dialog에서 사용
   bool _isCancle = true;
   TextEditingController _textFieldController = TextEditingController();
-  final String _graph_title = "1~10까지 숫자 읽기 - 숫자 1읽기";
   late ZoomPanBehavior _zoomPanBehavior;
   @override
   void initState() {
     _chartData = getChartData();
     _tooltipBehavior = TooltipBehavior(enable: true);
     _pdfColumn = ['날짜', '성공여부'];
-    _graphType = '항목';
+    _graphType = '하위목록';
     _typeValue = '인형 안아주기';
+    _averageRate = _chartData[0].averageRate;
     _zoomPanBehavior = ZoomPanBehavior(
       enablePinching: true,
       zoomMode: ZoomMode.x,
@@ -54,7 +55,7 @@ class _ItemGraphState extends State<ItemGraph> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("< 영수의 " + "하위목록" + "별 그래프 >"), // 아이의 이름값 갖고와야함.
+        title: Text("< 영수의 " + _graphType + "별 그래프 >"), // 아이의 이름값 갖고와야함.
         centerTitle: true,
         backgroundColor: Colors.grey,
         leading: IconButton(
@@ -104,7 +105,7 @@ class _ItemGraphState extends State<ItemGraph> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FloatingActionButton.extended(
-                  heroTag: 'btn1', // 버튼 구별을 위한 태그
+                  heroTag: 'export_excel', // 버튼 구별을 위한 태그
                   onPressed: () {
                     exportExcel(_pdfColumn, genPDFData(_chartData));
                   }, // 누르면 엑셀 내보내기
@@ -115,7 +116,7 @@ class _ItemGraphState extends State<ItemGraph> {
                   width: 20,
                 ),
                 FloatingActionButton.extended(
-                  heroTag: 'btn2', // 버튼 구별을 위한 태그
+                  heroTag: 'export_pdf', // 버튼 구별을 위한 태그
                   onPressed: () {
                     exportPDF(_pdfColumn, genPDFData(_chartData));
                   }, // 누르면 PDF 내보내기
@@ -138,8 +139,8 @@ class _ItemGraphState extends State<ItemGraph> {
     // final excelImg = bytes!.buffer.asUint8List();
     final graphImage = bytes!.buffer.asUint8List();
 
-    final xio.Workbook graphWorkbook =
-        genExcel(columns, excelChartData, graphImage, _graphType, _typeValue);
+    final xio.Workbook graphWorkbook = genExcel(columns, excelChartData,
+        graphImage, _graphType, _typeValue, _averageRate);
     final List<int> excelBytes = graphWorkbook.saveAsStream();
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
@@ -284,7 +285,7 @@ class _ItemGraphState extends State<ItemGraph> {
     chartData.add(dummy3);
     chartData.add(new ExpenseData("7월4일", "-", average));
     chartData.add(new ExpenseData("7월5일", "-", average));
-    chartData.add(new ExpenseData("7월6일", "-", average));
+    chartData.add(new ExpenseData("7월6일", "P", average));
     chartData.add(new ExpenseData("7월7일", "+", average));
     chartData.add(new ExpenseData("7월8일", "+", average));
     chartData.add(new ExpenseData("7월9일", "+", average));
@@ -314,7 +315,7 @@ class ExpenseData {
   ExpenseData(this.testDate, this.isSuccess, this.averageRate) {
     if (this.isSuccess == '+') {
       this.successRate = 100;
-    } else {
+    } else if (this.isSuccess == '-' || this.isSuccess == 'P') {
       this.successRate = 0;
     }
   }
