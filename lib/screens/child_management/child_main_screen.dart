@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/components/child_data.dart';
+import 'package:aba_analysis/components/child_class.dart';
 import 'package:aba_analysis/components/search_bar.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
@@ -16,7 +16,7 @@ class ChildMainScreen extends StatefulWidget {
 }
 
 class _ChildMainScreenState extends State<ChildMainScreen> {
-  List<Child> childData = [];
+  List<Child> childList = [];
   List<Child> searchResult = [];
   TextEditingController searchTextEditingController = TextEditingController();
 
@@ -30,33 +30,33 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
           controlSearching: (str) {
             setState(() {
               searchResult.clear();
-              for (int i = 0; i < childData.length; i++) {
+              for (int i = 0; i < childList.length; i++) {
                 bool flag = false;
-                if (childData[i].age.contains(str)) flag = true;
-                if (childData[i].name.contains(str)) flag = true;
+                if (childList[i].age.contains(str)) flag = true;
+                if (childList[i].name.contains(str)) flag = true;
                 if (flag) {
-                  searchResult.add(childData[i]);
+                  searchResult.add(childList[i]);
                 }
               }
             });
           },
         ),
-        body: childData.length == 0
+        body: childList.length == 0
             ? noListData(Icons.group, '아동 추가')
             : searchTextEditingController.text.isEmpty
                 ? ListView.builder(
-                    itemCount: childData.length,
+                    itemCount: childList.length,
                     itemBuilder: (BuildContext context, int index) {
                       return buildListTile(
                         icon: Icons.person,
-                        titleText: childData[index].name,
-                        subtitleText: childData[index].age,
+                        titleText: childList[index].name,
+                        subtitleText: childList[index].age,
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => ChildTestScreen(
-                                childData: childData[index],
+                                childData: childList[index],
                               ),
                             ),
                           );
@@ -65,19 +65,18 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                           text: ['그래프', '설정'],
                           onPressed: (idx) async {
                             if (idx == 1) {
-                              final Child? editChildData =
-                                  await Navigator.push(
+                              final Child? editChildData = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      ChildModifyScreen(childData[index]),
+                                      ChildModifyScreen(childList[index]),
                                 ),
                               );
                               if (editChildData != null) {
                                 setState(() {
-                                  childData[index] = editChildData;
+                                  childList[index] = editChildData;
                                   if (editChildData.name == '') {
-                                    childData.removeAt(index);
+                                    childList.removeAt(index);
                                   }
                                 });
                               }
@@ -108,8 +107,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                           text: ['그래프', '설정'],
                           onPressed: (idx) async {
                             if (idx == 1) {
-                              final Child? editChildData =
-                                  await Navigator.push(
+                              final Child? editChildData = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
@@ -118,9 +116,16 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                               );
                               if (editChildData != null) {
                                 setState(() {
-                                  searchResult[index] = editChildData;
+                                  searchTextEditingController.text = '';
+                                  childList[childList.indexWhere((element) =>
+                                          element.childId ==
+                                          searchResult[index].childId)] =
+                                      editChildData;
                                   if (editChildData.name == '') {
-                                    searchResult.removeAt(index);
+                                    childList.removeAt(childList.indexWhere(
+                                        (element) =>
+                                            element.childId ==
+                                            searchResult[index].childId));
                                   }
                                 });
                               }
@@ -143,16 +148,16 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
             );
             if (newChildData != null) {
               setState(() {
-                childData.add(newChildData);
+                childList.add(newChildData);
                 for (int i = 0; i < 100; i++) {
                   bool flag = false;
-                  for (int j = 0; j < childData.length; j++)
-                    if (childData[j].childId == i) {
+                  for (int j = 0; j < childList.length; j++)
+                    if (childList[j].childId == i) {
                       flag = true;
                       break;
                     }
                   if (!flag) {
-                    childData[childData.length - 1].childId = i;
+                    childList[childList.length - 1].childId = i;
                     break;
                   }
                 }

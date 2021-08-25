@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/components/child_data.dart';
+import 'package:aba_analysis/components/child_class.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 

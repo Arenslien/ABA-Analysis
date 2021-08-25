@@ -1,6 +1,6 @@
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/components/child_data.dart';
+import 'package:aba_analysis/components/child_class.dart';
 
 import 'graph_screen.dart';
 
