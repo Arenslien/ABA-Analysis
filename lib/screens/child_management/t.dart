@@ -27,6 +27,7 @@ class _TState extends State<T> {
       ItemListTile(
         tileWidget: buildTextFormField(
           text: '날짜',
+          controller: TextEditingController(text: newTestData.date),
           onChanged: (val) {
             setState(() {
               newTestData.date = val;
@@ -39,7 +40,6 @@ class _TState extends State<T> {
             return null;
           },
           inputType: 'number',
-          initialValue: newTestData.date,
         ),
       ),
     );
@@ -47,6 +47,7 @@ class _TState extends State<T> {
       ItemListTile(
         tileWidget: buildTextFormField(
           text: '이름',
+          controller: TextEditingController(text: newTestData.name),
           onChanged: (val) {
             setState(() {
               newTestData.name = val;
@@ -58,7 +59,6 @@ class _TState extends State<T> {
             }
             return null;
           },
-          initialValue: newTestData.name,
         ),
       ),
     );

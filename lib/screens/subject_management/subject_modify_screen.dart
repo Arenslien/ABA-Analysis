@@ -64,6 +64,7 @@ class _SubjectModifyScreenState extends State<SubjectModifyScreen> {
           ),
           body: buildTextFormField(
             text: '이름',
+            controller: TextEditingController(text: subject.name),
             onChanged: (val) {
               setState(() {
                 newsubject.name = val;
@@ -75,7 +76,6 @@ class _SubjectModifyScreenState extends State<SubjectModifyScreen> {
               }
               return null;
             },
-            initialValue: subject.name,
           ),
         ),
       ),
