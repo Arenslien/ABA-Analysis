@@ -1,3 +1,4 @@
+import 'package:aba_analysis/constants.dart';
 import 'package:flutter/material.dart';
 
 class AuthBackground extends StatelessWidget {
@@ -17,7 +18,7 @@ class AuthBackground extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             Colors.green[600]!,
-            Colors.green[300]!,
+            mainGreenColor,
           ],
           begin: Alignment.topLeft,
           end: Alignment.centerRight,

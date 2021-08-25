@@ -1,8 +1,12 @@
 // import 'package:commerce/size_config.dart';
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
-// const kPrimaryColor = Color(0xFFFF7643);
-// const kPrimaryLightColor = Color(0xFFFFECDF);
+// 어플 테마 컬러
+const mainYellowColor = Color(0xFFFFE082);
+const mainPurpleColor = Color(0xFFE1BEE7);
+const mainGreenColor = Color(0xFFA5D6A7);
+
+
 // // 그라데이션 컬러 -> box decoration에서 gradient같은 곳에 사용됨
 // const kPrimaryGradientColor = LinearGradient(
 //   begin: Alignment.topLeft,
@@ -37,7 +41,7 @@
 // );
 // }
 
-// Form Error
+// 폼 에러
 final RegExp emailValidatorRegExp =
     RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 const String kEmailNullError = "이메일을 입력해 주세요";

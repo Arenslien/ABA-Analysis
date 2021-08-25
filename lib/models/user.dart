@@ -6,6 +6,7 @@ class ABAUser {
   final String _email;
   late final String _department;
   late final String _duty;
+  List<String> children = [];
 
   ABAUser(this._uid, this._email, this._name, this._phone, this._department, this._duty);
 
@@ -16,6 +17,4 @@ class ABAUser {
   String get phone => _phone;
   String get department => _department;
   String get duty => _duty;
-
-
 }
