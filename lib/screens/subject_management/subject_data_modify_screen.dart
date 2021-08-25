@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/components/test_class.dart';
-import 'package:aba_analysis/components/item_class.dart';
+import 'package:aba_analysis/components/class/chapter_class.dart';
+import 'package:aba_analysis/components/class/content_class.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class TestDataModifyScreen extends StatefulWidget {
   const TestDataModifyScreen(this.testData, {Key? key}) : super(key: key);
-  final Test testData;
+  final Chapter testData;
   @override
   _TestDataModifyScreenState createState() =>
       _TestDataModifyScreenState(testData);
@@ -13,9 +13,9 @@ class TestDataModifyScreen extends StatefulWidget {
 
 class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
   _TestDataModifyScreenState(this.testData);
-  final Test testData;
+  final Chapter testData;
   final formkey = GlobalKey<FormState>();
-  Test newTestData = Test();
+  Chapter newTestData = Chapter();
   List<ItemListTile> itemListTile = [];
 
   @override
@@ -73,7 +73,7 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
                 icon: Icon(Icons.add_rounded),
                 onPressed: () {
                   setState(() {
-                    buildItemListTile(newTestData.itemList.length);
+                    buildItemListTile(newTestData.contentList.length);
                   });
                 },
               ),
@@ -82,11 +82,11 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
         ),
       ),
     );
-    for (int i = 0; i < testData.itemList.length; i++) {
-      newTestData.itemList.add(Item());
-      newTestData.itemList[i].name = testData.itemList[i].name;
-      newTestData.itemList[i].result = testData.itemList[i].result;
-      newTestData.itemList[i].itemId = testData.itemList[i].itemId;
+    for (int i = 0; i < testData.contentList.length; i++) {
+      newTestData.contentList.add(Content());
+      newTestData.contentList[i].name = testData.contentList[i].name;
+      newTestData.contentList[i].result = testData.contentList[i].result;
+      newTestData.contentList[i].contentId = testData.contentList[i].contentId;
       buildItemListTile(i);
     }
   }
@@ -120,7 +120,7 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  Navigator.pop(context, Test());
+                  Navigator.pop(context, Chapter());
                 },
               ),
               IconButton(
@@ -150,25 +150,25 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
   }
 
   buildItemListTile(int index) {
-    if (index >= newTestData.itemList.length) newTestData.itemList.add(Item());
+    if (index >= newTestData.contentList.length) newTestData.contentList.add(Content());
     TextEditingController textEditingController =
-        TextEditingController(text: newTestData.itemList[index].name);
+        TextEditingController(text: newTestData.contentList[index].name);
 
-    int? tileId = newTestData.itemList[index].itemId;
+    int? tileId = newTestData.contentList[index].contentId;
     if (tileId == null) {
       for (int i = 0; i < 100; i++) {
         bool flag = false;
-        for (int j = 0; j < newTestData.itemList.length; j++) {
-          if (newTestData.itemList[j].itemId == null) {
+        for (int j = 0; j < newTestData.contentList.length; j++) {
+          if (newTestData.contentList[j].contentId == null) {
             break;
           }
-          if (newTestData.itemList[j].itemId == i) {
+          if (newTestData.contentList[j].contentId == i) {
             flag = true;
             break;
           }
         }
         if (!flag) {
-          newTestData.itemList[index].itemId = i;
+          newTestData.contentList[index].contentId = i;
           tileId = i;
           break;
         }
@@ -187,13 +187,13 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
                 controller: textEditingController,
                 onChanged: (val) {
                   int idx = 0;
-                  for (int i = 0; i < newTestData.itemList.length; i++)
-                    if (newTestData.itemList[i].itemId == tileId) {
+                  for (int i = 0; i < newTestData.contentList.length; i++)
+                    if (newTestData.contentList[i].contentId == tileId) {
                       idx = i;
                       break;
                     }
                   setState(() {
-                    newTestData.itemList[idx].name = val;
+                    newTestData.contentList[idx].name = val;
                   });
                 },
                 validator: (val) {
@@ -209,10 +209,10 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
               child: IconButton(
                   icon: Icon(Icons.remove_rounded),
                   onPressed: () {
-                    if (newTestData.itemList.length != 1)
+                    if (newTestData.contentList.length != 1)
                       setState(() {
-                        newTestData.itemList
-                            .removeWhere((element) => element.itemId == tileId);
+                        newTestData.contentList
+                            .removeWhere((element) => element.contentId == tileId);
                         itemListTile
                             .removeWhere((element) => element.tileId == tileId);
                       });

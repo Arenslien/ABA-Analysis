@@ -1,8 +1,8 @@
-import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/components/build_toggle_buttons.dart';
-import 'package:aba_analysis/components/search_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/components/child_class.dart';
+import 'package:aba_analysis/components/search_bar.dart';
+import 'package:aba_analysis/components/build_list_tile.dart';
+import 'package:aba_analysis/components/class/child_class.dart';
+import 'package:aba_analysis/components/build_toggle_buttons.dart';
 
 class DummyTestData {
   // 테스트 데이터 더미 데이터 클래스

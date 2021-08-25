@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/components/test_class.dart';
-import 'package:aba_analysis/components/item_class.dart';
-import 'package:aba_analysis/components/child_class.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
+import 'package:aba_analysis/components/class/child_class.dart';
+import 'package:aba_analysis/components/class/chapter_class.dart';
+import 'package:aba_analysis/components/class/content_class.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
-import 'package:aba_analysis/screens/data_input/test_input_screen.dart';
-import 'package:aba_analysis/screens/test_management/test_data_modify_screen.dart';
+import 'package:aba_analysis/screens/data_input/chapter_input_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_get_result_screen.dart';
+import 'package:aba_analysis/screens/subject_management/test_data_modify_screen.dart';
 
 class ChildTestScreen extends StatefulWidget {
-  const ChildTestScreen({Key? key, required this.childData}) : super(key: key);
-  final Child childData;
+  const ChildTestScreen({Key? key, required this.child}) : super(key: key);
+  final Child child;
 
   @override
-  _ChildTestScreenState createState() => _ChildTestScreenState(childData);
+  _ChildTestScreenState createState() => _ChildTestScreenState(child);
 }
 
 class _ChildTestScreenState extends State<ChildTestScreen> {
-  _ChildTestScreenState(this.childData);
+  _ChildTestScreenState(this.child);
 
-  final Child childData;
+  final Child child;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          childData.name,
+          child.name,
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -43,20 +43,20 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: childData.testList.length == 0
+      body: child.chapterList.length == 0
           ? noListData(Icons.library_add_outlined, '테스트 추가')
           : ListView.builder(
-              itemCount: childData.testList.length,
+              itemCount: child.chapterList.length,
               itemBuilder: (BuildContext context, int index) {
                 return buildListTile(
-                  titleText: childData.testList[index].name,
-                  subtitleText: childData.testList[index].date,
+                  titleText: child.chapterList[index].name,
+                  subtitleText: child.chapterList[index].date,
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => ChildGetResultScreen(
-                          childData: childData,
+                          child: child,
                           index: index,
                         ),
                       ),
@@ -67,44 +67,44 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                     onPressed: (idx) async {
                       if (idx == 0) {
                         setState(() {
-                          childData.testList.add(Test());
-                          childData
-                              .testList[childData.testList.length - 1]
-                              .name = childData.testList[index].name;
-                          childData
-                              .testList[childData.testList.length - 1]
-                              .date = childData.testList[index].date;
+                          child.chapterList.add(Chapter());
+                          child
+                              .chapterList[child.chapterList.length - 1]
+                              .name = child.chapterList[index].name;
+                          child
+                              .chapterList[child.chapterList.length - 1]
+                              .date = child.chapterList[index].date;
                           for (int i = 0;
-                              i < childData.testList[index].itemList.length;
+                              i < child.chapterList[index].contentList.length;
                               i++) {
-                            childData
-                                .testList[childData.testList.length - 1]
-                                .itemList
-                                .add(Item());
-                            childData
-                                    .testList[childData.testList.length - 1]
-                                    .itemList[i]
+                            child
+                                .chapterList[child.chapterList.length - 1]
+                                .contentList
+                                .add(Content());
+                            child
+                                    .chapterList[child.chapterList.length - 1]
+                                    .contentList[i]
                                     .name =
-                                childData.testList[index].itemList[i].name;
-                            childData
-                                .testList[childData.testList.length - 1]
-                                .itemList[i]
+                                child.chapterList[index].contentList[i].name;
+                            child
+                                .chapterList[child.chapterList.length - 1]
+                                .contentList[i]
                                 .result = null;
                           }
                         });
                       } else if (idx == 1) {
-                        final Test? editTestData = await Navigator.push(
+                        final Chapter? editTestData = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => TestDataModifyScreen(
-                                childData.testList[index]),
+                                child.chapterList[index]),
                           ),
                         );
                         if (editTestData != null)
                           setState(() {
-                            childData.testList[index] = editTestData;
+                            child.chapterList[index] = editTestData;
                             if (editTestData.date == '') {
-                              childData.testList.removeAt(index);
+                              child.chapterList.removeAt(index);
                             }
                           });
                       }
@@ -119,7 +119,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
           size: 40,
         ),
         onPressed: () async {
-          final Test? newTestData = await Navigator.push(
+          final Chapter? newTestData = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => TestInputScreen(),
@@ -127,7 +127,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
           );
           if (newTestData != null)
             setState(() {
-              childData.testList.add(newTestData);
+              child.chapterList.add(newTestData);
             });
         },
         backgroundColor: Colors.black,

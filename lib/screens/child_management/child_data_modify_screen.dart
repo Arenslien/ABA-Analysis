@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/components/child_class.dart';
+import 'package:aba_analysis/components/class/child_class.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
@@ -24,7 +24,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
     newChildData.name = childData.name;
     newChildData.age = childData.age;
     newChildData.gender = childData.gender;
-    newChildData.testList = childData.testList;
+    newChildData.chapterList = childData.chapterList;
     gender[childData.gender == '남자' ? 0 : 1] = true;
   }
 

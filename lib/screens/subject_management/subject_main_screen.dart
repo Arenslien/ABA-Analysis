@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/components/test_class.dart';
 import 'package:aba_analysis/components/search_bar.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
+import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/screens/data_input/test_input_screen.dart';
@@ -16,7 +16,7 @@ class DataInquiryScreen extends StatefulWidget {
 
 class _DataInquiryScreenState extends State<DataInquiryScreen> {
   _DataInquiryScreenState();
-  List<Test> testData = [];
+  List<Chapter> testData = [];
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class _DataInquiryScreenState extends State<DataInquiryScreen> {
                       if (idx == 0) {
                         
                       } else if (idx == 1) {
-                        final Test? editTestData = await Navigator.push(
+                        final Chapter? editTestData = await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
@@ -64,7 +64,7 @@ class _DataInquiryScreenState extends State<DataInquiryScreen> {
           size: 40,
         ),
         onPressed: () async {
-          final Test? newTestData = await Navigator.push(
+          final Chapter? newTestData = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => TestInputScreen(),

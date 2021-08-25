@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/components/test_class.dart';
-import 'package:aba_analysis/components/item_class.dart';
+import 'package:aba_analysis/components/class/chapter_class.dart';
+import 'package:aba_analysis/components/class/content_class.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class TestInputScreen extends StatefulWidget {
@@ -14,7 +14,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
   _TestInputScreenState();
 
   final formkey = GlobalKey<FormState>();
-  Test newTestData = Test();
+  Chapter newTestData = Chapter();
   List<ItemListTile> itemListTile = [];
 
   @override
@@ -130,20 +130,20 @@ class _TestInputScreenState extends State<TestInputScreen> {
   }
 
   buildItemListTile() {
-    int len = newTestData.itemList.length;
-    newTestData.itemList.add(Item());
+    int len = newTestData.contentList.length;
+    newTestData.contentList.add(Content());
     TextEditingController textEditingController = TextEditingController();
 
     int tileId = 0;
     for (int i = 0; i < 100; i++) {
       bool flag = false;
       for (int j = 0; j < len + 1; j++)
-        if (newTestData.itemList[j].itemId == i) {
+        if (newTestData.contentList[j].contentId == i) {
           flag = true;
           break;
         }
       if (!flag) {
-        newTestData.itemList[len].itemId = i;
+        newTestData.contentList[len].contentId = i;
         tileId = i;
         break;
       }
@@ -160,13 +160,13 @@ class _TestInputScreenState extends State<TestInputScreen> {
                 controller: textEditingController,
                 onChanged: (val) {
                   int index = 0;
-                  for (int i = 0; i < newTestData.itemList.length; i++)
-                    if (newTestData.itemList[i].itemId == tileId) {
+                  for (int i = 0; i < newTestData.contentList.length; i++)
+                    if (newTestData.contentList[i].contentId == tileId) {
                       index = i;
                       break;
                     }
                   setState(() {
-                    newTestData.itemList[index].name = val;
+                    newTestData.contentList[index].name = val;
                   });
                 },
                 validator: (val) {
@@ -182,10 +182,10 @@ class _TestInputScreenState extends State<TestInputScreen> {
               child: IconButton(
                   icon: Icon(Icons.remove_rounded),
                   onPressed: () {
-                    if (newTestData.itemList.length != 1)
+                    if (newTestData.contentList.length != 1)
                       setState(() {
-                        newTestData.itemList
-                            .removeWhere((element) => element.itemId == tileId);
+                        newTestData.contentList
+                            .removeWhere((element) => element.contentId == tileId);
                         itemListTile
                             .removeWhere((element) => element.tileId == tileId);
                       });

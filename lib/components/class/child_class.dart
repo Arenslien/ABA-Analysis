@@ -1,4 +1,4 @@
-import 'package:aba_analysis/components/test_class.dart';
+import 'package:aba_analysis/components/class/chapter_class.dart';
 
 class Child {
   int? childId;
@@ -6,7 +6,7 @@ class Child {
   String age = '00000000';
   String gender = '성별';
 
-  List<Test> testList = [];
+  List<Chapter> chapterList = [];
 
   Child();
 }
