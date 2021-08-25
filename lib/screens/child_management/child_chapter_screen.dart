@@ -7,7 +7,7 @@ import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/screens/data_input/chapter_input_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_get_result_screen.dart';
-import 'package:aba_analysis/screens/subject_management/test_data_modify_screen.dart';
+import 'package:aba_analysis/screens/subject_management/subject_data_modify_screen.dart';
 
 class ChildTestScreen extends StatefulWidget {
   const ChildTestScreen({Key? key, required this.child}) : super(key: key);

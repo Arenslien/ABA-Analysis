@@ -4,8 +4,8 @@ import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
-import 'package:aba_analysis/screens/data_input/test_input_screen.dart';
-import 'package:aba_analysis/screens/test_management/test_data_modify_screen.dart';
+import 'package:aba_analysis/screens/data_input/chapter_input_screen.dart';
+import 'package:aba_analysis/screens/subject_management/subject_data_modify_screen.dart';
 
 class DataInquiryScreen extends StatefulWidget {
   const DataInquiryScreen({Key? key}) : super(key: key);
@@ -23,7 +23,7 @@ class _DataInquiryScreenState extends State<DataInquiryScreen> {
     return Scaffold(
       appBar: searchBar(),
       body: testData.length == 0
-          ? noListData(Icons.library_add_outlined, '테스트 추가')
+          ? noListData(Icons.library_add_outlined, '과목 추가')
           : ListView.builder(
               itemCount: testData.length,
               itemBuilder: (BuildContext context, int index) {

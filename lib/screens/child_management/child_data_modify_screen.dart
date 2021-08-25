@@ -4,28 +4,28 @@ import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class ChildModifyScreen extends StatefulWidget {
-  const ChildModifyScreen(this.childData, {Key? key}) : super(key: key);
-  final Child childData;
+  const ChildModifyScreen(this.child, {Key? key}) : super(key: key);
+  final Child child;
   @override
-  _ChildModifyScreenState createState() => _ChildModifyScreenState(childData);
+  _ChildModifyScreenState createState() => _ChildModifyScreenState(child);
 }
 
 class _ChildModifyScreenState extends State<ChildModifyScreen> {
-  _ChildModifyScreenState(this.childData);
+  _ChildModifyScreenState(this.child);
 
-  final Child childData;
+  final Child child;
   final formkey = GlobalKey<FormState>();
-  Child newChildData = Child();
+  Child newChild = Child();
   List<bool> gender = [false, false];
 
   @override
   void initState() {
     super.initState();
-    newChildData.name = childData.name;
-    newChildData.age = childData.age;
-    newChildData.gender = childData.gender;
-    newChildData.chapterList = childData.chapterList;
-    gender[childData.gender == '남자' ? 0 : 1] = true;
+    newChild.name = child.name;
+    newChild.age = child.age;
+    newChild.gender = child.gender;
+    newChild.chapterList = child.chapterList;
+    gender[child.gender == '남자' ? 0 : 1] = true;
   }
 
   @override
@@ -67,7 +67,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                 ),
                 onPressed: () {
                   if (formkey.currentState!.validate()) {
-                    Navigator.pop(context, newChildData);
+                    Navigator.pop(context, newChild);
                   }
                 },
               ),
@@ -81,7 +81,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                 text: '이름',
                 onChanged: (val) {
                   setState(() {
-                    newChildData.name = val;
+                    newChild.name = val;
                   });
                 },
                 validator: (val) {
@@ -90,13 +90,13 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                   }
                   return null;
                 },
-                initialValue: newChildData.name,
+                initialValue: newChild.name,
               ),
               buildTextFormField(
                 text: '생년월일',
                 onChanged: (val) {
                   setState(() {
-                    newChildData.age = val;
+                    newChild.age = val;
                   });
                 },
                 validator: (val) {
@@ -105,7 +105,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                   }
                   return null;
                 },
-                initialValue: newChildData.age,
+                initialValue: newChild.age,
                 inputType: 'number',
               ),
               Padding(
@@ -117,9 +117,9 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                     if (!gender[index])
                       setState(() {
                         if (index == 0)
-                          newChildData.gender = '남자';
+                          newChild.gender = '남자';
                         else
-                          newChildData.gender = '여자';
+                          newChild.gender = '여자';
                         for (int buttonIndex = 0;
                             buttonIndex < gender.length;
                             buttonIndex++) {

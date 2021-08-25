@@ -14,7 +14,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
   _TestInputScreenState();
 
   final formkey = GlobalKey<FormState>();
-  Chapter newTestData = Chapter();
+  Chapter newChapter = Chapter();
   List<ItemListTile> itemListTile = [];
 
   @override
@@ -26,7 +26,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
           text: '날짜',
           onChanged: (val) {
             setState(() {
-              newTestData.date = val;
+              newChapter.date = val;
             });
           },
           validator: (val) {
@@ -45,7 +45,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
           text: '이름',
           onChanged: (val) {
             setState(() {
-              newTestData.name = val;
+              newChapter.name = val;
             });
           },
           validator: (val) {
@@ -110,7 +110,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                 ),
                 onPressed: () {
                   if (formkey.currentState!.validate()) {
-                    Navigator.pop(context, newTestData);
+                    Navigator.pop(context, newChapter);
                   }
                 },
               ),
@@ -130,20 +130,20 @@ class _TestInputScreenState extends State<TestInputScreen> {
   }
 
   buildItemListTile() {
-    int len = newTestData.contentList.length;
-    newTestData.contentList.add(Content());
+    int len = newChapter.contentList.length;
+    newChapter.contentList.add(Content());
     TextEditingController textEditingController = TextEditingController();
 
     int tileId = 0;
     for (int i = 0; i < 100; i++) {
       bool flag = false;
       for (int j = 0; j < len + 1; j++)
-        if (newTestData.contentList[j].contentId == i) {
+        if (newChapter.contentList[j].contentId == i) {
           flag = true;
           break;
         }
       if (!flag) {
-        newTestData.contentList[len].contentId = i;
+        newChapter.contentList[len].contentId = i;
         tileId = i;
         break;
       }
@@ -160,13 +160,13 @@ class _TestInputScreenState extends State<TestInputScreen> {
                 controller: textEditingController,
                 onChanged: (val) {
                   int index = 0;
-                  for (int i = 0; i < newTestData.contentList.length; i++)
-                    if (newTestData.contentList[i].contentId == tileId) {
+                  for (int i = 0; i < newChapter.contentList.length; i++)
+                    if (newChapter.contentList[i].contentId == tileId) {
                       index = i;
                       break;
                     }
                   setState(() {
-                    newTestData.contentList[index].name = val;
+                    newChapter.contentList[index].name = val;
                   });
                 },
                 validator: (val) {
@@ -182,9 +182,9 @@ class _TestInputScreenState extends State<TestInputScreen> {
               child: IconButton(
                   icon: Icon(Icons.remove_rounded),
                   onPressed: () {
-                    if (newTestData.contentList.length != 1)
+                    if (newChapter.contentList.length != 1)
                       setState(() {
-                        newTestData.contentList
+                        newChapter.contentList
                             .removeWhere((element) => element.contentId == tileId);
                         itemListTile
                             .removeWhere((element) => element.tileId == tileId);
