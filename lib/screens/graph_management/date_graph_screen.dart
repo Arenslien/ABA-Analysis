@@ -28,6 +28,7 @@ class _DateGraphState extends State<DateGraph> {
   late List<String> _pdfColumn;
   late String _graphType;
   late String _typeValue;
+  late num _averageRate;
   late String _fileName = 'sample';
   late String valueText; // Dialog에서 사용
   bool _isCancle = true;
@@ -36,8 +37,9 @@ class _DateGraphState extends State<DateGraph> {
   @override
   void initState() {
     _chartData = getChartData();
+    _averageRate = _chartData[0].averageRate;
     _tooltipBehavior = TooltipBehavior(enable: true);
-    _pdfColumn = ['하위항목', '성공여부'];
+    _pdfColumn = ['하위목록', '성공여부'];
     _graphType = '날짜';
     _typeValue = '7월13일';
     super.initState();
@@ -91,7 +93,7 @@ class _DateGraphState extends State<DateGraph> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FloatingActionButton.extended(
-                  heroTag: 'btn1', // 버튼 구별을 위한 태그
+                  heroTag: 'export_excel', // 버튼 구별을 위한 태그
                   onPressed: () {
                     exportExcel(_pdfColumn, genPDFData(_chartData));
                   }, // 누르면 엑셀 내보내기
@@ -102,7 +104,7 @@ class _DateGraphState extends State<DateGraph> {
                   width: 20,
                 ),
                 FloatingActionButton.extended(
-                  heroTag: 'btn2', // 버튼 구별을 위한 태그
+                  heroTag: 'export_pdf', // 버튼 구별을 위한 태그
                   onPressed: () {
                     exportPDF(_pdfColumn, genPDFData(_chartData));
                   }, // 누르면 PDF 내보내기
@@ -125,8 +127,8 @@ class _DateGraphState extends State<DateGraph> {
     final excelImg = bytes!.buffer.asUint8List();
     final graphImage = bytes.buffer.asUint8List();
 
-    final xio.Workbook graphWorkbook =
-        genExcel(columns, excelChartData, graphImage, _graphType, _typeValue);
+    final xio.Workbook graphWorkbook = genExcel(columns, excelChartData,
+        graphImage, _graphType, _typeValue, _averageRate);
     final List<int> excelBytes = graphWorkbook.saveAsStream();
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
