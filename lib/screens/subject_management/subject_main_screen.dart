@@ -17,45 +17,98 @@ class SubjectMainScreen extends StatefulWidget {
 class _SubjectMainScreenState extends State<SubjectMainScreen> {
   _SubjectMainScreenState();
   List<Subject> subjectList = [];
+  List<Subject> searchResult = [];
+  TextEditingController searchTextEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: searchBar(),
+      appBar: searchBar(
+        controller: searchTextEditingController,
+        controlSearching: (str) {
+          setState(() {
+            searchResult.clear();
+            for (int i = 0; i < searchResult.length; i++) {
+              bool flag = false;
+              if (searchResult[i].name.contains(str)) flag = true;
+              if (flag) {
+                searchResult.add(subjectList[i]);
+              }
+            }
+          });
+        },
+      ),
       body: subjectList.length == 0
           ? noListData(Icons.library_add_outlined, '과목 추가')
-          : ListView.builder(
-              itemCount: subjectList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return buildListTile(
-                  titleText: subjectList[index].name,
-                  onTap: () {},
-                  trailing: buildToggleButtons(
-                    text: ['적용', '설정'],
-                    onPressed: (idx) async {
-                      if (idx == 0) {
-                        
-                      } else if (idx == 1) {
-                        final Subject? editsubject = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                SubjectModifyScreen(subjectList[index]),
-                          ),
-                        );
-                        if (editsubject != null)
-                          setState(() {
-                            subjectList[index] = editsubject;
-                            if (editsubject.name == null) {
-                              subjectList.removeAt(index);
-                            }
-                          });
-                      }
-                    },
-                  ),
-                );
-              },
-            ),
+          : searchTextEditingController.text.isEmpty
+              ? ListView.builder(
+                  itemCount: subjectList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return buildListTile(
+                      titleText: subjectList[index].name,
+                      onTap: () {},
+                      trailing: buildToggleButtons(
+                        text: ['적용', '설정'],
+                        onPressed: (idx) async {
+                          if (idx == 0) {
+                          } else if (idx == 1) {
+                            final Subject? editSubject = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    SubjectModifyScreen(subjectList[index]),
+                              ),
+                            );
+                            if (editSubject != null)
+                              setState(() {
+                                subjectList[index] = editSubject;
+                                if (editSubject.name == null) {
+                                  subjectList.removeAt(index);
+                                }
+                              });
+                          }
+                        },
+                      ),
+                    );
+                  },
+                )
+              : ListView.builder(
+                  itemCount: searchResult.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return buildListTile(
+                      titleText: searchResult[index].name,
+                      onTap: () {},
+                      trailing: buildToggleButtons(
+                        text: ['적용', '설정'],
+                        onPressed: (idx) async {
+                          if (idx == 0) {
+                          } else if (idx == 1) {
+                            final Subject? editSubject = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    SubjectModifyScreen(searchResult[index]),
+                              ),
+                            );
+                            setState(() {
+                                  searchTextEditingController.text = '';
+                                  subjectList[subjectList.indexWhere((element) =>
+                                          element.subjectId ==
+                                          searchResult[index].subjectId)] =
+                                      editSubject!;
+                                  if (editSubject.name == null) {
+                                    subjectList.removeAt(subjectList.indexWhere(
+                                        (element) =>
+                                            element.subjectId ==
+                                            searchResult[index].subjectId));
+                                  }
+                                });
+                          }
+                        },
+                      ),
+                    );
+                  },
+                ),
       floatingActionButton: FloatingActionButton(
         child: Icon(
           Icons.add_rounded,
@@ -71,6 +124,18 @@ class _SubjectMainScreenState extends State<SubjectMainScreen> {
           if (newsubject != null)
             setState(() {
               subjectList.add(newsubject);
+              for (int i = 0; i < 100; i++) {
+                  bool flag = false;
+                  for (int j = 0; j < subjectList.length; j++)
+                    if (subjectList[j].subjectId == i) {
+                      flag = true;
+                      break;
+                    }
+                  if (!flag) {
+                    subjectList[subjectList.length - 1].subjectId = i;
+                    break;
+                  }
+                }
             });
         },
         backgroundColor: Colors.black,
