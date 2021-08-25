@@ -1,8 +1,8 @@
-import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/components/build_toggle_buttons.dart';
-import 'package:aba_analysis/components/search_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/components/child_data.dart';
+import 'package:aba_analysis/components/search_bar.dart';
+import 'package:aba_analysis/components/build_list_tile.dart';
+import 'package:aba_analysis/components/class/child_class.dart';
+import 'package:aba_analysis/components/build_toggle_buttons.dart';
 
 class DummyTestData {
   // 테스트 데이터 더미 데이터 클래스
@@ -23,8 +23,8 @@ class GraphScreen extends StatefulWidget {
 }
 
 class _GraphScreenState extends State<GraphScreen> {
-  List<ChildData> childData = []; // 순수 아이 데이터
-  ChildData dummy1 = new ChildData();
+  List<Child> childData = []; // 순수 아이 데이터
+  Child dummy1 = new Child();
 
   void initState() {
     super.initState();
@@ -81,7 +81,7 @@ class _GraphScreenState extends State<GraphScreen> {
     );
   }
 
-  Widget dataTile(ChildData childData) {
+  Widget dataTile(Child childData) {
     return buildListTile(
         titleText: childData.name,
         subtitleText: "${childData.age}세",
@@ -94,48 +94,9 @@ class _GraphScreenState extends State<GraphScreen> {
                 '/select_date',
               );
             } else if (index == 1) {
-              Navigator.pushNamed(context, '/select_item');
+              Navigator.pushNamed(context, '/select_program');
             }
           },
         ));
   }
-
-  // Widget childTile(ChildData childData) {
-  //   return ListTile(
-  //     leading: Icon(
-  //       Icons.person,
-  //       size: 50,
-  //     ),
-  //     title: Text(
-  //       childData.name,
-  //       style: TextStyle(fontSize: 25),
-  //     ),
-  //     subtitle: Text(
-  //       "${childData.age}세",
-  //       style: TextStyle(fontSize: 15),
-  //     ),
-  //     trailing: ToggleButtons(
-  //       children: [
-  //         Text('Date Graph'),
-  //         Text('아이템 그래프'),
-  //       ],
-  //       isSelected: [false, false],
-  //       onPressed: (index) {
-  //         if (index == 0) {
-  //           Navigator.pushNamed(
-  //             context,
-  //             '/select_date',
-  //           );
-  //         } else if (index == 1) {
-  //           Navigator.pushNamed(context, '/select_item');
-  //         }
-  //       },
-  //       constraints: BoxConstraints(minWidth: 80, minHeight: 50),
-  //       borderColor: Colors.black,
-  //       fillColor: Colors.white,
-  //       splashColor: Colors.black,
-  //     ),
-  //     dense: true,
-  //   );
-  // }
 }

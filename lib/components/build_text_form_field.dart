@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 Widget buildTextFormField({
   required String text,
   required Function(String)? onChanged,
   required String? Function(String?)? validator,
+  TextEditingController? controller,
   String? hintText,
-  String? initialValue,
   String? inputType,
 }) {
   return Padding(
     padding: const EdgeInsets.all(16.0),
     child: TextFormField(
+      controller: controller,
+      onTap: () {
+        controller?.clear();
+      },
       decoration: InputDecoration(
         labelText: hintText == null ? text : null,
         hintText: hintText,
@@ -28,7 +33,6 @@ Widget buildTextFormField({
       ),
       onChanged: onChanged,
       validator: validator,
-      initialValue: initialValue,
       keyboardType: inputType == 'number' ? TextInputType.number : null,
       inputFormatters: inputType == 'number'
           ? [FilteringTextInputFormatter.allow(RegExp('[0-9]'))]
@@ -36,4 +40,11 @@ Widget buildTextFormField({
       cursorColor: Colors.black,
     ),
   );
+}
+
+class ItemListTile {
+  int? tileId;
+  Widget? tileWidget;
+
+  ItemListTile({this.tileId, this.tileWidget});
 }

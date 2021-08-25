@@ -4,21 +4,34 @@ import 'package:aba_analysis/components/class/child_class.dart';
 
 import 'graph_screen.dart';
 
-class SelectDateScreen extends StatefulWidget {
-  const SelectDateScreen({Key? key}) : super(key: key);
-  static String routeName = '/select_date';
+// select_date 복붙한거라 select_item버전으로 다시 코딩 필요
+class SelectProgramScreen extends StatefulWidget {
+  const SelectProgramScreen({Key? key}) : super(key: key);
+  static String routeName = '/select_program';
 
   @override
-  _SelectDateScreenState createState() => _SelectDateScreenState();
+  _SelectProgramScreenState createState() => _SelectProgramScreenState();
 }
 
-class _SelectDateScreenState extends State<SelectDateScreen> {
+class _SelectProgramScreenState extends State<SelectProgramScreen> {
   List<Child> childData = []; // 순수 아이 데이터
   List<DummyTestData> testData = []; // 테스트 관련 데이터
+  List<String> programList = [
+    '수용언어',
+    '표현언어',
+    '동작모방',
+    '놀이기술',
+    '사회성 기술',
+    '자조기술',
+    '수학',
+    '쓰기',
+    '매칭'
+  ];
   Child dummy1 = new Child();
-  DummyTestData dummy2 = new DummyTestData();
+  late DummyTestData dummy2 = new DummyTestData();
+  DummyTestData dummy3 = new DummyTestData();
 
-  List<String> dateList = [];
+  List<String> lowerList = [];
   List<int> averageList = [];
 
   void initState() {
@@ -31,7 +44,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     dummy1.gender = '남자';
     dummy1.name = '영수';
 
-    dummy2.date = "21.7/11";
+    dummy2.date = "21.7/2";
     dummy2.average = "70";
     dummy2.item.addAll({
       '하위1': '상위1',
@@ -39,44 +52,24 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
       '하위3': '상위2',
       '하위4': '상위2',
     });
-    testData.add(dummy2);
+
+    dummy3.date = "21.8/5";
+    dummy3.average = "50";
+    dummy3.item.addAll({
+      '하위1': '상위1',
+      '하위2': '상위1',
+      '하위3': '상위2',
+      '하위4': '상위2',
+    });
 
     childData.add(dummy1);
-
-    dummy2.date = "21.7/22";
-    dummy2.average = "60";
-    dummy2.item.addAll({
-      '하위1': '상위1',
-      '하위2': '상위1',
-      '하위3': '상위2',
-      '하위4': '상위2',
-    });
     testData.add(dummy2);
+    testData.add(dummy3);
 
-    dummy2.date = "21.7/29";
-    dummy2.average = "30";
-    dummy2.item.addAll({
-      '하위1': '상위1',
-      '하위2': '상위1',
-      '하위3': '상위2',
-      '하위4': '상위2',
-    });
-    testData.add(dummy2);
-
-    dummy2.date = "21.8/5";
-    dummy2.average = "80";
-    dummy2.item.addAll({
-      '하위1': '상위1',
-      '하위2': '상위1',
-      '하위3': '상위2',
-      '하위4': '상위2',
-    });
-    testData.add(dummy2);
-
-    dateList.add("2021년7월11일");
-    dateList.add("2021년7월22일");
-    dateList.add("2021년7월29일");
-    dateList.add("2021년8월5일");
+    lowerList.add('하위1');
+    lowerList.add('하위2');
+    lowerList.add('하위3');
+    lowerList.add('하위4');
 
     averageList.add(70);
     averageList.add(60);
@@ -88,7 +81,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${dummy1.name}의 날짜 선택'),
+        title: Text('${dummy1.name}의 프로그램 영역 선택'),
         backgroundColor: Colors.grey,
         centerTitle: true,
         leading: IconButton(
@@ -97,15 +90,13 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
             },
             icon: Icon(Icons.arrow_back)),
       ), // 검색 필요X
-
-// 검색 필요X
-      body: testData.length == 0
+      body: childData.length == 0
           ? noTestData()
           : ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: testData.length,
+              itemCount: programList.length,
               itemBuilder: (BuildContext context, int index) {
-                return dataTile(dateList[index], averageList[index], index);
+                return dataTile(programList[index], index);
               },
             ),
     );
@@ -134,13 +125,13 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     );
   }
 
-  Widget dataTile(String lower, int average, int index) {
+  Widget dataTile(String programName, int index) {
     return buildListTile(
-      titleText: lower,
-      subtitleText: "평균성공률: $average%",
+      titleText: programName,
+//      subtitleText: "평균성공률: $average%",
       onTap: () {
         Navigator.pushNamed(context,
-            '/date_graph'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
+            '/select_item'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
       },
       trailing: Icon(Icons.keyboard_arrow_right),
     );

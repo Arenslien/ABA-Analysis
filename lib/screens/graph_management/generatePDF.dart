@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-final pdf = pw.Document();
 PdfColor _darkColor = PdfColor.fromInt(0xff242424); // 까만색
 PdfColor _lightColor = PdfColor.fromInt(0xff9D9D9D);
 PdfColor baseColor = PdfColor.fromInt(0xffD32D2D);
@@ -17,9 +16,13 @@ pw.Document genPDF(
     List<String> columns,
     List<List<String>> tableData,
     pw.MemoryImage image,
-    ByteData ttf) {
+    ByteData ttf,
+    String _graphType,
+    String _typeValue) {
   pw.PageTheme pageTheme = _myPageTheme(PdfPageFormat.a4); // PDF theme 받아옴
-  pw.Widget headerWidget = pdfHeader(ttf); // PDF header 받아옴
+  pw.Widget headerWidget =
+      pdfHeader(ttf, _graphType, _typeValue); // PDF header 받아옴
+  final pdf = pw.Document();
   pdf.addPage(pw.MultiPage(
       pageTheme: pageTheme,
       build: (pw.Context context) {
@@ -57,18 +60,24 @@ pw.Document genPDF(
               ),
             ),
             headers: List<String>.generate(
-              columns.length,
+              columns.length + 1,
               (col) {
-                return columns[col];
-                // return columns[col];
+                if (col == 0) {
+                  return _graphType;
+                } else {
+                  return columns[col - 1];
+                }
               },
             ),
             data: List<List<String>>.generate(
               tableData.length,
               (row) => List<String>.generate(
-                columns.length,
+                columns.length + 1,
                 (col) {
-                  return tableData[row][col];
+                  if (col == 0) {
+                    return _typeValue;
+                  }
+                  return tableData[row][col - 1];
                 },
               ),
             ),
@@ -134,7 +143,7 @@ pw.PageTheme _myPageTheme(PdfPageFormat format) {
 }
 
 //pdf header body
-pw.Widget pdfHeader(ByteData ttf) {
+pw.Widget pdfHeader(ByteData ttf, String _graphType, String _typeValue) {
   print(ttf);
   return pw.Container(
       decoration: pw.BoxDecoration(
@@ -148,7 +157,7 @@ pw.Widget pdfHeader(ByteData ttf) {
           crossAxisAlignment: pw.CrossAxisAlignment.center,
           children: [
             pw.Text(
-              "<영수의 항목별 그래프>",
+              "<영수의 " + _graphType + "별 그래프>",
               style: pw.TextStyle(
                 fontSize: 32,
                 color: _darkColor,

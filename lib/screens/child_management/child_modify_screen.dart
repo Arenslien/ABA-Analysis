@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/components/child_data.dart';
+import 'package:aba_analysis/components/class/child_class.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class ChildModifyScreen extends StatefulWidget {
-  const ChildModifyScreen(this.childData, {Key? key}) : super(key: key);
-  final ChildData childData;
+  const ChildModifyScreen(this.child, {Key? key}) : super(key: key);
+  final Child child;
   @override
-  _ChildModifyScreenState createState() => _ChildModifyScreenState(childData);
+  _ChildModifyScreenState createState() => _ChildModifyScreenState(child);
 }
 
 class _ChildModifyScreenState extends State<ChildModifyScreen> {
-  _ChildModifyScreenState(this.childData);
+  _ChildModifyScreenState(this.child);
 
-  final ChildData childData;
+  final Child child;
   final formkey = GlobalKey<FormState>();
-  ChildData newChildData = ChildData();
+  Child newChild = Child();
   List<bool> gender = [false, false];
 
   @override
   void initState() {
     super.initState();
-    newChildData.name = childData.name;
-    newChildData.age = childData.age;
-    newChildData.gender = childData.gender;
-    newChildData.testData = childData.testData;
-    gender[childData.gender == '남자' ? 0 : 1] = true;
+    newChild.name = child.name;
+    newChild.age = child.age;
+    newChild.gender = child.gender;
+    newChild.chapterList = child.chapterList;
+    gender[child.gender == '남자' ? 0 : 1] = true;
   }
 
   @override
@@ -37,7 +37,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              '아동 정보 수정',
+              '아동 수정',
               style: TextStyle(color: Colors.black),
             ),
             centerTitle: true,
@@ -57,7 +57,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  Navigator.pop(context, ChildData());
+                  Navigator.pop(context, Child());
                 },
               ),
               IconButton(
@@ -67,7 +67,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                 ),
                 onPressed: () {
                   if (formkey.currentState!.validate()) {
-                    Navigator.pop(context, newChildData);
+                    Navigator.pop(context, newChild);
                   }
                 },
               ),
@@ -79,9 +79,10 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
             children: [
               buildTextFormField(
                 text: '이름',
+                controller: TextEditingController(text: newChild.name),
                 onChanged: (val) {
                   setState(() {
-                    newChildData.name = val;
+                    newChild.name = val;
                   });
                 },
                 validator: (val) {
@@ -90,13 +91,13 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                   }
                   return null;
                 },
-                initialValue: newChildData.name,
               ),
               buildTextFormField(
                 text: '생년월일',
+                controller: TextEditingController(text: newChild.age),
                 onChanged: (val) {
                   setState(() {
-                    newChildData.age = val;
+                    newChild.age = val;
                   });
                 },
                 validator: (val) {
@@ -105,7 +106,6 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                   }
                   return null;
                 },
-                initialValue: newChildData.age,
                 inputType: 'number',
               ),
               Padding(
@@ -117,9 +117,9 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                     if (!gender[index])
                       setState(() {
                         if (index == 0)
-                          newChildData.gender = '남자';
+                          newChild.gender = '남자';
                         else
-                          newChildData.gender = '여자';
+                          newChild.gender = '여자';
                         for (int buttonIndex = 0;
                             buttonIndex < gender.length;
                             buttonIndex++) {

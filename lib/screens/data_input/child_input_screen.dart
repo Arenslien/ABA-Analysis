@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/components/child_data.dart';
+import 'package:aba_analysis/components/class/child_class.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
@@ -14,7 +14,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
   _ChildInputScreenState();
 
   final formkey = GlobalKey<FormState>();
-  ChildData newChildData = ChildData();
+  Child newChild = Child();
   final List<bool> gender = [false, false];
   bool? isGenderSelected;
 
@@ -53,7 +53,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                     });
                   if (formkey.currentState!.validate() &&
                       isGenderSelected!) {
-                    Navigator.pop(context, newChildData);
+                    Navigator.pop(context, newChild);
                   }
                 },
               ),
@@ -67,7 +67,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                 text: '이름',
                 onChanged: (val) {
                   setState(() {
-                    newChildData.name = val;
+                    newChild.name = val;
                   });
                 },
                 validator: (val) {
@@ -81,7 +81,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                 text: '생년월일',
                 onChanged: (val) {
                   setState(() {
-                    newChildData.age = val;
+                    newChild.age = val;
                   });
                 },
                 validator: (val) {
@@ -102,9 +102,9 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                       setState(() {
                         isGenderSelected = true;
                         if (index == 0)
-                          newChildData.gender = '남자';
+                          newChild.gender = '남자';
                         else
-                          newChildData.gender = '여자';
+                          newChild.gender = '여자';
                         for (int buttonIndex = 0;
                             buttonIndex < gender.length;
                             buttonIndex++) {
