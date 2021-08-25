@@ -1,34 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/components/test_data.dart';
+import 'package:aba_analysis/components/class/chapter_class.dart';
+import 'package:aba_analysis/components/class/content_class.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
-class TestDataModifyScreen extends StatefulWidget {
-  const TestDataModifyScreen(this.testData, {Key? key}) : super(key: key);
-  final TestData testData;
+class ChapterInputScreen extends StatefulWidget {
+  const ChapterInputScreen({Key? key}) : super(key: key);
+
   @override
-  _TestDataModifyScreenState createState() =>
-      _TestDataModifyScreenState(testData);
+  _ChapterInputScreenState createState() => _ChapterInputScreenState();
 }
 
-class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
-  _TestDataModifyScreenState(this.testData);
-  final TestData testData;
+class _ChapterInputScreenState extends State<ChapterInputScreen> {
+  _ChapterInputScreenState();
+
   final formkey = GlobalKey<FormState>();
-  TestData newTestData = TestData();
+  Chapter newChapter = Chapter();
   List<ItemListTile> itemListTile = [];
 
   @override
   void initState() {
     super.initState();
-    newTestData.date = testData.date;
-    newTestData.name = testData.name;
     itemListTile.add(
       ItemListTile(
         tileWidget: buildTextFormField(
           text: '날짜',
           onChanged: (val) {
             setState(() {
-              newTestData.date = val;
+              newChapter.date = val;
             });
           },
           validator: (val) {
@@ -38,7 +36,6 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
             return null;
           },
           inputType: 'number',
-          initialValue: newTestData.date,
         ),
       ),
     );
@@ -48,7 +45,7 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
           text: '이름',
           onChanged: (val) {
             setState(() {
-              newTestData.name = val;
+              newChapter.name = val;
             });
           },
           validator: (val) {
@@ -57,7 +54,6 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
             }
             return null;
           },
-          initialValue: newTestData.name,
         ),
       ),
     );
@@ -72,7 +68,7 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
                 icon: Icon(Icons.add_rounded),
                 onPressed: () {
                   setState(() {
-                    buildItemListTile(newTestData.itemList.length);
+                    buildItemListTile();
                   });
                 },
               ),
@@ -81,13 +77,7 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
         ),
       ),
     );
-    for (int i = 0; i < testData.itemList.length; i++) {
-      newTestData.itemList.add(Item());
-      newTestData.itemList[i].name = testData.itemList[i].name;
-      newTestData.itemList[i].result = testData.itemList[i].result;
-      newTestData.itemList[i].itemId = testData.itemList[i].itemId;
-      buildItemListTile(i);
-    }
+    buildItemListTile();
   }
 
   @override
@@ -99,7 +89,7 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              '테스트 설정',
+              '테스트 추가',
               style: TextStyle(color: Colors.black),
             ),
             centerTitle: true,
@@ -115,21 +105,12 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
             actions: [
               IconButton(
                 icon: Icon(
-                  Icons.delete,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  Navigator.pop(context, TestData());
-                },
-              ),
-              IconButton(
-                icon: Icon(
                   Icons.check_rounded,
                   color: Colors.black,
                 ),
                 onPressed: () {
                   if (formkey.currentState!.validate()) {
-                    Navigator.pop(context, newTestData);
+                    Navigator.pop(context, newChapter);
                   }
                 },
               ),
@@ -148,32 +129,25 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
     );
   }
 
-  buildItemListTile(int index) {
-    if (index >= newTestData.itemList.length) newTestData.itemList.add(Item());
-    TextEditingController textEditingController =
-        TextEditingController(text: newTestData.itemList[index].name);
+  buildItemListTile() {
+    int len = newChapter.contentList.length;
+    newChapter.contentList.add(Content());
+    TextEditingController textEditingController = TextEditingController();
 
-    int? tileId = newTestData.itemList[index].itemId;
-    if (tileId == null) {
-      for (int i = 0; i < 100; i++) {
-        bool flag = false;
-        for (int j = 0; j < newTestData.itemList.length; j++) {
-          if (newTestData.itemList[j].itemId == null) {
-            break;
-          }
-          if (newTestData.itemList[j].itemId == i) {
-            flag = true;
-            break;
-          }
-        }
-        if (!flag) {
-          newTestData.itemList[index].itemId = i;
-          tileId = i;
+    int tileId = 0;
+    for (int i = 0; i < 100; i++) {
+      bool flag = false;
+      for (int j = 0; j < len + 1; j++)
+        if (newChapter.contentList[j].contentId == i) {
+          flag = true;
           break;
         }
+      if (!flag) {
+        newChapter.contentList[len].contentId = i;
+        tileId = i;
+        break;
       }
     }
-
     itemListTile.add(
       ItemListTile(
         tileId: tileId,
@@ -185,14 +159,14 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
                 hintText: '테스트 이름을 입력하세요.$tileId',
                 controller: textEditingController,
                 onChanged: (val) {
-                  int idx = 0;
-                  for (int i = 0; i < newTestData.itemList.length; i++)
-                    if (newTestData.itemList[i].itemId == tileId) {
-                      idx = i;
+                  int index = 0;
+                  for (int i = 0; i < newChapter.contentList.length; i++)
+                    if (newChapter.contentList[i].contentId == tileId) {
+                      index = i;
                       break;
                     }
                   setState(() {
-                    newTestData.itemList[idx].name = val;
+                    newChapter.contentList[index].name = val;
                   });
                 },
                 validator: (val) {
@@ -208,10 +182,10 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
               child: IconButton(
                   icon: Icon(Icons.remove_rounded),
                   onPressed: () {
-                    if (newTestData.itemList.length != 1)
+                    if (newChapter.contentList.length != 1)
                       setState(() {
-                        newTestData.itemList
-                            .removeWhere((element) => element.itemId == tileId);
+                        newChapter.contentList
+                            .removeWhere((element) => element.contentId == tileId);
                         itemListTile
                             .removeWhere((element) => element.tileId == tileId);
                       });
@@ -223,3 +197,14 @@ class _TestDataModifyScreenState extends State<TestDataModifyScreen> {
     );
   }
 }
+
+// IconButton(
+//                 icon: Icon(Icons.remove_rounded),
+//                 onPressed: () {
+//                   if (newTestData.testList.length != 1)
+//                     setState(() {
+//                       newTestData.testList.removeLast();
+//                       testListTile.removeLast();
+//                     });
+//                 },
+//               )
