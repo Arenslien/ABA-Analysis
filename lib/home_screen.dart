@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:aba_analysis/screens/setting/setting_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_main_screen.dart';
-import 'package:aba_analysis/screens/graph_management/select_date_graph_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

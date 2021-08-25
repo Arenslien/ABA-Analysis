@@ -1,7 +1,9 @@
-import 'package:aba_analysis/services/auth.dart';
+import 'package:aba_analysis/components/setting/setting_screen.dart/body.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:flutter/material.dart';
 
 class SettingScreen extends StatefulWidget {
+  static String routeName = '/auth';
   const SettingScreen({ Key? key }) : super(key: key);
 
   @override
@@ -9,26 +11,16 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-
-  final AuthService _auth = AuthService();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: mainGreenColor,
       appBar: AppBar(
-        title: Text('Setting'),
+        backgroundColor: mainGreenColor,
+        title: Text('내 정보', style: TextStyle(color: Colors.white),),
+        centerTitle: false,
       ),
-      body: Column(
-        children: [
-          ElevatedButton.icon(
-            icon: Icon(Icons.person), 
-            label: Text('Log out'),
-            onPressed: () async {
-              await _auth.signOut();
-            },
-          )
-        ],
-      ),
+      body: Body(),
     );
   }
 }

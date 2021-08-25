@@ -1,3 +1,4 @@
+import 'package:aba_analysis/constants.dart';
 import 'package:flutter/material.dart';
 
 class AuthDefaultButton extends StatelessWidget {
@@ -11,7 +12,7 @@ class AuthDefaultButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: Colors.green,
+        primary: Colors.green[300],
         minimumSize: Size(double.infinity, 60),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(40),
