@@ -31,9 +31,9 @@ AppBar searchBar({
           onPressed: onPressed,
         ),
       ),
+      onChanged: controlSearching,
       cursorColor: Colors.black,
       style: TextStyle(fontSize: 18, color: Colors.black),
-      onChanged: controlSearching,
     ),
     backgroundColor: Colors.white,
   );
