@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/rendering.dart';
 
 Widget buildTextFormField({
   required String text,
@@ -42,9 +42,9 @@ Widget buildTextFormField({
   );
 }
 
-class ItemListTile {
+class ContentListTile {
   int? tileId;
   Widget? tileWidget;
 
-  ItemListTile({this.tileId, this.tileWidget});
+  ContentListTile({this.tileId, this.tileWidget});
 }

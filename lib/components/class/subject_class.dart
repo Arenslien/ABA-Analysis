@@ -4,7 +4,7 @@ class Subject {
   int? subjectId;
   String? name;
 
-  List<Chapter> capterList = [];
+  List<Chapter> chapterList = [];
 
   Subject();
 }

@@ -1,8 +1,9 @@
 import 'content_class.dart';
 
 class Chapter {
+  int? chapterId;
   String date = '';
-  String name = 'default';
+  String? name;
   List<Content> contentList = [];
 
   Chapter();

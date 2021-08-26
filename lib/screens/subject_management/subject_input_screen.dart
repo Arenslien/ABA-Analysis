@@ -14,7 +14,7 @@ class _SubjectInputScreenState extends State<SubjectInputScreen> {
 
   final formkey = GlobalKey<FormState>();
   Subject newSubject = Subject();
-  List<ItemListTile> itemListTile = [];
+  List<ContentListTile> itemListTile = [];
 
   @override
   Widget build(BuildContext context) {

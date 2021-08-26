@@ -5,7 +5,7 @@ import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/class/content_class.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
-import 'package:aba_analysis/screens/data_input/chapter_input_screen.dart';
+import 'package:aba_analysis/screens/chapter_management/chapter_input_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_get_result_screen.dart';
 import 'package:aba_analysis/screens/child_management/t.dart';
 

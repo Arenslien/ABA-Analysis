@@ -4,7 +4,8 @@ import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/class/subject_class.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
-import 'package:aba_analysis/screens/data_input/subject_input_screen.dart';
+import 'package:aba_analysis/screens/chapter_management/chapter_main_screen.dart';
+import 'package:aba_analysis/screens/subject_management/subject_input_screen.dart';
 import 'package:aba_analysis/screens/subject_management/subject_modify_screen.dart';
 
 class SubjectMainScreen extends StatefulWidget {
@@ -52,9 +53,17 @@ class _SubjectMainScreenState extends State<SubjectMainScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       return buildListTile(
                         titleText: subjectList[index].name,
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ChapterMainScreen(subjectList[index]),
+                            ),
+                          );
+                        },
                         trailing: buildToggleButtons(
-                          text: ['적용', '설정'],
+                          text: ['미정', '설정'],
                           onPressed: (idx) async {
                             if (idx == 0) {
                             } else if (idx == 1) {
@@ -85,7 +94,7 @@ class _SubjectMainScreenState extends State<SubjectMainScreen> {
                         titleText: searchResult[index].name,
                         onTap: () {},
                         trailing: buildToggleButtons(
-                          text: ['적용', '설정'],
+                          text: ['미정', '설정'],
                           onPressed: (idx) async {
                             if (idx == 0) {
                             } else if (idx == 1) {
@@ -121,15 +130,15 @@ class _SubjectMainScreenState extends State<SubjectMainScreen> {
             size: 40,
           ),
           onPressed: () async {
-            final Subject? newsubject = await Navigator.push(
+            final Subject? newSubject = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => SubjectInputScreen(),
               ),
             );
-            if (newsubject != null)
+            if (newSubject != null)
               setState(() {
-                subjectList.add(newsubject);
+                subjectList.add(newSubject);
                 for (int i = 0; i < 100; i++) {
                   bool flag = false;
                   for (int j = 0; j < subjectList.length; j++)
