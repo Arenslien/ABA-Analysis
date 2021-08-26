@@ -2,7 +2,7 @@ import 'package:aba_analysis/components/class/chapter_class.dart';
 
 class Subject {
   int? subjectId;
-  String name = '';
+  String? name;
 
   List<Chapter> capterList = [];
 

@@ -24,20 +24,24 @@ class _SubjectMainScreenState extends State<SubjectMainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: searchBar(
-        controller: searchTextEditingController,
-        controlSearching: (str) {
-          setState(() {
-            searchResult.clear();
-            for (int i = 0; i < searchResult.length; i++) {
-              bool flag = false;
-              if (searchResult[i].name.contains(str)) flag = true;
-              if (flag) {
-                searchResult.add(subjectList[i]);
+          controller: searchTextEditingController,
+          controlSearching: (str) {
+            setState(() {
+              searchResult.clear();
+              for (int i = 0; i < searchResult.length; i++) {
+                bool flag = false;
+                if (searchResult[i].name!.contains(str)) flag = true;
+                if (flag) {
+                  searchResult.add(subjectList[i]);
+                }
               }
-            }
-          });
-        },
-      ),
+            });
+          },
+          onPressed: () {
+            setState(() {
+              searchTextEditingController.clear();
+            });
+          }),
       body: subjectList.length == 0
           ? noListData(Icons.library_add_outlined, '과목 추가')
           : searchTextEditingController.text.isEmpty
@@ -91,18 +95,18 @@ class _SubjectMainScreenState extends State<SubjectMainScreen> {
                               ),
                             );
                             setState(() {
-                                  searchTextEditingController.text = '';
-                                  subjectList[subjectList.indexWhere((element) =>
-                                          element.subjectId ==
-                                          searchResult[index].subjectId)] =
-                                      editSubject!;
-                                  if (editSubject.name == null) {
-                                    subjectList.removeAt(subjectList.indexWhere(
-                                        (element) =>
-                                            element.subjectId ==
-                                            searchResult[index].subjectId));
-                                  }
-                                });
+                              searchTextEditingController.text = '';
+                              subjectList[subjectList.indexWhere((element) =>
+                                      element.subjectId ==
+                                      searchResult[index].subjectId)] =
+                                  editSubject!;
+                              if (editSubject.name == null) {
+                                subjectList.removeAt(subjectList.indexWhere(
+                                    (element) =>
+                                        element.subjectId ==
+                                        searchResult[index].subjectId));
+                              }
+                            });
                           }
                         },
                       ),
@@ -125,17 +129,17 @@ class _SubjectMainScreenState extends State<SubjectMainScreen> {
             setState(() {
               subjectList.add(newsubject);
               for (int i = 0; i < 100; i++) {
-                  bool flag = false;
-                  for (int j = 0; j < subjectList.length; j++)
-                    if (subjectList[j].subjectId == i) {
-                      flag = true;
-                      break;
-                    }
-                  if (!flag) {
-                    subjectList[subjectList.length - 1].subjectId = i;
+                bool flag = false;
+                for (int j = 0; j < subjectList.length; j++)
+                  if (subjectList[j].subjectId == i) {
+                    flag = true;
                     break;
                   }
+                if (!flag) {
+                  subjectList[subjectList.length - 1].subjectId = i;
+                  break;
                 }
+              }
             });
         },
         backgroundColor: Colors.black,

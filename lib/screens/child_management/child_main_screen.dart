@@ -26,21 +26,25 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: searchBar(
-          controller: searchTextEditingController,
-          controlSearching: (str) {
-            setState(() {
-              searchResult.clear();
-              for (int i = 0; i < childList.length; i++) {
-                bool flag = false;
-                if (childList[i].age.contains(str)) flag = true;
-                if (childList[i].name.contains(str)) flag = true;
-                if (flag) {
-                  searchResult.add(childList[i]);
+            controller: searchTextEditingController,
+            controlSearching: (str) {
+              setState(() {
+                searchResult.clear();
+                for (int i = 0; i < childList.length; i++) {
+                  bool flag = false;
+                  if (childList[i].age.contains(str)) flag = true;
+                  if (childList[i].name.contains(str)) flag = true;
+                  if (flag) {
+                    searchResult.add(childList[i]);
+                  }
                 }
-              }
-            });
-          },
-        ),
+              });
+            },
+            onPressed: () {
+              setState(() {
+                searchTextEditingController.clear();
+              });
+            }),
         body: childList.length == 0
             ? noListData(Icons.group, '아동 추가')
             : searchTextEditingController.text.isEmpty
