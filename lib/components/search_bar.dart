@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 AppBar searchBar({
   TextEditingController? controller,
   Function(String)? controlSearching,
+  Function()? onPressed,
 }) {
   return AppBar(
     title: TextFormField(
@@ -27,14 +28,12 @@ AppBar searchBar({
             Icons.clear,
             color: Colors.black,
           ),
-          onPressed: () {
-            controller?.clear();
-          },
+          onPressed: onPressed,
         ),
       ),
+      onChanged: controlSearching,
       cursorColor: Colors.black,
       style: TextStyle(fontSize: 18, color: Colors.black),
-      onChanged: controlSearching,
     ),
     backgroundColor: Colors.white,
   );

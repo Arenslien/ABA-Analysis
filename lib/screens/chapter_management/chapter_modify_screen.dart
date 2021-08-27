@@ -3,34 +3,34 @@ import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/class/content_class.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
-class T extends StatefulWidget {
-  const T(this.testData, {Key? key}) : super(key: key);
-  final Chapter testData;
+class ChapterModifyScreen extends StatefulWidget {
+  const ChapterModifyScreen(this.chapter, {Key? key}) : super(key: key);
+  final Chapter chapter;
   @override
-  _TState createState() =>
-      _TState(testData);
+  _ChapterModifyScreenState createState() =>
+      _ChapterModifyScreenState(chapter);
 }
 
-class _TState extends State<T> {
-  _TState(this.testData);
-  final Chapter testData;
+class _ChapterModifyScreenState extends State<ChapterModifyScreen> {
+  _ChapterModifyScreenState(this.chapter);
+  final Chapter chapter;
   final formkey = GlobalKey<FormState>();
-  Chapter newTestData = Chapter();
-  List<ItemListTile> itemListTile = [];
+  Chapter newChapter = Chapter();
+  List<ContentListTile> contentListTile = [];
 
   @override
   void initState() {
     super.initState();
-    newTestData.date = testData.date;
-    newTestData.name = testData.name;
-    itemListTile.add(
-      ItemListTile(
+    newChapter.date = chapter.date;
+    newChapter.name = chapter.name;
+    contentListTile.add(
+      ContentListTile(
         tileWidget: buildTextFormField(
           text: '날짜',
-          controller: TextEditingController(text: newTestData.date),
+          controller: TextEditingController(text: newChapter.date),
           onChanged: (val) {
             setState(() {
-              newTestData.date = val;
+              newChapter.date = val;
             });
           },
           validator: (val) {
@@ -43,14 +43,14 @@ class _TState extends State<T> {
         ),
       ),
     );
-    itemListTile.add(
-      ItemListTile(
+    contentListTile.add(
+      ContentListTile(
         tileWidget: buildTextFormField(
           text: '이름',
-          controller: TextEditingController(text: newTestData.name),
+          controller: TextEditingController(text: newChapter.name),
           onChanged: (val) {
             setState(() {
-              newTestData.name = val;
+              newChapter.name = val;
             });
           },
           validator: (val) {
@@ -62,18 +62,18 @@ class _TState extends State<T> {
         ),
       ),
     );
-    itemListTile.add(
-      ItemListTile(
+    contentListTile.add(
+      ContentListTile(
         tileWidget: Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: Row(
             children: [
-              Text('Test List'),
+              Text('내용 목록'),
               IconButton(
                 icon: Icon(Icons.add_rounded),
                 onPressed: () {
                   setState(() {
-                    buildItemListTile(newTestData.contentList.length);
+                    buildItemListTile(newChapter.contentList.length);
                   });
                 },
               ),
@@ -82,11 +82,11 @@ class _TState extends State<T> {
         ),
       ),
     );
-    for (int i = 0; i < testData.contentList.length; i++) {
-      newTestData.contentList.add(Content());
-      newTestData.contentList[i].name = testData.contentList[i].name;
-      newTestData.contentList[i].result = testData.contentList[i].result;
-      newTestData.contentList[i].contentId = testData.contentList[i].contentId;
+    for (int i = 0; i < chapter.contentList.length; i++) {
+      newChapter.contentList.add(Content());
+      newChapter.contentList[i].name = chapter.contentList[i].name;
+      newChapter.contentList[i].result = chapter.contentList[i].result;
+      newChapter.contentList[i].contentId = chapter.contentList[i].contentId;
       buildItemListTile(i);
     }
   }
@@ -100,7 +100,7 @@ class _TState extends State<T> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              '테스트 설정',
+              '챕터 설정',
               style: TextStyle(color: Colors.black),
             ),
             centerTitle: true,
@@ -130,7 +130,7 @@ class _TState extends State<T> {
                 ),
                 onPressed: () {
                   if (formkey.currentState!.validate()) {
-                    Navigator.pop(context, newTestData);
+                    Navigator.pop(context, newChapter);
                   }
                 },
               ),
@@ -139,9 +139,9 @@ class _TState extends State<T> {
             elevation: 0,
           ),
           body: ListView.builder(
-            itemCount: itemListTile.length,
+            itemCount: contentListTile.length,
             itemBuilder: (BuildContext context, int index) {
-              return itemListTile[index].tileWidget!;
+              return contentListTile[index].tileWidget!;
             },
           ),
         ),
@@ -150,50 +150,50 @@ class _TState extends State<T> {
   }
 
   buildItemListTile(int index) {
-    if (index >= newTestData.contentList.length) newTestData.contentList.add(Content());
+    if (index >= newChapter.contentList.length) newChapter.contentList.add(Content());
     TextEditingController textEditingController =
-        TextEditingController(text: newTestData.contentList[index].name);
+        TextEditingController(text: newChapter.contentList[index].name);
 
-    int? tileId = newTestData.contentList[index].contentId;
+    int? tileId = newChapter.contentList[index].contentId;
     if (tileId == null) {
       for (int i = 0; i < 100; i++) {
         bool flag = false;
-        for (int j = 0; j < newTestData.contentList.length; j++) {
-          if (newTestData.contentList[j].contentId == null) {
+        for (int j = 0; j < newChapter.contentList.length; j++) {
+          if (newChapter.contentList[j].contentId == null) {
             break;
           }
-          if (newTestData.contentList[j].contentId == i) {
+          if (newChapter.contentList[j].contentId == i) {
             flag = true;
             break;
           }
         }
         if (!flag) {
-          newTestData.contentList[index].contentId = i;
+          newChapter.contentList[index].contentId = i;
           tileId = i;
           break;
         }
       }
     }
 
-    itemListTile.add(
-      ItemListTile(
+    contentListTile.add(
+      ContentListTile(
         tileId: tileId,
         tileWidget: Row(
           children: [
             Flexible(
               child: buildTextFormField(
                 text: textEditingController.text,
-                hintText: '테스트 이름을 입력하세요.$tileId',
+                hintText: '콘텐츠 이름을 입력하세요.',
                 controller: textEditingController,
                 onChanged: (val) {
                   int idx = 0;
-                  for (int i = 0; i < newTestData.contentList.length; i++)
-                    if (newTestData.contentList[i].contentId == tileId) {
+                  for (int i = 0; i < newChapter.contentList.length; i++)
+                    if (newChapter.contentList[i].contentId == tileId) {
                       idx = i;
                       break;
                     }
                   setState(() {
-                    newTestData.contentList[idx].name = val;
+                    newChapter.contentList[idx].name = val;
                   });
                 },
                 validator: (val) {
@@ -209,11 +209,11 @@ class _TState extends State<T> {
               child: IconButton(
                   icon: Icon(Icons.remove_rounded),
                   onPressed: () {
-                    if (newTestData.contentList.length != 1)
+                    if (newChapter.contentList.length != 1)
                       setState(() {
-                        newTestData.contentList
+                        newChapter.contentList
                             .removeWhere((element) => element.contentId == tileId);
-                        itemListTile
+                        contentListTile
                             .removeWhere((element) => element.tileId == tileId);
                       });
                   }),

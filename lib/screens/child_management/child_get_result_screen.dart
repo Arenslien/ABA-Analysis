@@ -1,26 +1,23 @@
+import 'package:aba_analysis/components/class/subject_class.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/components/class/child_class.dart';
+import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 
 class ChildGetResultScreen extends StatefulWidget {
-  const ChildGetResultScreen({
-    Key? key,
-    required this.child,
-    required this.index,
-  }) : super(key: key);
-  final Child child;
-  final int index;
-
+  const ChildGetResultScreen(this.subject, this.chapter, {Key? key})
+      : super(key: key);
+  final Subject subject;
+  final Chapter chapter;
   @override
   _ChildGetResultScreenState createState() =>
-      _ChildGetResultScreenState(child, index);
+      _ChildGetResultScreenState(subject, chapter);
 }
 
 class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
-  _ChildGetResultScreenState(this.child, this.index);
-  final Child child;
-  final int index;
+  _ChildGetResultScreenState(this.subject, this.chapter);
+  final Subject subject;
+  final Chapter chapter;
   List<String?> originalContentResult = [];
   List<List<bool>> contentValue = [];
   List<bool> isContentValueSelected = [];
@@ -28,41 +25,38 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < child.chapterList[index].contentList.length; i++) {
-      if (child.chapterList[index].contentList[i].result == '+')
+    for (int i = 0; i < chapter.contentList.length; i++) {
+      if (chapter.contentList[i].result == '+')
         contentValue.add([true, false, false]);
-      else if (child.chapterList[index].contentList[i].result == '-')
+      else if (chapter.contentList[i].result == '-')
         contentValue.add([false, true, false]);
-      else if (child.chapterList[index].contentList[i].result == 'P')
+      else if (chapter.contentList[i].result == 'P')
         contentValue.add([false, false, true]);
       else
         contentValue.add([false, false, false]);
-      originalContentResult
-          .add(child.chapterList[index].contentList[i].result);
-      isContentValueSelected.add(
-          child.chapterList[index].contentList[i].result == ''
-              ? false
-              : true);
-      countResult(child.chapterList[index].contentList[i].name!, i);
+      originalContentResult.add(chapter.contentList[i].result);
+      isContentValueSelected
+          .add(chapter.contentList[i].result == '' ? false : true);
+      countResult(chapter.contentList[i].name!, i);
     }
   }
 
-  void countResult(String itemName, int i) {
-    child.chapterList[index].contentList[i].countPlus = 0;
-    child.chapterList[index].contentList[i].countMinus = 0;
-    child.chapterList[index].contentList[i].countP = 0;
-    for (int p = 0; p < child.chapterList.length; p++) {
-      for (int q = 0; q < child.chapterList[p].contentList.length; q++) {
-        if (itemName == child.chapterList[p].contentList[q].name)
-          switch (child.chapterList[p].contentList[q].result) {
+  void countResult(String contentName, int index) {
+    chapter.contentList[index].countPlus = 0;
+    chapter.contentList[index].countMinus = 0;
+    chapter.contentList[index].countP = 0;
+    for (int p = 0; p < subject.chapterList.length; p++) {
+      for (int q = 0; q < subject.chapterList[p].contentList.length; q++) {
+        if (contentName == subject.chapterList[p].contentList[q].name)
+          switch (subject.chapterList[p].contentList[q].result) {
             case '+':
-              child.chapterList[index].contentList[i].countPlus++;
+              chapter.contentList[index].countPlus++;
               break;
             case '-':
-              child.chapterList[index].contentList[i].countMinus++;
+              chapter.contentList[index].countMinus++;
               break;
             case 'P':
-              child.chapterList[index].contentList[i].countP++;
+              chapter.contentList[index].countP++;
               break;
             default:
           }
@@ -75,7 +69,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '${child.name} - ${child.chapterList[index].name}',
+          'child.name',
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -86,11 +80,8 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
           ),
           onPressed: () {
             setState(() {
-              for (int i = 0;
-                  i < child.chapterList[index].contentList.length;
-                  i++) {
-                child.chapterList[index].contentList[i].result =
-                    originalContentResult[i];
+              for (int i = 0; i < chapter.contentList.length; i++) {
+                chapter.contentList[i].result = originalContentResult[i];
               }
             });
             Navigator.pop(context);
@@ -104,9 +95,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
             ),
             onPressed: () {
               bool flag = false;
-              for (int i = 0;
-                  i < child.chapterList[index].contentList.length;
-                  i++)
+              for (int i = 0; i < chapter.contentList.length; i++)
                 if (!isContentValueSelected[i]) {
                   flag = true;
                   break;
@@ -119,42 +108,35 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
         elevation: 0,
       ),
       body: ListView.builder(
-        itemCount: child.chapterList[index].contentList.length,
-        itemBuilder: (BuildContext context, int idx) {
+        itemCount: chapter.contentList.length,
+        itemBuilder: (BuildContext context, int index) {
           return Column(
             children: [
               buildListTile(
-                titleText: child.chapterList[index].contentList[idx].name,
+                titleText: chapter.contentList[index].name,
                 trailing: buildToggleButtons(
                   text: ['+', '-', 'P'],
-                  isSelected: contentValue[idx],
+                  isSelected: contentValue[index],
                   onPressed: (i) {
-                    if (!contentValue[idx][i])
+                    if (!contentValue[index][i])
                       setState(() {
-                        isContentValueSelected[idx] = true;
+                        isContentValueSelected[index] = true;
                         if (i == 0) {
-                          child.chapterList[index].contentList[idx].result =
-                              '+';
-                          child
-                              .chapterList[index].contentList[idx].countPlus++;
+                          chapter.contentList[index].result = '+';
                         } else if (i == 1) {
-                          child.chapterList[index].contentList[idx].result =
-                              '-';
+                          chapter.contentList[index].result = '-';
                         } else {
-                          child.chapterList[index].contentList[idx].result =
-                              'P';
+                          chapter.contentList[index].result = 'P';
                         }
                         for (int buttonIndex = 0;
-                            buttonIndex < contentValue[idx].length;
+                            buttonIndex < contentValue[index].length;
                             buttonIndex++) {
                           if (buttonIndex == i)
-                            contentValue[idx][buttonIndex] = true;
+                            contentValue[index][buttonIndex] = true;
                           else
-                            contentValue[idx][buttonIndex] = false;
+                            contentValue[index][buttonIndex] = false;
                         }
-                        countResult(
-                            child.chapterList[index].contentList[idx].name!,
-                            idx);
+                        countResult(chapter.contentList[index].name!, index);
                       });
                   },
                   minHeight: 40,
@@ -163,12 +145,9 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
               ),
               Row(
                 children: [
-                  Text(
-                      '+: ${child.chapterList[index].contentList[idx].countPlus}'),
-                  Text(
-                      '-: ${child.chapterList[index].contentList[idx].countMinus}'),
-                  Text(
-                      'P: ${child.chapterList[index].contentList[idx].countP}'),
+                  Text('+: ${chapter.contentList[index].countPlus}'),
+                  Text('-: ${chapter.contentList[index].countMinus}'),
+                  Text('P: ${chapter.contentList[index].countP}'),
                 ],
               )
             ],
