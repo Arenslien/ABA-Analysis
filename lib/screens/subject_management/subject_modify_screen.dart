@@ -13,7 +13,7 @@ class _SubjectModifyScreenState extends State<SubjectModifyScreen> {
   _SubjectModifyScreenState(this.subject);
   final Subject subject;
   final formkey = GlobalKey<FormState>();
-  Subject newsubject = Subject();
+  Subject newSubject = Subject();
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,7 @@ class _SubjectModifyScreenState extends State<SubjectModifyScreen> {
                 ),
                 onPressed: () {
                   if (formkey.currentState!.validate()) {
-                    Navigator.pop(context, newsubject);
+                    Navigator.pop(context, newSubject);
                   }
                 },
               ),
@@ -67,7 +67,7 @@ class _SubjectModifyScreenState extends State<SubjectModifyScreen> {
             controller: TextEditingController(text: subject.name),
             onChanged: (val) {
               setState(() {
-                newsubject.name = val;
+                newSubject.name = val;
               });
             },
             validator: (val) {

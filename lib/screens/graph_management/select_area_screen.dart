@@ -5,28 +5,21 @@ import 'package:aba_analysis/components/class/child_class.dart';
 import 'graph_screen.dart';
 
 // select_date 복붙한거라 select_item버전으로 다시 코딩 필요
-class SelectProgramScreen extends StatefulWidget {
-  const SelectProgramScreen({Key? key}) : super(key: key);
-  static String routeName = '/select_program';
+class SelectAreaScreen extends StatefulWidget {
+  const SelectAreaScreen({Key? key}) : super(key: key);
+  static String routeName = '/select_area';
 
   @override
-  _SelectProgramScreenState createState() => _SelectProgramScreenState();
+  _SelectAreaScreenState createState() => _SelectAreaScreenState();
 }
 
-class _SelectProgramScreenState extends State<SelectProgramScreen> {
+class _SelectAreaScreenState extends State<SelectAreaScreen> {
   List<Child> childData = []; // 순수 아이 데이터
   List<DummyTestData> testData = []; // 테스트 관련 데이터
-  List<String> programList = [
-    '수용언어',
-    '표현언어',
-    '동작모방',
-    '놀이기술',
-    '사회성 기술',
-    '자조기술',
-    '수학',
-    '쓰기',
-    '매칭'
-  ];
+  List<String> areaList = [
+    '교사가 지시한 한 단계 동작 지시 10가지 따르기 ',
+    '사물의 사진을 보고 이름 말하기',
+  ]; // DB에서 선택된 program의 areaList를 받아와야 한다.
   Child dummy1 = new Child();
   late DummyTestData dummy2 = new DummyTestData();
   DummyTestData dummy3 = new DummyTestData();
@@ -81,7 +74,7 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${dummy1.name}의 프로그램 영역 선택'),
+        title: Text('${dummy1.name}의 하위영역 선택'),
         backgroundColor: Colors.grey,
         centerTitle: true,
         leading: IconButton(
@@ -94,9 +87,9 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
           ? noTestData()
           : ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: programList.length,
+              itemCount: areaList.length,
               itemBuilder: (BuildContext context, int index) {
-                return dataTile(programList[index], index);
+                return dataTile(areaList[index], index);
               },
             ),
     );
@@ -113,7 +106,7 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
             size: 150,
           ),
           Text(
-            'No Program Data',
+            'No Area Data',
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.w500,
@@ -127,11 +120,12 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
 
   Widget dataTile(String programName, int index) {
     return buildListTile(
+      titleSize: 20,
       titleText: programName,
 //      subtitleText: "평균성공률: $average%",
       onTap: () {
         Navigator.pushNamed(context,
-            '/select_area'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
+            '/select_item'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
       },
       trailing: Icon(Icons.keyboard_arrow_right),
     );
