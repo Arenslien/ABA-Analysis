@@ -1,12 +1,13 @@
 import 'dart:collection';
 
 import 'package:aba_analysis/constants.dart';
-import 'package:aba_analysis/models/user.dart';
+import 'package:aba_analysis/models/aba_user.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../auth_default_button.dart';
 import '../auth_input_decoration.dart';
@@ -136,15 +137,16 @@ class _RegisterFormState extends State<RegisterForm> {
               onPress: () async {
                 if (await checkEmailForm() && checkPasswordAndConfirmPasswordForm() && 
                     checkNameForm() && checkPhoneNumberForm()) {
-                  // Auth 기반 User 생성
-                  User? user = await _auth.registerWithUserInformation(email, password);
-                  
-                  // User 기반 ABAUser 생성
-                  ABAUser? abaUser = _auth.userFromFirebaseUser(user, email, name, phone, '미정', '미정');
+                  // 회원가입
+                  ABAUser? abaUser = await _auth.registerWithUserInformation(email, password, name, phone);
 
-                  // CloudService 인스턴스 생성 & ABAUser 등록
-                  FireStoreService fireStore = FireStoreService();
-                  fireStore.createUser(abaUser!);
+                  // 토스트 메시지
+                  Fluttertoast.showToast(
+                    msg: '회원가입이 완료되었습니다',
+                    toastLength: Toast.LENGTH_SHORT,
+                    backgroundColor: Colors.greenAccent,
+                    fontSize: 16.0
+                  );
                   Navigator.pop(context);
                 }
               },

@@ -1,5 +1,5 @@
 import 'package:aba_analysis/models/child.dart';
-import 'package:aba_analysis/models/user.dart';
+import 'package:aba_analysis/models/aba_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FireStoreService {
@@ -12,12 +12,11 @@ class FireStoreService {
   Future createUser(ABAUser abaUser) async {
     return _user
         .add({
-          'uid': abaUser.uid,
           'email': abaUser.email,
           'name': abaUser.name,
           'phone': abaUser.phone,
-          'department': abaUser.department,
-          'duty': abaUser.duty
+          'duty': abaUser.duty,
+          'children': [],
         })
         .then((value) => print('유저가 성공적으로 추가되었습니다.'))
         .catchError((error) => print('유저를 추가하지 못했습니다.\n에러 내용: $error'));
@@ -32,14 +31,14 @@ class FireStoreService {
         .then((QuerySnapshot snapshot) => snapshot.docs[0].data());
 
     // User 정보를 기반으로 ABAUser 인스턴스 생성
-    ABAUser abaUser = ABAUser(dbUser['uid'], dbUser['email'], dbUser['name'], dbUser['phone'], dbUser['department'], dbUser['duty']);
+    ABAUser abaUser = ABAUser(dbUser['email'], dbUser['name'], dbUser['phone'], dbUser['duty']);
 
     // ABAUser 반환
     return abaUser;
   }
 
   // 사용자 수정
-  Future updateUser(String email, String name, String phone, String department, String duty) async {
+  Future updateUser(String email, String name, String phone, String duty) async {
     // 해당 email에 대한 QueryDocumentSnapshot
     QueryDocumentSnapshot snapshot = await _user.where('email', isEqualTo: email).get().then((QuerySnapshot snapshot) => snapshot.docs[0]);
  
@@ -51,14 +50,12 @@ class FireStoreService {
     Map<String, Object> updateContent = {
       'email': data['email'],
       'name': data['name'],
-      'department': data['department'],
       'duty': data['duty'],
     };
 
     // 해당 ID에 대한 사용자 정보를 updateContent로 수정
     updateContent['name'] = name;
     updateContent['phone'] = phone;
-    updateContent['department'] = department;
     updateContent['duty'] = duty;
 
     return _user

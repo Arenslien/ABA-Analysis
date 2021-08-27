@@ -1,22 +1,24 @@
 import 'package:aba_analysis/components/setting/setting_default_button.dart';
+import 'package:aba_analysis/models/aba_user.dart';
+import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class Body extends StatelessWidget {
-  const Body({Key? key}) : super(key: key);
+class Body extends StatefulWidget {
+  const Body({ Key? key }) : super(key: key);
+
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  // 사용자 정보를 담은 ABAUser 인스턴스 선언
+
   @override
   Widget build(BuildContext context) {
-    AuthService _auth = new AuthService();
-
-    // firestore에서 사용자의 정보를 가져와야 함
-    final String name = '홍길동';
-    final String phone = '010-1234-5678';
-    final String email = 'test@gmail.com'; 
-    final String department = '미정';
-    final String duty = '미정';
-
     return SafeArea(
       child: Column(
         children: [
@@ -51,7 +53,13 @@ class Body extends StatelessWidget {
                           // 비밀번호 변경 로직
                         }),
                         SettingDefaultButton(text: '로그아웃', onTap: () {
+                          // 로그아웃을 위한 AuthService 인스턴스 생성
+                          AuthService _auth = AuthService();
+
+                          // Firebase Authentication 로그아웃
                           _auth.signOut();
+
+                          context.read<UserNotifier>().updateUser(null);
                         }),
                         SettingDefaultButton(text: '회원 탈퇴', onTap: () {
                           // 어드민 계정으로 알림이 감
@@ -101,14 +109,14 @@ class Body extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                  name, 
+                                  context.watch<UserNotifier>().abaUser!.name, 
                                   style: TextStyle(
                                     fontSize: 30.0,
                                     fontWeight: FontWeight.bold
                                   ),
                                 ),
                                 Text(
-                                  email, 
+                                  context.watch<UserNotifier>().abaUser!.email, 
                                   style: TextStyle(
                                     fontSize: 18.0,
                                   ),
@@ -118,19 +126,13 @@ class Body extends StatelessWidget {
                           ],
                         ),
                         Text(
-                          phone, 
+                          context.watch<UserNotifier>().abaUser!.phone, 
                           style: TextStyle(
                             fontSize: 18.0,
                           ),
                         ),
                         Text(
-                          department, 
-                          style: TextStyle(
-                            fontSize: 18.0,
-                          ),
-                        ),
-                        Text(
-                          duty, 
+                          context.watch<UserNotifier>().abaUser!.duty, 
                           style: TextStyle(
                             fontSize: 18.0,
                           ),
@@ -147,4 +149,3 @@ class Body extends StatelessWidget {
     );
   }
 }
-
