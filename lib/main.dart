@@ -1,3 +1,4 @@
+import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,12 @@ import 'package:firebase_core/firebase_core.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => UserNotifier()),
+    ],
+    child: MyApp()
+  ));
 }
 
 class MyApp extends StatefulWidget {
@@ -20,12 +26,26 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  // AuthService 초기화
+  AuthService _auth = AuthService();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // 로그인 유지일 경우 사용자 정보를 DB에서 가져옴
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+      context.read<UserNotifier>().updateUser(await _auth.abaUser);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamProvider<User?>.value(
-      value: AuthService().user,
-      catchError: (_, __) => null,
       initialData: null,
+      value: _auth.getChange(),
+      catchError: (_, __) => null,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'ABA Analysis',

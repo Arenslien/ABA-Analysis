@@ -1,10 +1,13 @@
 import 'dart:collection';
 
 import 'package:aba_analysis/constants.dart';
+import 'package:aba_analysis/models/aba_user.dart';
+import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../auth_default_button.dart';
 import '../auth_input_decoration.dart';
@@ -22,7 +25,7 @@ class SignInForm extends StatefulWidget {
 class _SignInFormState extends State<SignInForm> {
 
   AuthService _auth = AuthService();
-  FireStoreService _fireStore = FireStoreService();
+  FireStoreService _store = FireStoreService();
 
   final _formKey = GlobalKey<FormState>();
   // 텍스트 필드 값
@@ -91,15 +94,19 @@ class _SignInFormState extends State<SignInForm> {
               text: '로그인',
               onPress: () async {
                 if (checkEmailForm() && checkPasswordForm()) {
-                  String? result = await _auth.signInWithUserInformation(email, password);
-                  if (result != '로그인 성공') {
-                    final snackBar = SnackBar(
-                      content: Text(result!),
-                      backgroundColor: Colors.red,
-                      duration: Duration(milliseconds: 800),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
+                  // UserNotifier 업데이트
+                  context.read<UserNotifier>().updateUser(await _store.readUser(email));
+
+                  // 로그인
+                  ABAUser? abaUser = await _auth.signInWithUserInformation(email, password);
+
+
+                  // final snackBar = SnackBar(
+                  //   content: Text('로그인 실패!'),
+                  //   backgroundColor: Colors.red,
+                  //   duration: Duration(milliseconds: 800),
+                  // );
+                  // ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
               },
             ),
@@ -137,6 +144,8 @@ class _SignInFormState extends State<SignInForm> {
       setState(() => errors.add(kShortPassError));
       result = false;
     }
+
+    // else if(password == e);
     
     return result;
   }

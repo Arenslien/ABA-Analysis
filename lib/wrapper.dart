@@ -1,4 +1,6 @@
+import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
+import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,14 +17,27 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    //
+    AuthService _auth = AuthService();
+
+    // 로그인 유지일 경우 사용자 정보를 DB에서 가져옴
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+      context.read<UserNotifier>().updateUser(await _auth.abaUser);
+    });
+  }
+  @override
   Widget build(BuildContext context) {
     //SizeConfig를 사용하기 위해서 초기화
     SizeConfig().init(context);
-
-    // provider ABAUser 정보
-    final user = Provider.of<User?>(context);
+    
+    // UserNotifier Provider 지속적으로 값 확인
+    User? user = context.watch<User?>();
 
     // return 홈스크린 or 인증스크린
-    return HomeScreen();
+    return user == null? SignInScreen() : HomeScreen();
   }
 }
