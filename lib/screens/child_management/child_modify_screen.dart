@@ -24,7 +24,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
     newChild.name = child.name;
     newChild.age = child.age;
     newChild.gender = child.gender;
-    newChild.chapterList = child.chapterList;
+    newChild.subjectList = child.subjectList;
     gender[child.gender == '남자' ? 0 : 1] = true;
   }
 
@@ -37,7 +37,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              '아동 수정',
+              '아동 설정',
               style: TextStyle(color: Colors.black),
             ),
             centerTitle: true,

@@ -4,9 +4,9 @@ import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/class/child_class.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
-import 'package:aba_analysis/screens/data_input/child_input_screen.dart';
+import 'package:aba_analysis/screens/child_management/child_input_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_modify_screen.dart';
-import 'package:aba_analysis/screens/child_management/child_chapter_screen.dart';
+import 'package:aba_analysis/screens/child_management/child_subject_screen.dart';
 
 class ChildMainScreen extends StatefulWidget {
   const ChildMainScreen({Key? key}) : super(key: key);
@@ -32,8 +32,8 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                 searchResult.clear();
                 for (int i = 0; i < childList.length; i++) {
                   bool flag = false;
-                  if (childList[i].age.contains(str)) flag = true;
-                  if (childList[i].name.contains(str)) flag = true;
+                  if (childList[i].age!.contains(str)) flag = true;
+                  if (childList[i].name!.contains(str)) flag = true;
                   if (flag) {
                     searchResult.add(childList[i]);
                   }
@@ -59,8 +59,8 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ChildChapterScreen(
-                                child: childList[index],
+                              builder: (context) => ChildSubjectScreen(
+                                childList[index],
                               ),
                             ),
                           );
@@ -69,17 +69,17 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                           text: ['그래프', '설정'],
                           onPressed: (idx) async {
                             if (idx == 1) {
-                              final Child? editChildData = await Navigator.push(
+                              final Child? editChild = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
                                       ChildModifyScreen(childList[index]),
                                 ),
                               );
-                              if (editChildData != null) {
+                              if (editChild != null) {
                                 setState(() {
-                                  childList[index] = editChildData;
-                                  if (editChildData.name == '') {
+                                  childList[index] = editChild;
+                                  if (editChild.name == '') {
                                     childList.removeAt(index);
                                   }
                                 });
@@ -101,8 +101,8 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ChildChapterScreen(
-                                child: searchResult[index],
+                              builder: (context) => ChildSubjectScreen(
+                                searchResult[index],
                               ),
                             ),
                           );
@@ -111,21 +111,20 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                           text: ['그래프', '설정'],
                           onPressed: (idx) async {
                             if (idx == 1) {
-                              final Child? editChildData = await Navigator.push(
+                              final Child? editChild = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
                                       ChildModifyScreen(searchResult[index]),
                                 ),
                               );
-                              if (editChildData != null) {
+                              if (editChild != null) {
                                 setState(() {
                                   searchTextEditingController.text = '';
                                   childList[childList.indexWhere((element) =>
-                                          element.childId ==
-                                          searchResult[index].childId)] =
-                                      editChildData;
-                                  if (editChildData.name == '') {
+                                      element.childId ==
+                                      searchResult[index].childId)] = editChild;
+                                  if (editChild.name == '') {
                                     childList.removeAt(childList.indexWhere(
                                         (element) =>
                                             element.childId ==

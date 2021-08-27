@@ -1,33 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/components/class/child_class.dart';
+import 'package:aba_analysis/components/class/subject_class.dart';
 import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/class/content_class.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/screens/chapter_management/chapter_input_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_get_result_screen.dart';
-import 'package:aba_analysis/screens/child_management/t.dart';
+import 'package:aba_analysis/screens/child_management/child_chapter_modify_screen.dart';
 
 class ChildChapterScreen extends StatefulWidget {
-  const ChildChapterScreen({Key? key, required this.child}) : super(key: key);
-  final Child child;
+  const ChildChapterScreen(this.subject, {Key? key}) : super(key: key);
+  final Subject subject;
 
   @override
-  _ChildChapterScreenState createState() => _ChildChapterScreenState(child);
+  _ChildChapterScreenState createState() => _ChildChapterScreenState(subject);
 }
 
 class _ChildChapterScreenState extends State<ChildChapterScreen> {
-  _ChildChapterScreenState(this.child);
-
-  final Child child;
+  _ChildChapterScreenState(this.subject);
+  final Subject subject;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          child.name,
+          'child.name',
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -43,22 +42,20 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: child.chapterList.length == 0
-          ? noListData(Icons.library_add_outlined, '테스트 추가')
+      body: subject.chapterList.length == 0
+          ? noListData(Icons.library_add_outlined, '챕터 추가')
           : ListView.builder(
-              itemCount: child.chapterList.length,
+              itemCount: subject.chapterList.length,
               itemBuilder: (BuildContext context, int index) {
                 return buildListTile(
-                  titleText: child.chapterList[index].name,
-                  subtitleText: child.chapterList[index].date,
+                  titleText: subject.chapterList[index].name,
+                  subtitleText: subject.chapterList[index].date,
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => ChildGetResultScreen(
-                          child: child,
-                          index: index,
-                        ),
+                            subject, subject.chapterList[index]),
                       ),
                     );
                   },
@@ -67,44 +64,37 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
                     onPressed: (idx) async {
                       if (idx == 0) {
                         setState(() {
-                          child.chapterList.add(Chapter());
-                          child
-                              .chapterList[child.chapterList.length - 1]
-                              .name = child.chapterList[index].name;
-                          child
-                              .chapterList[child.chapterList.length - 1]
-                              .date = child.chapterList[index].date;
+                          subject.chapterList.add(Chapter());
+                          subject.chapterList[subject.chapterList.length - 1]
+                              .name = subject.chapterList[index].name;
+                          subject.chapterList[subject.chapterList.length - 1]
+                              .date = subject.chapterList[index].date;
                           for (int i = 0;
-                              i < child.chapterList[index].contentList.length;
+                              i < subject.chapterList[index].contentList.length;
                               i++) {
-                            child
-                                .chapterList[child.chapterList.length - 1]
+                            subject.chapterList[subject.chapterList.length - 1]
                                 .contentList
                                 .add(Content());
-                            child
-                                    .chapterList[child.chapterList.length - 1]
-                                    .contentList[i]
-                                    .name =
-                                child.chapterList[index].contentList[i].name;
-                            child
-                                .chapterList[child.chapterList.length - 1]
-                                .contentList[i]
-                                .result = null;
+                            subject.chapterList[subject.chapterList.length - 1]
+                                    .contentList[i].name =
+                                subject.chapterList[index].contentList[i].name;
+                            subject.chapterList[subject.chapterList.length - 1]
+                                .contentList[i].result = null;
                           }
                         });
                       } else if (idx == 1) {
                         final Chapter? editChapter = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => T(
-                                child.chapterList[index]),
+                            builder: (context) => ChildChapterModifyScreen(
+                                subject.chapterList[index]),
                           ),
                         );
                         if (editChapter != null)
                           setState(() {
-                            child.chapterList[index] = editChapter;
+                            subject.chapterList[index] = editChapter;
                             if (editChapter.date == '') {
-                              child.chapterList.removeAt(index);
+                              subject.chapterList.removeAt(index);
                             }
                           });
                       }
@@ -127,7 +117,7 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
           );
           if (newChapter != null)
             setState(() {
-              child.chapterList.add(newChapter);
+              subject.chapterList.add(newChapter);
             });
         },
         backgroundColor: Colors.black,
