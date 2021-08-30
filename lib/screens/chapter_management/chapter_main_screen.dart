@@ -26,30 +26,9 @@ class _ChapterMainScreenState extends State<ChapterMainScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        bottomSheet: buildTextFormField(
-          controller: searchTextEditingController,
-          hintText: '검색',
-          icon: Icon(
-            Icons.search_outlined,
-            color: Colors.black,
-            size: 30,
-          ),
-          onChanged: (str) {
-            setState(() {
-              searchResult.clear();
-              for (int i = 0; i < subject.chapterList.length; i++) {
-                bool flag = false;
-                if (subject.chapterList[i].name!.contains(str)) flag = true;
-                if (flag) {
-                  searchResult.add(subject.chapterList[i]);
-                }
-              }
-            });
-          },
-        ),
         appBar: AppBar(
           title: Text(
-            '${subject.name!} ${subject.chapterList.length} ${searchResult.length}',
+            '${subject.name!}',
             style: TextStyle(color: Colors.black),
           ),
           centerTitle: true,
@@ -168,6 +147,27 @@ class _ChapterMainScreenState extends State<ChapterMainScreen> {
               });
           },
           backgroundColor: Colors.black,
+        ),
+        bottomSheet: buildTextFormField(
+          controller: searchTextEditingController,
+          hintText: '검색',
+          icon: Icon(
+            Icons.search_outlined,
+            color: Colors.black,
+            size: 30,
+          ),
+          onChanged: (str) {
+            setState(() {
+              searchResult.clear();
+              for (int i = 0; i < subject.chapterList.length; i++) {
+                bool flag = false;
+                if (subject.chapterList[i].name!.contains(str)) flag = true;
+                if (flag) {
+                  searchResult.add(subject.chapterList[i]);
+                }
+              }
+            });
+          },
         ),
       ),
     );
