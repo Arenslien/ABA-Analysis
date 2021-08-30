@@ -74,7 +74,10 @@ class _SelectAreaScreenState extends State<SelectAreaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${dummy1.name}의 하위영역 선택'),
+        title: Text(
+          '${dummy1.name}의 하위영역 선택',
+          style: TextStyle(fontFamily: 'korean'),
+        ),
         backgroundColor: Colors.grey,
         centerTitle: true,
         leading: IconButton(
@@ -108,10 +111,10 @@ class _SelectAreaScreenState extends State<SelectAreaScreen> {
           Text(
             'No Area Data',
             style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w500,
-              fontSize: 40,
-            ),
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+                fontSize: 40,
+                fontFamily: 'korean'),
           ),
         ],
       ),

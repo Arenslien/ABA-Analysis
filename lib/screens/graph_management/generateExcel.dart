@@ -22,6 +22,7 @@ xio.Workbook genExcel(
   titleStyle.hAlign = xio.HAlignType.center;
   titleStyle.vAlign = xio.VAlignType.center;
   titleStyle.backColor = _titleBackColor;
+  titleStyle.fontName = '돋움';
 
   xio.Style columnNameStyle = workbook.styles.add('columnNameStyle');
   columnNameStyle.backColor = _columnBackColor;

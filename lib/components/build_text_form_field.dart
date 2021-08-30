@@ -20,8 +20,8 @@ Widget buildTextFormField({
       decoration: InputDecoration(
         labelText: hintText == null ? text : null,
         hintText: hintText,
-        labelStyle: TextStyle(color: Colors.black),
-        hintStyle: TextStyle(color: Colors.grey),
+        labelStyle: TextStyle(color: Colors.black, fontFamily: 'korean'),
+        hintStyle: TextStyle(color: Colors.grey, fontFamily: 'korean'),
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: Colors.black,

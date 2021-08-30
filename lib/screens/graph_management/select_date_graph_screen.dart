@@ -131,10 +131,10 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
           Text(
             'No Test Data',
             style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w500,
-              fontSize: 40,
-            ),
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+                fontSize: 40,
+                fontFamily: 'korean'),
           ),
         ],
       ),
