@@ -6,27 +6,31 @@ import 'package:aba_analysis/components/class/content_class.dart';
 import 'package:aba_analysis/components/no_list_data_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/screens/chapter_management/chapter_input_screen.dart';
+import 'package:aba_analysis/screens/chapter_management/chapter_modify_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_get_result_screen.dart';
-import 'package:aba_analysis/screens/child_management/child_chapter_modify_screen.dart';
 
 class ChildChapterScreen extends StatefulWidget {
-  const ChildChapterScreen(this.subject, {Key? key}) : super(key: key);
+  const ChildChapterScreen(this.subject, {Key? key, this.name})
+      : super(key: key);
   final Subject subject;
+  final String? name;
 
   @override
-  _ChildChapterScreenState createState() => _ChildChapterScreenState(subject);
+  _ChildChapterScreenState createState() =>
+      _ChildChapterScreenState(subject, name: name);
 }
 
 class _ChildChapterScreenState extends State<ChildChapterScreen> {
-  _ChildChapterScreenState(this.subject);
+  _ChildChapterScreenState(this.subject, {this.name});
   final Subject subject;
+  final String? name;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'child.name',
+          '${name ?? ''} : ${subject.name!}',
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -39,6 +43,15 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
             Navigator.pop(context);
           },
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.search_outlined,
+              color: Colors.black,
+            ),
+            onPressed: () {},
+          ),
+        ],
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -55,7 +68,10 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ChildGetResultScreen(
-                            subject, subject.chapterList[index]),
+                          subject,
+                          subject.chapterList[index],
+                          name: name,
+                        ),
                       ),
                     );
                   },
@@ -86,8 +102,8 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
                         final Chapter? editChapter = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ChildChapterModifyScreen(
-                                subject.chapterList[index]),
+                            builder: (context) =>
+                                ChapterModifyScreen(subject.chapterList[index]),
                           ),
                         );
                         if (editChapter != null)

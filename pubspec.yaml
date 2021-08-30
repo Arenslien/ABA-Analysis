@@ -81,7 +81,7 @@ flutter:
         - asset: asset/font/tway_air.ttf
     - family: korean
       fonts:
-        - asset: asset/font/한글고딕.ttf
+        - asset: asset/font/korean.ttf
     # - family: Schyler
     #   fonts:
     #     - asset: fonts/Schyler-Regular.ttf

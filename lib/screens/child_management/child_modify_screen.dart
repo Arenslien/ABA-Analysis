@@ -79,7 +79,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
             children: [
               buildTextFormField(
                 text: '이름',
-                controller: TextEditingController(text: newChild.name),
+                initialValue: newChild.name,
                 onChanged: (val) {
                   setState(() {
                     newChild.name = val;
@@ -94,7 +94,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
               ),
               buildTextFormField(
                 text: '생년월일',
-                controller: TextEditingController(text: newChild.age),
+                initialValue: newChild.age,
                 onChanged: (val) {
                   setState(() {
                     newChild.age = val;

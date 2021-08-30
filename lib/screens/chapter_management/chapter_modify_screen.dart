@@ -7,8 +7,7 @@ class ChapterModifyScreen extends StatefulWidget {
   const ChapterModifyScreen(this.chapter, {Key? key}) : super(key: key);
   final Chapter chapter;
   @override
-  _ChapterModifyScreenState createState() =>
-      _ChapterModifyScreenState(chapter);
+  _ChapterModifyScreenState createState() => _ChapterModifyScreenState(chapter);
 }
 
 class _ChapterModifyScreenState extends State<ChapterModifyScreen> {
@@ -23,30 +22,11 @@ class _ChapterModifyScreenState extends State<ChapterModifyScreen> {
     super.initState();
     newChapter.date = chapter.date;
     newChapter.name = chapter.name;
+
     contentListTile.add(
       ContentListTile(
         tileWidget: buildTextFormField(
-          text: '날짜',
-          controller: TextEditingController(text: newChapter.date),
-          onChanged: (val) {
-            setState(() {
-              newChapter.date = val;
-            });
-          },
-          validator: (val) {
-            if (val!.length != 8) {
-              return 'YYYYMMDD';
-            }
-            return null;
-          },
-          inputType: 'number',
-        ),
-      ),
-    );
-    contentListTile.add(
-      ContentListTile(
-        tileWidget: buildTextFormField(
-          text: '이름',
+          text: '챕터 이름',
           controller: TextEditingController(text: newChapter.name),
           onChanged: (val) {
             setState(() {
@@ -68,7 +48,7 @@ class _ChapterModifyScreenState extends State<ChapterModifyScreen> {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: Row(
             children: [
-              Text('내용 목록'),
+              Text('콘텐츠 목록'),
               IconButton(
                 icon: Icon(Icons.add_rounded),
                 onPressed: () {
@@ -150,7 +130,8 @@ class _ChapterModifyScreenState extends State<ChapterModifyScreen> {
   }
 
   buildItemListTile(int index) {
-    if (index >= newChapter.contentList.length) newChapter.contentList.add(Content());
+    if (index >= newChapter.contentList.length)
+      newChapter.contentList.add(Content());
     TextEditingController textEditingController =
         TextEditingController(text: newChapter.contentList[index].name);
 
@@ -211,8 +192,8 @@ class _ChapterModifyScreenState extends State<ChapterModifyScreen> {
                   onPressed: () {
                     if (newChapter.contentList.length != 1)
                       setState(() {
-                        newChapter.contentList
-                            .removeWhere((element) => element.contentId == tileId);
+                        newChapter.contentList.removeWhere(
+                            (element) => element.contentId == tileId);
                         contentListTile
                             .removeWhere((element) => element.tileId == tileId);
                       });

@@ -3,23 +3,23 @@ import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 
 Widget buildTextFormField({
-  required String text,
-  required Function(String)? onChanged,
-  required String? Function(String?)? validator,
+  String? text,
+  Function(String)? onChanged,
+  String? Function(String?)? validator,
   TextEditingController? controller,
   String? hintText,
+  String? initialValue,
   String? inputType,
+  Widget? icon,
 }) {
   return Padding(
     padding: const EdgeInsets.all(16.0),
     child: TextFormField(
       controller: controller,
-      onTap: () {
-        controller?.clear();
-      },
       decoration: InputDecoration(
         labelText: hintText == null ? text : null,
         hintText: hintText,
+        prefixIcon: icon,
         labelStyle: TextStyle(color: Colors.black),
         hintStyle: TextStyle(color: Colors.grey),
         enabledBorder: UnderlineInputBorder(
@@ -31,6 +31,7 @@ Widget buildTextFormField({
           borderSide: BorderSide(color: Colors.black),
         ),
       ),
+      initialValue: initialValue,
       onChanged: onChanged,
       validator: validator,
       keyboardType: inputType == 'number' ? TextInputType.number : null,
