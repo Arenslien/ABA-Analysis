@@ -1,5 +1,4 @@
 import 'package:aba_analysis/components/setting/setting_default_button.dart';
-import 'package:aba_analysis/models/aba_user.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
@@ -15,7 +14,8 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  // 사용자 정보를 담은 ABAUser 인스턴스 선언
+  // 
+  FireStoreService store = FireStoreService();
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +62,22 @@ class _BodyState extends State<Body> {
                           context.read<UserNotifier>().updateUser(null);
                         }),
                         SettingDefaultButton(text: '회원 탈퇴', onTap: () {
-                          // 어드민 계정으로 알림이 감
+                          // 1. 어드민 계정으로 알림이 감
                           
-                          // 어드민 계정에서 허락할 시 회원 탈퇴
+                          // 1. 어드민 계정에서 허락할 시 회원 탈퇴
+
+                          // 방안 2. 그냥 일반 삭제
+
+
+                          // Alert Dialog
+                          // AlertDialog(
+                          //   title: Text('정말 회원 탈퇴를 하시겠습니까?'),
+                            
+                          // );
+
+
+                          // 삭제
+                          store.deleteUser(context.read<UserNotifier>().abaUser!.email);
                         }),
                         SettingDefaultButton(text: '테스트용', onTap: () {
                           FireStoreService _store = FireStoreService();

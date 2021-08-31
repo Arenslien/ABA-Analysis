@@ -41,7 +41,7 @@ class FireStoreService {
   Future updateUser(String email, String name, String phone, String duty) async {
     // 해당 email에 대한 QueryDocumentSnapshot
     QueryDocumentSnapshot snapshot = await _user.where('email', isEqualTo: email).get().then((QuerySnapshot snapshot) => snapshot.docs[0]);
- 
+
     // 해당 이메일에 대한 User Document의 ID 가져오기
     String id = snapshot.id;
 

@@ -29,11 +29,18 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  # Firebase 관련 Library
   firebase_auth: ^3.0.1
   cloud_firestore: ^2.4.0
+
+  # 전역 변수 관리 -> 모든 위젯에서 접근 가능
+  provider: ^5.0.0
+
+  # SMS 전송
+  telephony: ^0.1.4
+  
   syncfusion_flutter_charts: ^19.2.55
   line_icons: ^2.0.0
-  provider: ^5.0.0
   pdf: ^3.4.2
   path_provider: ^2.0.2
   open_file: ^3.2.1
@@ -79,9 +86,9 @@ flutter:
     - family: tway
       fonts:
         - asset: asset/font/tway_air.ttf
-    - family: korean
+    - family: KoreanGothic
       fonts:
-        - asset: asset/font/한글고딕.ttf
+        - asset: asset/font/KoreanGothic.ttf
     # - family: Schyler
     #   fonts:
     #     - asset: fonts/Schyler-Regular.ttf
