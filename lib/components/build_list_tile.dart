@@ -18,9 +18,7 @@ Widget buildListTile(
             ),
       title: Text(
         titleText!,
-        style: titleSize == null
-            ? TextStyle(fontSize: 25, fontFamily: 'korean')
-            : TextStyle(fontSize: titleSize, fontFamily: 'korean'),
+        style: TextStyle(fontSize: titleSize ?? 25),
       ),
       subtitle: subtitleText == null
           ? null

@@ -79,7 +79,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                               if (editChild != null) {
                                 setState(() {
                                   childList[index] = editChild;
-                                  if (editChild.name == '') {
+                                  if (editChild.name == null) {
                                     childList.removeAt(index);
                                   }
                                 });
@@ -118,20 +118,19 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                                       ChildModifyScreen(searchResult[index]),
                                 ),
                               );
-                              if (editChild != null) {
-                                setState(() {
-                                  searchTextEditingController.text = '';
+                              setState(() {
+                                if (editChild!.name == null) {
+                                  childList.removeAt(childList.indexWhere(
+                                      (element) =>
+                                          element.childId ==
+                                          searchResult[index].childId));
+                                } else {
                                   childList[childList.indexWhere((element) =>
                                       element.childId ==
                                       searchResult[index].childId)] = editChild;
-                                  if (editChild.name == '') {
-                                    childList.removeAt(childList.indexWhere(
-                                        (element) =>
-                                            element.childId ==
-                                            searchResult[index].childId));
-                                  }
-                                });
-                              }
+                                }
+                                searchTextEditingController.text = '';
+                              });
                             }
                           },
                         ),

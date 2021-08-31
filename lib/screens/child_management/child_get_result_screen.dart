@@ -5,19 +5,23 @@ import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 
 class ChildGetResultScreen extends StatefulWidget {
-  const ChildGetResultScreen(this.subject, this.chapter, {Key? key})
+  const ChildGetResultScreen(this.subject, this.chapter, {Key? key, this.name})
       : super(key: key);
   final Subject subject;
   final Chapter chapter;
+  final String? name;
+
   @override
   _ChildGetResultScreenState createState() =>
-      _ChildGetResultScreenState(subject, chapter);
+      _ChildGetResultScreenState(subject, chapter, name: name);
 }
 
 class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
-  _ChildGetResultScreenState(this.subject, this.chapter);
+  _ChildGetResultScreenState(this.subject, this.chapter, {this.name});
   final Subject subject;
   final Chapter chapter;
+  final String? name;
+
   List<String?> originalContentResult = [];
   List<List<bool>> contentValue = [];
   List<bool> isContentValueSelected = [];
@@ -69,7 +73,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'child.name',
+          '${name ?? ''}: ${subject.name} - ${chapter.name}',
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -144,10 +148,20 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
                 ),
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Text('+: ${chapter.contentList[index].countPlus}'),
-                  Text('-: ${chapter.contentList[index].countMinus}'),
-                  Text('P: ${chapter.contentList[index].countP}'),
+                  Text(
+                    '+: ${chapter.contentList[index].countPlus}',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  Text(
+                    '-: ${chapter.contentList[index].countMinus}',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  Text(
+                    'P: ${chapter.contentList[index].countP}',
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ],
               )
             ],

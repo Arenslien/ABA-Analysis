@@ -88,7 +88,7 @@ flutter:
         - asset: asset/font/tway_air.ttf
     - family: KoreanGothic
       fonts:
-        - asset: asset/font/KoreanGothic.ttf
+        - asset: asset/font/korean.ttf
     # - family: Schyler
     #   fonts:
     #     - asset: fonts/Schyler-Regular.ttf
