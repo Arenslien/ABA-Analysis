@@ -20,29 +20,29 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
   @override
   void initState() {
     super.initState();
+    // itemListTile.add(
+    //   ContentListTile(
+    //     tileWidget: buildTextFormField(
+    //       text: '날짜',
+    //       onChanged: (val) {
+    //         setState(() {
+    //           newChapter.date = val;
+    //         });
+    //       },
+    //       validator: (val) {
+    //         if (val!.length != 8) {
+    //           return 'YYYYMMDD';
+    //         }
+    //         return null;
+    //       },
+    //       inputType: 'number',
+    //     ),
+    //   ),
+    // );
     itemListTile.add(
       ContentListTile(
         tileWidget: buildTextFormField(
-          text: '날짜',
-          onChanged: (val) {
-            setState(() {
-              newChapter.date = val;
-            });
-          },
-          validator: (val) {
-            if (val!.length != 8) {
-              return 'YYYYMMDD';
-            }
-            return null;
-          },
-          inputType: 'number',
-        ),
-      ),
-    );
-    itemListTile.add(
-      ContentListTile(
-        tileWidget: buildTextFormField(
-          text: '이름',
+          text: '챕터 이름',
           onChanged: (val) {
             setState(() {
               newChapter.name = val;
@@ -62,8 +62,9 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
         tileWidget: Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('내용 목록'),
+              Text('콘텐츠 목록'),
               IconButton(
                 icon: Icon(Icons.add_rounded),
                 onPressed: () {
@@ -89,7 +90,7 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              '테스트 추가',
+              '챕터 추가',
               style: TextStyle(color: Colors.black),
             ),
             centerTitle: true,
@@ -156,7 +157,7 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
             Flexible(
               child: buildTextFormField(
                 text: textEditingController.text,
-                hintText: '테스트 이름을 입력하세요.',
+                hintText: '콘텐츠 이름을 입력하세요.',
                 controller: textEditingController,
                 onChanged: (val) {
                   int index = 0;
@@ -197,14 +198,3 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
     );
   }
 }
-
-// IconButton(
-//                 icon: Icon(Icons.remove_rounded),
-//                 onPressed: () {
-//                   if (newTestData.testList.length != 1)
-//                     setState(() {
-//                       newTestData.testList.removeLast();
-//                       testListTile.removeLast();
-//                     });
-//                 },
-//               )
