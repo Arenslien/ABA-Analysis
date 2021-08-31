@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:aba_analysis/constants.dart';
+import 'package:aba_analysis/components/show_dialog_delete.dart';
 import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/class/content_class.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
@@ -100,7 +102,7 @@ class _ChapterModifyScreenState extends State<ChapterModifyScreen> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  Navigator.pop(context, Chapter());
+                  showDialogDelete('챕터', context, Chapter());
                 },
               ),
               IconButton(
@@ -115,8 +117,7 @@ class _ChapterModifyScreenState extends State<ChapterModifyScreen> {
                 },
               ),
             ],
-            backgroundColor: Colors.white,
-            elevation: 0,
+            backgroundColor: mainGreenColor,
           ),
           body: ListView.builder(
             itemCount: contentListTile.length,

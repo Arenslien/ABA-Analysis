@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/class/subject_class.dart';
 import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/class/content_class.dart';
-import 'package:aba_analysis/components/no_list_data_widget.dart';
+import 'package:aba_analysis/components/build_no_list_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 import 'package:aba_analysis/screens/chapter_management/chapter_input_screen.dart';
@@ -46,8 +47,7 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
             Navigator.pop(context);
           },
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
+        backgroundColor: mainGreenColor,
       ),
       body: subject.chapterList.length == 0
           ? noListData(Icons.library_add_outlined, '챕터 추가')
@@ -226,7 +226,8 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
         },
         backgroundColor: Colors.black,
       ),
-      bottomSheet: buildTextFormField(
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      bottomNavigationBar: buildTextFormField(
         controller: searchTextEditingController,
         hintText: '검색',
         icon: Icon(
@@ -246,6 +247,7 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
             }
           });
         },
+        search: true,
       ),
     );
   }

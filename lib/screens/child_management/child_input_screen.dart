@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/components/class/child_class.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
@@ -58,8 +59,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                 },
               ),
             ],
-            backgroundColor: Colors.white,
-            elevation: 0,
+            backgroundColor: mainGreenColor,
           ),
           body: Column(
             children: [

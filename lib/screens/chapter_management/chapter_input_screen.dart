@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/class/content_class.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
@@ -12,9 +13,8 @@ class ChapterInputScreen extends StatefulWidget {
 
 class _ChapterInputScreenState extends State<ChapterInputScreen> {
   _ChapterInputScreenState();
-
-  final formkey = GlobalKey<FormState>();
   Chapter newChapter = Chapter();
+  final formkey = GlobalKey<FormState>();
   List<ContentListTile> itemListTile = [];
 
   @override
@@ -116,8 +116,7 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
                 },
               ),
             ],
-            backgroundColor: Colors.white,
-            elevation: 0,
+            backgroundColor: mainGreenColor,
           ),
           body: ListView.builder(
             itemCount: itemListTile.length,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/components/no_list_data_widget.dart';
+import 'package:aba_analysis/components/build_no_list_widget.dart';
 import 'package:aba_analysis/components/class/subject_class.dart';
 import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
@@ -18,6 +18,7 @@ class ChapterMainScreen extends StatefulWidget {
 class _ChapterMainScreenState extends State<ChapterMainScreen> {
   _ChapterMainScreenState(this.subject);
   final Subject subject;
+  final formkey = GlobalKey<FormState>();
   List<Chapter> searchResult = [];
   TextEditingController searchTextEditingController = TextEditingController();
 
@@ -25,149 +26,156 @@ class _ChapterMainScreenState extends State<ChapterMainScreen> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            '${subject.name!}',
-            style: TextStyle(color: Colors.black),
-          ),
-          centerTitle: true,
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.black,
+      child: Form(
+        key: formkey,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              '${subject.name!}',
+              style: TextStyle(color: Colors.black),
             ),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          backgroundColor: Colors.white,
-          elevation: 0,
-        ),
-        body: subject.chapterList.length == 0
-            ? noListData(Icons.library_add_outlined, '챕터 추가')
-            : searchTextEditingController.text == ''
-                ? ListView.builder(
-                    itemCount: subject.chapterList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return buildListTile(
-                        titleText: subject.chapterList[index].name,
-                        trailing: buildToggleButtons(
-                          text: ['적용', '설정'],
-                          onPressed: (idx) async {
-                            if (idx == 0) {
-                            } else if (idx == 1) {
-                              final Chapter? editChapter = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ChapterModifyScreen(
-                                      subject.chapterList[index]),
-                                ),
-                              );
-                              if (editChapter != null)
-                                setState(() {
-                                  subject.chapterList[index] = editChapter;
-                                  if (editChapter.name == null) {
-                                    subject.chapterList.removeAt(index);
-                                  }
-                                });
-                            }
-                          },
-                        ),
-                      );
-                    },
-                  )
-                : ListView.builder(
-                    itemCount: searchResult.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return buildListTile(
-                        titleText: searchResult[index].name,
-                        trailing: buildToggleButtons(
-                          text: ['적용', '설정'],
-                          onPressed: (idx) async {
-                            if (idx == 0) {
-                            } else if (idx == 1) {
-                              final Chapter? editChapter = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ChapterModifyScreen(searchResult[index]),
-                                ),
-                              );
-                              setState(() {
-                                if (editChapter!.name == null) {
-                                  subject.chapterList.removeAt(subject
-                                      .chapterList
-                                      .indexWhere((element) =>
-                                          element.chapterId ==
-                                          searchResult[index].chapterId));
-                                } else {
-                                  subject.chapterList[subject.chapterList
-                                          .indexWhere((element) =>
-                                              element.chapterId ==
-                                              searchResult[index].chapterId)] =
-                                      editChapter;
-                                }
-                                searchTextEditingController.text = '';
-                              });
-                            }
-                          },
-                        ),
-                      );
-                    },
-                  ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(
-            Icons.add_rounded,
-            size: 40,
-          ),
-          onPressed: () async {
-            final Chapter? newChapter = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChapterInputScreen(),
+            centerTitle: true,
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_rounded,
+                color: Colors.black,
               ),
-            );
-            if (newChapter != null)
-              setState(() {
-                subject.chapterList.add(newChapter);
-                for (int i = 0; i < 100; i++) {
-                  bool flag = false;
-                  for (int j = 0; j < subject.chapterList.length; j++)
-                    if (subject.chapterList[j].chapterId == i) {
-                      flag = true;
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            backgroundColor: Colors.white,
+            elevation: 0,
+          ),
+          body: subject.chapterList.length == 0
+              ? noListData(Icons.library_add_outlined, '챕터 추가')
+              : searchTextEditingController.text == ''
+                  ? ListView.builder(
+                      itemCount: subject.chapterList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return buildListTile(
+                          titleText: subject.chapterList[index].name,
+                          trailing: buildToggleButtons(
+                            text: ['적용', '설정'],
+                            onPressed: (idx) async {
+                              if (idx == 0) {
+                              } else if (idx == 1) {
+                                final Chapter? editChapter =
+                                    await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ChapterModifyScreen(
+                                        subject.chapterList[index]),
+                                  ),
+                                );
+                                if (editChapter != null)
+                                  setState(() {
+                                    subject.chapterList[index] = editChapter;
+                                    if (editChapter.name == null) {
+                                      subject.chapterList.removeAt(index);
+                                    }
+                                  });
+                              }
+                            },
+                          ),
+                        );
+                      },
+                    )
+                  : ListView.builder(
+                      itemCount: searchResult.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return buildListTile(
+                          titleText: searchResult[index].name,
+                          trailing: buildToggleButtons(
+                            text: ['적용', '설정'],
+                            onPressed: (idx) async {
+                              if (idx == 0) {
+                              } else if (idx == 1) {
+                                final Chapter? editChapter =
+                                    await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ChapterModifyScreen(
+                                        searchResult[index]),
+                                  ),
+                                );
+                                setState(() {
+                                  if (editChapter!.name == null) {
+                                    subject.chapterList.removeAt(subject
+                                        .chapterList
+                                        .indexWhere((element) =>
+                                            element.chapterId ==
+                                            searchResult[index].chapterId));
+                                  } else {
+                                    subject.chapterList[subject.chapterList
+                                        .indexWhere((element) =>
+                                            element.chapterId ==
+                                            searchResult[index]
+                                                .chapterId)] = editChapter;
+                                  }
+                                  searchTextEditingController.text = '';
+                                });
+                              }
+                            },
+                          ),
+                        );
+                      },
+                    ),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(
+              Icons.add_rounded,
+              size: 40,
+            ),
+            onPressed: () async {
+              final Chapter? newChapter = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChapterInputScreen(),
+                ),
+              );
+              if (newChapter != null)
+                setState(() {
+                  subject.chapterList.add(newChapter);
+                  for (int i = 0; i < 100; i++) {
+                    bool flag = false;
+                    for (int j = 0; j < subject.chapterList.length; j++)
+                      if (subject.chapterList[j].chapterId == i) {
+                        flag = true;
+                        break;
+                      }
+                    if (!flag) {
+                      subject.chapterList[subject.chapterList.length - 1]
+                          .chapterId = i;
                       break;
                     }
-                  if (!flag) {
-                    subject.chapterList[subject.chapterList.length - 1]
-                        .chapterId = i;
-                    break;
+                  }
+                });
+            },
+            backgroundColor: Colors.black,
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+          bottomSheet: buildTextFormField(
+            controller: searchTextEditingController,
+            hintText: '검색',
+            icon: Icon(
+              Icons.search_outlined,
+              color: Colors.black,
+              size: 30,
+            ),
+            onChanged: (str) {
+              setState(() {
+                searchResult.clear();
+                for (int i = 0; i < subject.chapterList.length; i++) {
+                  bool flag = false;
+                  if (subject.chapterList[i].name!.contains(str)) flag = true;
+                  if (flag) {
+                    searchResult.add(subject.chapterList[i]);
                   }
                 }
               });
-          },
-          backgroundColor: Colors.black,
-        ),
-        bottomSheet: buildTextFormField(
-          controller: searchTextEditingController,
-          hintText: '검색',
-          icon: Icon(
-            Icons.search_outlined,
-            color: Colors.black,
-            size: 30,
+            },
+            search: true,
           ),
-          onChanged: (str) {
-            setState(() {
-              searchResult.clear();
-              for (int i = 0; i < subject.chapterList.length; i++) {
-                bool flag = false;
-                if (subject.chapterList[i].name!.contains(str)) flag = true;
-                if (flag) {
-                  searchResult.add(subject.chapterList[i]);
-                }
-              }
-            });
-          },
         ),
       ),
     );

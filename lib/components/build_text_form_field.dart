@@ -11,9 +11,12 @@ Widget buildTextFormField({
   String? initialValue,
   String? inputType,
   Widget? icon,
+  bool? search,
 }) {
   return Padding(
-    padding: const EdgeInsets.all(16.0),
+    padding: search == null
+        ? const EdgeInsets.all(16)
+        : const EdgeInsets.fromLTRB(16, 0, 16, 3),
     child: TextFormField(
       controller: controller,
       decoration: InputDecoration(

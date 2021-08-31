@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/class/child_class.dart';
 import 'package:aba_analysis/screens/child_management/child_chapter_screen.dart';
@@ -34,8 +35,7 @@ class _ChildSubjectScreenState extends State<ChildSubjectScreen> {
             Navigator.pop(context);
           },
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
+        backgroundColor: mainGreenColor,
       ),
       body: ListView.builder(
         itemCount: child.subjectList.length,
