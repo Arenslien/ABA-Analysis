@@ -2,12 +2,13 @@ import 'dart:collection';
 
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/aba_user.dart';
+import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/size_config.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 import '../auth_default_button.dart';
 import '../auth_input_decoration.dart';
@@ -139,6 +140,10 @@ class _RegisterFormState extends State<RegisterForm> {
                     checkNameForm() && checkPhoneNumberForm()) {
                   // 회원가입
                   ABAUser? abaUser = await _auth.registerWithUserInformation(email, password, name, phone);
+
+                  WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+                    context.read<UserNotifier>().updateUser(abaUser);
+                  });
 
                   // 토스트 메시지
                   Fluttertoast.showToast(
