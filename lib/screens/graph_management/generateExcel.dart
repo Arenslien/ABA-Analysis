@@ -7,7 +7,8 @@ xio.Workbook genExcel(
     Uint8List graphImage,
     String graphType,
     String typeValue,
-    num averageRate) {
+    num averageRate,
+    bool isDate) {
   xio.Workbook workbook = new xio.Workbook();
   final xio.Worksheet sheet = workbook.worksheets[0];
   // 엑셀 초기 설정. 시트생성, 차트->그림
@@ -74,10 +75,13 @@ xio.Workbook genExcel(
   sheet.getRangeByName('I7:K7').cellStyle = columnNameStyle;
   sheet.getRangeByName('I7:K7').cellStyle.hAlign = xio.HAlignType.center;
 
-  sheet.getRangeByName('I7').setText(graphType);
-  sheet.getRangeByName('J7').setText(chartColumn[0]);
-  sheet.getRangeByName('K7').setText(chartColumn[1]);
-  // sheet.getRangeByName('L7').setText(chartColumn[2]);
+  // sheet.getRangeByName('I7').setText(graphType);
+  // sheet.getRangeByName('J7').setText(chartColumn[0]);
+  // sheet.getRangeByName('K7').setText(chartColumn[1]);
+
+  sheet.getRangeByName('I7').setText(chartColumn[0]);
+  sheet.getRangeByName('J7').setText(chartColumn[1]);
+  sheet.getRangeByName('K7').setText(chartColumn[2]);
 
   // 컬럼이름 삽입. 하위목록, 날짜, 성공여부
 
@@ -87,8 +91,8 @@ xio.Workbook genExcel(
       List<int>.generate(excelChartData[0].length, (i) => i + 1); // 1 ~ 컬럼개수
   for (int i in ilist) {
     for (int j in jlist) {
-      sheet.getRangeByIndex(7 + i, 9 + j).setText(excelChartData[i - 1][j - 1]);
-      sheet.getRangeByIndex(7 + i, 9 + j).cellStyle.fontSize = 12; //
+      sheet.getRangeByIndex(7 + i, 8 + j).setText(excelChartData[i - 1][j - 1]);
+      sheet.getRangeByIndex(7 + i, 8 + j).cellStyle.fontSize = 12; //
     }
   }
   final xio.Range chartDataRange =
@@ -96,10 +100,10 @@ xio.Workbook genExcel(
   chartDataRange.cellStyle = dataStyle;
   // 차트데이터 스타일 지정 ( 일단 폰트사이즈 9 )
 
-  final xio.Range chartDataNoChange =
-      sheet.getRangeByIndex(8, 9, 7 + excelChartData.length, 9);
-  chartDataNoChange.setText(typeValue);
-  // 변하지 않는 차트 데이터 삽입.
+  // final xio.Range chartDataNoChange =
+  //     sheet.getRangeByIndex(8, 9, 7 + excelChartData.length, 9);
+  // chartDataNoChange.setText(typeValue);
+  // // 변하지 않는 차트 데이터 삽입.
 
   sheet.getRangeByName('B23').setText('담당 선생님');
   sheet.getRangeByName('B24').setText('아동');
