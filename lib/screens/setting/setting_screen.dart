@@ -1,4 +1,4 @@
-import 'package:aba_analysis/components/setting/setting_screen.dart/body.dart';
+import 'package:aba_analysis/components/setting/setting_screen/body.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:flutter/material.dart';
 

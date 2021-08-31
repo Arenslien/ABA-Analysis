@@ -9,6 +9,7 @@ import 'package:aba_analysis/screens/graph_management/select_area_screen.dart';
 import 'package:aba_analysis/screens/graph_management/select_item_graph_screen.dart';
 import 'package:aba_analysis/screens/graph_management/select_date_graph_screen.dart';
 import 'package:aba_analysis/screens/graph_management/select_program_screen.dart';
+import 'package:aba_analysis/screens/setting/edit_info_screen.dart';
 import 'package:aba_analysis/wrapper.dart';
 import 'package:flutter/widgets.dart';
 
@@ -25,4 +26,5 @@ final Map<String, WidgetBuilder> routes = {
   DateGraph.routeName: (context) => DateGraph(),
   ItemGraph.routeName: (context) => ItemGraph(),
   FindEmailScreen.routeName: (context) => FindEmailScreen(),
+  EditInfoScreen.routeName: (context) => EditInfoScreen(),
 };
