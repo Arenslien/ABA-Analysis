@@ -131,7 +131,7 @@ class _DateGraphState extends State<DateGraph> {
     final graphImage = bytes.buffer.asUint8List();
 
     final xio.Workbook graphWorkbook = genExcel(columns, excelChartData,
-        graphImage, _graphType, _typeValue, _averageRate);
+        graphImage, _graphType, _typeValue, _averageRate, true);
     final List<int> excelBytes = graphWorkbook.saveAsStream();
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';

@@ -5,6 +5,7 @@ import 'package:aba_analysis/screens/authenticate/register_screen.dart';
 import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
 import 'package:aba_analysis/screens/graph_management/date_graph_screen.dart';
 import 'package:aba_analysis/screens/graph_management/item_graph_screen.dart';
+import 'package:aba_analysis/screens/graph_management/real_graph_screen.dart';
 import 'package:aba_analysis/screens/graph_management/select_area_screen.dart';
 import 'package:aba_analysis/screens/graph_management/select_item_graph_screen.dart';
 import 'package:aba_analysis/screens/graph_management/select_date_graph_screen.dart';
@@ -24,5 +25,6 @@ final Map<String, WidgetBuilder> routes = {
   SelectDateScreen.routeName: (context) => SelectDateScreen(),
   DateGraph.routeName: (context) => DateGraph(),
   ItemGraph.routeName: (context) => ItemGraph(),
+  RealGraph.routeName: (context) => RealGraph(),
   FindEmailScreen.routeName: (context) => FindEmailScreen(),
 };
