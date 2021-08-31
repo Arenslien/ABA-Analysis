@@ -29,8 +29,8 @@ class _DateGraphState extends State<DateGraph> {
   late String _graphType;
   late String _typeValue;
   late num _averageRate;
-  late String _fileName = 'sample';
-  late String valueText; // Dialog에서 사용
+  String? _fileName = null;
+  String? valueText = null; // Dialog에서 사용
   bool _isCancle = true;
 
   TextEditingController _textFieldController = TextEditingController();
@@ -49,7 +49,10 @@ class _DateGraphState extends State<DateGraph> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("< 영수의 " + _graphType + "별 그래프 >"), // 아이의 이름값 갖고와야함.
+        title: Text(
+          "< 영수의 " + _graphType + "별 그래프 >",
+          style: TextStyle(fontFamily: 'korean'),
+        ), // 아이의 이름값 갖고와야함.
         centerTitle: true,
         backgroundColor: Colors.grey,
         leading: IconButton(
@@ -139,7 +142,8 @@ class _DateGraphState extends State<DateGraph> {
     await _displayTextInputDialog(context, filePath, 'xlsx');
     if (_isCancle == false) {
       // 확인을 눌렀을 때
-      final File file = File(filePath + _fileName + ".xlsx");
+      if (_fileName == null) {}
+      final File file = File(filePath + _fileName! + ".xlsx");
       file.writeAsBytesSync(excelBytes);
       await OpenFile.open(file.path);
       graphWorkbook.dispose();
@@ -163,7 +167,7 @@ class _DateGraphState extends State<DateGraph> {
     final graphImage = pw.MemoryImage(
       bytes!.buffer.asUint8List(),
     );
-    final ttf = await rootBundle.load('asset/font/tway_air.ttf');
+    final ttf = await rootBundle.load('asset/font/한글틀고딕.ttf');
 
     pw.Document graphPDF =
         genPDF(columns, tableData, graphImage, ttf, _graphType, _typeValue);
@@ -176,7 +180,7 @@ class _DateGraphState extends State<DateGraph> {
     await _displayTextInputDialog(context, filePath, "pdf");
     if (_isCancle == false) {
       // 확인을 눌렀을 때
-      final File file = File(filePath + _fileName + ".pdf");
+      final File file = File(filePath + _fileName! + ".pdf");
       file.writeAsBytesSync(List.from(await graphPDF.save()));
       await OpenFile.open(file.path);
     }
@@ -239,16 +243,7 @@ class _DateGraphState extends State<DateGraph> {
                   backgroundColor: Colors.green,
                 ),
                 onPressed: () {
-                  if (File(filePath + valueText + "." + exportType)
-                          .existsSync() ==
-                      false) {
-                    setState(() {
-                      _fileName = valueText;
-                      _isCancle = false;
-                      _textFieldController.clear();
-                    });
-                    Navigator.pop(context);
-                  } else if (valueText == '') {
+                  if (valueText == null || valueText == '') {
                     Fluttertoast.showToast(
                         msg: "파일 이름을 입력해주세요.",
                         toastLength: Toast.LENGTH_SHORT,
@@ -257,7 +252,9 @@ class _DateGraphState extends State<DateGraph> {
                         backgroundColor: Colors.red,
                         textColor: Colors.white,
                         fontSize: 16.0);
-                  } else {
+                  } else if (File(filePath + valueText! + "." + exportType)
+                          .existsSync() ==
+                      true) {
                     Fluttertoast.showToast(
                         msg: "같은 이름의 파일이 이미 존재합니다.",
                         toastLength: Toast.LENGTH_SHORT,
@@ -266,6 +263,13 @@ class _DateGraphState extends State<DateGraph> {
                         backgroundColor: Colors.red,
                         textColor: Colors.white,
                         fontSize: 16.0);
+                  } else {
+                    setState(() {
+                      _fileName = valueText;
+                      _isCancle = false;
+                      _textFieldController.clear();
+                    });
+                    Navigator.pop(context);
                   }
                 },
               )

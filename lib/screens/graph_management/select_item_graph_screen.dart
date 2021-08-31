@@ -113,10 +113,10 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
           Text(
             'No Test Data',
             style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w500,
-              fontSize: 40,
-            ),
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+                fontSize: 40,
+                fontFamily: 'korean'),
           ),
         ],
       ),

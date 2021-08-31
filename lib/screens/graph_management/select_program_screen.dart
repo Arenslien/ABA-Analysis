@@ -81,7 +81,8 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${dummy1.name}의 프로그램 영역 선택'),
+        title: Text('${dummy1.name}의 프로그램 영역 선택',
+            style: TextStyle(fontFamily: 'korean')),
         backgroundColor: Colors.grey,
         centerTitle: true,
         leading: IconButton(
@@ -115,10 +116,10 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
           Text(
             'No Program Data',
             style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w500,
-              fontSize: 40,
-            ),
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+                fontSize: 40,
+                fontFamily: 'korean'),
           ),
         ],
       ),
