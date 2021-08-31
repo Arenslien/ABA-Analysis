@@ -24,7 +24,7 @@ Widget buildListTile(
           ? null
           : Text(
               subtitleText,
-              style: TextStyle(fontSize: 15),
+              style: TextStyle(fontSize: 15, fontFamily: 'korean'),
             ),
       onTap: onTap,
       trailing: trailing,

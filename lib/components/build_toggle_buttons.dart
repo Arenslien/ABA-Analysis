@@ -10,7 +10,10 @@ ToggleButtons buildToggleButtons(
   List<bool> selecte = [];
 
   for (int i = 0; i < text.length; i++) {
-    textList.add(Text(text[i]));
+    textList.add(Text(
+      text[i],
+      style: TextStyle(fontFamily: 'korean'),
+    ));
     selecte.add(false);
   }
 

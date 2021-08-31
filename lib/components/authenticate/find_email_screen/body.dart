@@ -18,7 +18,7 @@ class Body extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 로그인 Title Card
-            AuthTitleCard(title: '아이디(이메일) 찾기', subInformation: '아이디와 등록된 (....)'),
+            AuthTitleCard(title: '아이디(이메일) 찾기', subInformation: '사용자의 휴대전화 번호를 입력해 주세요'),
             // 로그인 Form Card
             AuthFormCard(
               flex: 5,

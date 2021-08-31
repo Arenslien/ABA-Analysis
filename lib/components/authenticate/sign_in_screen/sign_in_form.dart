@@ -100,7 +100,6 @@ class _SignInFormState extends State<SignInForm> {
                   // 로그인
                   ABAUser? abaUser = await _auth.signInWithUserInformation(email, password);
 
-
                   // final snackBar = SnackBar(
                   //   content: Text('로그인 실패!'),
                   //   backgroundColor: Colors.red,

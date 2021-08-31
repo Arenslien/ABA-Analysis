@@ -33,7 +33,7 @@ AppBar searchBar({
       ),
       onChanged: controlSearching,
       cursorColor: Colors.black,
-      style: TextStyle(fontSize: 18, color: Colors.black),
+      style: TextStyle(fontSize: 18, color: Colors.black, fontFamily: 'korean'),
     ),
     backgroundColor: Colors.white,
   );

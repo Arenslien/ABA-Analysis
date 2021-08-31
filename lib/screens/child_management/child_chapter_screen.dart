@@ -46,15 +46,6 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
             Navigator.pop(context);
           },
         ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.search_outlined,
-              color: Colors.black,
-            ),
-            onPressed: () {},
-          ),
-        ],
         backgroundColor: Colors.white,
         elevation: 0,
       ),

@@ -30,8 +30,8 @@ class _ItemGraphState extends State<ItemGraph> {
   late String _typeValue;
   late num _averageRate;
   final GlobalKey<SfCartesianChartState> _cartesianKey = GlobalKey();
-  late String _fileName = 'sample';
-  late String valueText; // Dialog에서 사용
+  String? _fileName = null;
+  String? valueText = null; // Dialog에서 사용
   bool _isCancle = true;
   TextEditingController _textFieldController = TextEditingController();
   late ZoomPanBehavior _zoomPanBehavior;
@@ -55,7 +55,10 @@ class _ItemGraphState extends State<ItemGraph> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("< 영수의 " + _graphType + "별 그래프 >"), // 아이의 이름값 갖고와야함.
+        title: Text(
+          "< 영수의 " + _graphType + "별 그래프 >",
+          style: TextStyle(fontFamily: 'korean'),
+        ), // 아이의 이름값 갖고와야함.
         centerTitle: true,
         backgroundColor: Colors.grey,
         leading: IconButton(
@@ -72,7 +75,9 @@ class _ItemGraphState extends State<ItemGraph> {
               zoomPanBehavior: _zoomPanBehavior,
               // enableAxisAnimation: true,
               key: _cartesianKey,
-              title: ChartTitle(text: _typeValue), // testdata의 회차
+              title: ChartTitle(
+                  text: _typeValue,
+                  textStyle: TextStyle(fontFamily: 'korean')), // testdata의 회차
               legend: Legend(isVisible: true, position: LegendPosition.bottom),
               tooltipBehavior: _tooltipBehavior,
               series: <ChartSeries>[
@@ -93,8 +98,9 @@ class _ItemGraphState extends State<ItemGraph> {
               primaryXAxis: CategoryAxis(
                   // maximumLabelWidth: 50,
                   // labelRotation: 90,
-                  ),
+                  labelStyle: TextStyle(fontFamily: 'korean')),
               primaryYAxis: NumericAxis(
+                labelStyle: TextStyle(fontFamily: 'korean'),
                 labelFormat: '{value}%',
                 visibleMaximum: 100,
                 visibleMinimum: 0,
@@ -109,7 +115,8 @@ class _ItemGraphState extends State<ItemGraph> {
                   onPressed: () {
                     exportExcel(_pdfColumn, genPDFData(_chartData));
                   }, // 누르면 엑셀 내보내기
-                  label: Text('엑셀 내보내기'),
+                  label:
+                      Text('엑셀 내보내기', style: TextStyle(fontFamily: 'korean')),
                   icon: Icon(LineIcons.excelFile),
                 ),
                 SizedBox(
@@ -120,7 +127,10 @@ class _ItemGraphState extends State<ItemGraph> {
                   onPressed: () {
                     exportPDF(_pdfColumn, genPDFData(_chartData));
                   }, // 누르면 PDF 내보내기
-                  label: Text('PDF 내보내기'),
+                  label: Text(
+                    'PDF 내보내기',
+                    style: TextStyle(fontFamily: 'korean'),
+                  ),
                   icon: Icon(LineIcons.pdfFile),
                 ),
               ],
@@ -151,7 +161,7 @@ class _ItemGraphState extends State<ItemGraph> {
     await _displayTextInputDialog(context, filePath, 'xlsx');
     if (_isCancle == false) {
       // 확인을 눌렀을 때
-      final File file = File(filePath + _fileName + ".xlsx");
+      final File file = File(filePath + _fileName! + ".xlsx");
       file.writeAsBytesSync(excelBytes);
       await OpenFile.open(file.path);
       graphWorkbook.dispose();
@@ -175,7 +185,7 @@ class _ItemGraphState extends State<ItemGraph> {
     final graphImage = pw.MemoryImage(
       bytes!.buffer.asUint8List(),
     );
-    final ttf = await rootBundle.load('asset/font/tway_air.ttf');
+    final ttf = await rootBundle.load('asset/font/한글틀고딕.ttf');
 
     pw.Document graphPDF =
         genPDF(columns, tableData, graphImage, ttf, _graphType, _typeValue);
@@ -189,7 +199,7 @@ class _ItemGraphState extends State<ItemGraph> {
     await _displayTextInputDialog(context, filePath, "pdf");
     if (_isCancle == false) {
       // 확인을 눌렀을 때
-      final File file = File(filePath + _fileName + ".pdf");
+      final File file = File(filePath + _fileName! + ".pdf");
       file.writeAsBytesSync(List.from(await graphPDF.save()));
       await OpenFile.open(file.path);
     }
@@ -201,7 +211,10 @@ class _ItemGraphState extends State<ItemGraph> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('저장할 파일이름 입력'),
+            title: Text(
+              '저장할 파일이름 입력',
+              style: TextStyle(fontFamily: 'korean'),
+            ),
             content: TextField(
               onChanged: (text) {
                 setState(() {
@@ -212,14 +225,15 @@ class _ItemGraphState extends State<ItemGraph> {
               decoration: InputDecoration(
                 hintText: "파일이름 입력",
                 hintStyle: TextStyle(
-                  fontSize: 10,
-                  color: Colors.grey,
-                ),
+                    fontSize: 10, color: Colors.grey, fontFamily: 'korean'),
               ),
             ),
             actions: <Widget>[
               TextButton(
-                child: Text("취소"),
+                child: Text(
+                  "취소",
+                  style: TextStyle(fontFamily: 'korean'),
+                ),
                 style: TextButton.styleFrom(
                   primary: Colors.white,
                   backgroundColor: Colors.red,
@@ -233,22 +247,16 @@ class _ItemGraphState extends State<ItemGraph> {
                 },
               ),
               TextButton(
-                child: Text("확인"),
+                child: Text(
+                  "확인",
+                  style: TextStyle(fontFamily: 'korean'),
+                ),
                 style: TextButton.styleFrom(
                   primary: Colors.white,
                   backgroundColor: Colors.green,
                 ),
                 onPressed: () {
-                  if (File(filePath + valueText + "." + exportType)
-                          .existsSync() ==
-                      false) {
-                    setState(() {
-                      _fileName = valueText;
-                      _isCancle = false;
-                      _textFieldController.clear();
-                    });
-                    Navigator.pop(context);
-                  } else if (valueText == '') {
+                  if (valueText == null || valueText == '') {
                     Fluttertoast.showToast(
                         msg: "파일 이름을 입력해주세요.",
                         toastLength: Toast.LENGTH_SHORT,
@@ -257,7 +265,9 @@ class _ItemGraphState extends State<ItemGraph> {
                         backgroundColor: Colors.red,
                         textColor: Colors.white,
                         fontSize: 16.0);
-                  } else {
+                  } else if (File(filePath + valueText! + "." + exportType)
+                          .existsSync() ==
+                      true) {
                     Fluttertoast.showToast(
                         msg: "같은 이름의 파일이 이미 존재합니다.",
                         toastLength: Toast.LENGTH_SHORT,
@@ -266,6 +276,13 @@ class _ItemGraphState extends State<ItemGraph> {
                         backgroundColor: Colors.red,
                         textColor: Colors.white,
                         fontSize: 16.0);
+                  } else {
+                    setState(() {
+                      _fileName = valueText;
+                      _isCancle = false;
+                      _textFieldController.clear();
+                    });
+                    Navigator.pop(context);
                   }
                 },
               )
