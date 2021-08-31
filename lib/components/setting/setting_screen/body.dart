@@ -1,4 +1,5 @@
 import 'package:aba_analysis/components/setting/setting_default_button.dart';
+import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
@@ -82,7 +83,8 @@ class _BodyState extends State<Body> {
                         SettingDefaultButton(text: '테스트용', onTap: () {
                           FireStoreService _store = FireStoreService();
 
-                          _store.readUser('arenslien@gmail.com');
+                          _store.createChild(Child(1, 'arenslien@gmail.com', '홍길동', 10, '남'));
+                          
                         }),
                       ],
                     ),

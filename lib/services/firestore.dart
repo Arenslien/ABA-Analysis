@@ -1,5 +1,6 @@
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/aba_user.dart';
+import 'package:aba_analysis/models/test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FireStoreService {
@@ -7,17 +8,13 @@ class FireStoreService {
   CollectionReference _user = FirebaseFirestore.instance.collection('User');
   CollectionReference _programField = FirebaseFirestore.instance.collection('Program Field');
   CollectionReference _child = FirebaseFirestore.instance.collection('Child');
+  CollectionReference _test = FirebaseFirestore.instance.collection('Test');
+
 
   // 사용자 생성
   Future createUser(ABAUser abaUser) async {
     return _user
-        .add({
-          'email': abaUser.email,
-          'name': abaUser.name,
-          'phone': abaUser.phone,
-          'duty': abaUser.duty,
-          'children': [],
-        })
+        .add(abaUser.toMap())
         .then((value) => print('유저가 성공적으로 추가되었습니다.'))
         .catchError((error) => print('유저를 추가하지 못했습니다.\n에러 내용: $error'));
   }
@@ -96,12 +93,7 @@ class FireStoreService {
     // 1. 현재 맡고 있는 선생님에 대해 아이 추가
 
     // 2. 데이터베이스에 Child 문서 추가
-    return _child.add({
-      'child-id': child.childId,
-      'name': child.name,
-      'gender': child.gender,
-      'age': child.age
-    })
+    return _child.add(child.toMap())
     .then((value) => print('아동이 성공적으로 추가되었습니다.'))
     .catchError((error) => print('아동을 추가하지 못했습니다.\n에러 내용: $error'));
   }
@@ -114,7 +106,7 @@ class FireStoreService {
         .then((QuerySnapshot snapshot) => snapshot.docs[0].data());
 
     // db의 child 정보를 기반으로 Child 인스턴스 생성
-    Child child = new Child(childId, dbChild['name'], dbChild['age'], dbChild['gender']);
+    Child child = new Child(childId, dbChild['teacher-uid'], dbChild['name'], dbChild['age'], dbChild['gender']);
 
     // Child 반환
     return child;
@@ -127,7 +119,7 @@ class FireStoreService {
 
     // DB에서 모든 Child Data 가져오기
     _child.get().then((QuerySnapshot snapshot) => snapshot.docs.forEach((child) {
-      children.add(Child(child['child-id'], child['name'], child['age'], child['gender']));
+      children.add(Child(child['child-id'], child['teacher-uid'], child['name'], child['age'], child['gender']));
     }));
 
     return children;
@@ -146,11 +138,14 @@ class FireStoreService {
 
 
   Future updateChild(int childId) async{
-
+    // String id = await _child
+    //     .where('child-id', isEqualTo: childId)
+    //     .get()
+    //     .then((QuerySnapshot snapshot) => snapshot.docs[0].id);
   }
 
   Future deleteChild(int childId) async {
-    // 해당 이메일에 대한 User Document의 ID 가져오기
+    // 해당 이메일에 대한 Child Document의 ID 가져오기
     String id = await _child
         .where('child-id', isEqualTo: childId)
         .get()
@@ -192,4 +187,13 @@ class FireStoreService {
 
   }
 
+  // Test 추가
+  Future createTest(Child child, Test test) async {
+    // Child 정보 가져온 후 수정하기
+    
+    // 
+    return _test.add(test.toMap())
+    .then((value) => print('${child.name}에 대한 테스트가 성공적으로 추가되었습니다.'))
+    .catchError((error) => print('${child.name}에 대한 테스트를 추가하지 못했습니다.\n에러 내용: $error'));
+  }
 }
