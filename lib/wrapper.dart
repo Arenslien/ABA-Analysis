@@ -4,7 +4,7 @@ import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/home_screen.dart';
+import 'package:aba_analysis/screens/home/home_screen.dart';
 import 'package:provider/provider.dart';
 
 class Wrapper extends StatefulWidget {

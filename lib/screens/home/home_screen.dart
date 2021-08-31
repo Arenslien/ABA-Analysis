@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/screens/setting/setting_screen.dart';
 import 'package:aba_analysis/screens/graph_management/graph_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_main_screen.dart';
 import 'package:aba_analysis/screens/subject_management/subject_main_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -26,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       firebaseInitialized = true;
     });
     //});
+
     pageController = PageController();
   }
 
@@ -104,4 +108,6 @@ class _HomeScreenState extends State<HomeScreen> {
       this._page = page;
     });
   }
+
+  AuthService() {}
 }

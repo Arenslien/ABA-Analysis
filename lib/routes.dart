@@ -1,4 +1,4 @@
-import 'package:aba_analysis/home_screen.dart';
+import 'package:aba_analysis/screens/home/home_screen.dart';
 import 'package:aba_analysis/screens/authenticate/find_email_screen.dart';
 import 'package:aba_analysis/screens/authenticate/find_password_screen.dart';
 import 'package:aba_analysis/screens/authenticate/register_screen.dart';
