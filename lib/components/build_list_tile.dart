@@ -18,13 +18,13 @@ Widget buildListTile(
             ),
       title: Text(
         titleText!,
-        style: TextStyle(fontSize: titleSize ?? 25),
+        style: TextStyle(fontSize: titleSize ?? 25, fontFamily: 'KoreanGothic'),
       ),
       subtitle: subtitleText == null
           ? null
           : Text(
               subtitleText,
-              style: TextStyle(fontSize: 15, fontFamily: 'korean'),
+              style: TextStyle(fontSize: 15, fontFamily: 'KoreanGothic'),
             ),
       onTap: onTap,
       trailing: trailing,

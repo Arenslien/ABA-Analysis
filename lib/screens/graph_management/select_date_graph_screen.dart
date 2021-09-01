@@ -15,109 +15,88 @@ class SelectDateScreen extends StatefulWidget {
 }
 
 class _SelectDateScreenState extends State<SelectDateScreen> {
+  String? selected_child_name;
+  bool? _isDate = true;
   List<Child> childData = []; // 순수 아이 데이터
   List<DummyTestData> testData = []; // 테스트 관련 데이터
   Child dummy1 = new Child();
   DummyTestData dummy2 = new DummyTestData();
-  bool? isDate; // 그래프 관련 전역변수 isDate 날짜그래프인지 아이템그래프인지
+  bool isDate = true; // 그래프 관련 전역변수 isDate 날짜그래프인지 아이템그래프인지
 
   List<String> dateList = [];
   List<int> averageList = [];
 
+  List<String> date_list = [];
+  late Map<String, double> date_rate_map = {};
+  double? date_average = 60;
   void initState() {
     super.initState();
-    this.testInit();
-  }
-
-  void testInit() {
-    dummy1.age = '88888888';
-    dummy1.gender = '남자';
-    dummy1.name = '영수';
-
-    dummy2.date = "21.7/11";
-    dummy2.average = "70";
-    dummy2.item.addAll({
-      '하위1': '상위1',
-      '하위2': '상위1',
-      '하위3': '상위2',
-      '하위4': '상위2',
-    });
-    testData.add(dummy2);
-
-    childData.add(dummy1);
-
-    dummy2.date = "21.7/22";
-    dummy2.average = "60";
-    dummy2.item.addAll({
-      '하위1': '상위1',
-      '하위2': '상위1',
-      '하위3': '상위2',
-      '하위4': '상위2',
-    });
-    testData.add(dummy2);
-
-    dummy2.date = "21.7/29";
-    dummy2.average = "30";
-    dummy2.item.addAll({
-      '하위1': '상위1',
-      '하위2': '상위1',
-      '하위3': '상위2',
-      '하위4': '상위2',
-    });
-    testData.add(dummy2);
-
-    dummy2.date = "21.8/5";
-    dummy2.average = "80";
-    dummy2.item.addAll({
-      '하위1': '상위1',
-      '하위2': '상위1',
-      '하위3': '상위2',
-      '하위4': '상위2',
-    });
-    testData.add(dummy2);
-
-    dateList.add("2021년7월11일");
-    dateList.add("2021년7월22일");
-    dateList.add("2021년7월29일");
-    dateList.add("2021년8월5일");
-
-    averageList.add(70);
-    averageList.add(60);
-    averageList.add(30);
-    averageList.add(80);
+    date_list.add("2021년7월11일");
+    date_list.add("2021년7월22일");
+    date_list.add("2021년7월29일");
+    date_list.add("2021년8월5일");
+    date_list.add("2021년8월2일");
+    date_list.add("2021년8월3일");
+    date_list.add("2021년8월4일");
+    date_list.add("2021년8월6일");
+    date_list.add("2021년9월1일");
+    date_list.add("2021년9월2일");
+    date_list.add("2021년9월3일");
+    date_list.add("2021년9월4일");
+    date_list.add("2021년9월5일");
+    date_list.add("2021년9월6일");
+    date_list.add("2021년9월7일");
+    date_list.add("2021년9월9일");
+    date_list.add("2021년9월8일");
+    date_list.add("2021년9월10일");
+    date_list.add("2021년9월11일");
+    date_list.add("2021년9월12일");
+    date_list.add("2021년9월13일");
+    date_list.add("2021년9월14일");
+    date_list.add("2021년9월15일");
+    selected_child_name = '영수';
+    for (String s in this.date_list) {
+      date_rate_map.addAll({
+        s: date_average!,
+      });
+    }
+    print(date_rate_map);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: searchBar().title,
-        leadingWidth: 32,
-        leading: new IconButton(
-            padding: EdgeInsets.only(left: 1.0),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: new Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            )),
-        actions: <Widget>[
-          SizedBox(
-            width: 32,
+    return GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+          appBar: AppBar(
+            title: searchBar().title,
+            leadingWidth: 32,
+            leading: new IconButton(
+                padding: EdgeInsets.only(left: 1.0),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: new Icon(
+                  Icons.arrow_back,
+                  color: Colors.black,
+                )),
+            actions: <Widget>[
+              SizedBox(
+                width: 32,
+              ),
+            ],
           ),
-        ],
-      ),
-      body: testData.length == 0
-          ? noTestData()
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: testData.length,
-              itemBuilder: (BuildContext context, int index) {
-                return dataTile(dateList[index], averageList[index], index);
-              },
-            ),
-    );
+          body: date_list.length == 0
+              ? noTestData()
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: date_list.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return dataTile(date_rate_map.keys.toList()[index],
+                        date_rate_map.values.toList()[index], index);
+                  },
+                ),
+        ));
   }
 
   Widget noTestData() {
@@ -136,14 +115,14 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
                 color: Colors.black,
                 fontWeight: FontWeight.w500,
                 fontSize: 40,
-                fontFamily: 'korean'),
+                fontFamily: 'KoreanGothic'),
           ),
         ],
       ),
     );
   }
 
-  Widget dataTile(String lower, int average, int index) {
+  Widget dataTile(String lower, double average, int index) {
     return buildListTile(
       titleText: lower,
       subtitleText: "평균성공률: $average%",
@@ -151,7 +130,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
         Navigator.pushNamed(context, '/real_graph',
             arguments: GraphArgument(
                 isDate:
-                    true)); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
+                    _isDate!)); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
       },
       trailing: Icon(Icons.keyboard_arrow_right),
     );

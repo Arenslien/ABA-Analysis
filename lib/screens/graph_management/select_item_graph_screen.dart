@@ -19,6 +19,7 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
   String? selected_child_name;
   String? selected_program_name;
   String? selected_low_area_name;
+  bool _isDate = false;
   // get areaList(selected_program_name);
   // 전역변수
 
@@ -92,7 +93,7 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
         Navigator.pushNamed(context, '/real_graph',
             arguments: GraphArgument(
                 isDate:
-                    false)); // 클릭시 realgraph로 이동한다. subItem을 넘겨줘야 한다. 필요하다면 subField나 programField까지 넘겨준다.
+                    _isDate)); // 클릭시 realgraph로 이동한다. subItem을 넘겨줘야 한다. 필요하다면 subField나 programField까지 넘겨준다.
       },
       trailing: Icon(Icons.keyboard_arrow_right),
     );

@@ -391,7 +391,7 @@ class _RealGraphState extends State<RealGraph> {
       chartData.add(new GraphData("7월8일", _noChange, "+", average));
       chartData.add(new GraphData("7월9일", _noChange, "+", average));
       chartData.add(new GraphData("7월10일", _noChange, "+", average));
-      chartData.add(new GraphData("7월11일1234", _noChange, "-", average));
+      chartData.add(new GraphData("7월11일", _noChange, "-", average));
       chartData.add(new GraphData("7월12일", _noChange, "+", average));
     } // 날짜 그래프인지 아이템 그래프인지
 
