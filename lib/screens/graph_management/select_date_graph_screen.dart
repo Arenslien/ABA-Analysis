@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/class/child_class.dart';
 
+import 'arguments.dart';
 import 'graph_screen.dart';
 
 class SelectDateScreen extends StatefulWidget {
@@ -18,6 +19,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
   List<DummyTestData> testData = []; // 테스트 관련 데이터
   Child dummy1 = new Child();
   DummyTestData dummy2 = new DummyTestData();
+  bool? isDate; // 그래프 관련 전역변수 isDate 날짜그래프인지 아이템그래프인지
 
   List<String> dateList = [];
   List<int> averageList = [];
@@ -146,8 +148,10 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
       titleText: lower,
       subtitleText: "평균성공률: $average%",
       onTap: () {
-        Navigator.pushNamed(context,
-            '/date_graph'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
+        Navigator.pushNamed(
+          context,
+          '/real_graph',
+        ); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
       },
       trailing: Icon(Icons.keyboard_arrow_right),
     );

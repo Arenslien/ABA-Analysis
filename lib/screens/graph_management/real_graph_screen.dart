@@ -17,27 +17,33 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xio;
 class RealGraph extends StatefulWidget {
   const RealGraph({Key? key}) : super(key: key);
   static String routeName = '/real_graph';
+
   @override
   _RealGraphState createState() => _RealGraphState();
 }
 
 class _RealGraphState extends State<RealGraph> {
+  late bool _isDate;
+
+  // 전역변수들
+
   late List<GraphData> _chartData;
   late List<String> _tableColumn;
   late TooltipBehavior _tooltipBehavior;
   late String _graphType;
-  late bool _isDate;
   late String _charTitleName;
   late num _averageRate;
   final GlobalKey<SfCartesianChartState> _cartesianKey = GlobalKey();
   String? _fileName;
   String? valueText; // Dialog에서 사용
   bool _isCancle = true;
+
   TextEditingController _textFieldController = TextEditingController();
   late ZoomPanBehavior _zoomPanBehavior;
+
   @override
   void initState() {
-    _isDate = false; // 아이템 그래프인지 날짜 그래프인지
+    _isDate = true; // 아이템 그래프인지 날짜 그래프인지
     if (_isDate) {
       _graphType = '날짜';
       _charTitleName = '7월 11일';
@@ -66,6 +72,7 @@ class _RealGraphState extends State<RealGraph> {
 
   @override
   Widget build(BuildContext context) {
+    _isDate = true;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -125,8 +132,8 @@ class _RealGraphState extends State<RealGraph> {
                       yValueMapper: (GraphData exp, _) => exp.averageRate)
                 ],
                 primaryXAxis: CategoryAxis(
-                    //maximumLabelWidth: 30,
-                    labelRotation: 90,
+                    rangePadding: ChartRangePadding.auto,
+                    labelIntersectAction: AxisLabelIntersectAction.rotate90,
                     labelStyle: TextStyle(fontFamily: 'korean')),
                 primaryYAxis: NumericAxis(
                   labelStyle: TextStyle(fontFamily: 'korean'),
