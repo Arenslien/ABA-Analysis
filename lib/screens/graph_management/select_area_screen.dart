@@ -14,60 +14,24 @@ class SelectAreaScreen extends StatefulWidget {
 }
 
 class _SelectAreaScreenState extends State<SelectAreaScreen> {
+  String? selected_child_name;
+  // String selected_program_name;
+  // get areaList(selected_program_name);
+  // 전역변수
+
   List<Child> childData = []; // 순수 아이 데이터
   List<DummyTestData> testData = []; // 테스트 관련 데이터
   List<String> areaList = [
     '교사가 지시한 한 단계 동작 지시 10가지 따르기 ',
     '사물의 사진을 보고 이름 말하기',
   ]; // DB에서 선택된 program의 areaList를 받아와야 한다.
-  Child dummy1 = new Child();
-  late DummyTestData dummy2 = new DummyTestData();
-  DummyTestData dummy3 = new DummyTestData();
 
   List<String> lowerList = [];
   List<int> averageList = [];
 
   void initState() {
+    this.selected_child_name = '영수';
     super.initState();
-    this.testInit();
-  }
-
-  void testInit() {
-    dummy1.age = '88888888';
-    dummy1.gender = '남자';
-    dummy1.name = '영수';
-
-    dummy2.date = "21.7/2";
-    dummy2.average = "70";
-    dummy2.item.addAll({
-      '하위1': '상위1',
-      '하위2': '상위1',
-      '하위3': '상위2',
-      '하위4': '상위2',
-    });
-
-    dummy3.date = "21.8/5";
-    dummy3.average = "50";
-    dummy3.item.addAll({
-      '하위1': '상위1',
-      '하위2': '상위1',
-      '하위3': '상위2',
-      '하위4': '상위2',
-    });
-
-    childData.add(dummy1);
-    testData.add(dummy2);
-    testData.add(dummy3);
-
-    lowerList.add('하위1');
-    lowerList.add('하위2');
-    lowerList.add('하위3');
-    lowerList.add('하위4');
-
-    averageList.add(70);
-    averageList.add(60);
-    averageList.add(30);
-    averageList.add(80);
   }
 
   @override
@@ -75,7 +39,7 @@ class _SelectAreaScreenState extends State<SelectAreaScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '${dummy1.name}의 하위영역 선택',
+          '${this.selected_child_name}의 하위영역 선택',
           style: TextStyle(fontFamily: 'korean'),
         ),
         backgroundColor: Colors.grey,
@@ -86,37 +50,12 @@ class _SelectAreaScreenState extends State<SelectAreaScreen> {
             },
             icon: Icon(Icons.arrow_back)),
       ), // 검색 필요X
-      body: childData.length == 0
-          ? noTestData()
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: areaList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return dataTile(areaList[index], index);
-              },
-            ),
-    );
-  }
-
-  Widget noTestData() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.auto_graph,
-            color: Colors.grey,
-            size: 150,
-          ),
-          Text(
-            'No Area Data',
-            style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w500,
-                fontSize: 40,
-                fontFamily: 'korean'),
-          ),
-        ],
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: areaList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return dataTile(areaList[index], index);
+        },
       ),
     );
   }
