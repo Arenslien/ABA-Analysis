@@ -11,9 +11,22 @@ PdfColor accentColor = PdfColor.fromInt(0xfff1c0c0);
 PdfColor green = PdfColor.fromInt(0xffe06c6c); //darker background color
 PdfColor lightGreen = PdfColor.fromInt(0x0Dedabab); //light background color
 
+List<String> extraColumns = ['담당 선생님', '아동', '프로그램 영역', '하위 영역', '평균 성공률'];
+String teacher_name = '선생님 이름';
+String child_name = '아동 이름';
+String programField = '해당 프로그램 영역';
+String subArea = '해당 하위 영역';
+double averageRate = 60;
+List<String> extraData = [
+  teacher_name,
+  child_name,
+  programField,
+  subArea,
+  averageRate.toString() + '%'
+];
 pw.Document genPDF(
     // PDF page 추가 후
-    List<String> columns,
+    List<String> tableColumns,
     List<List<String>> tableData,
     pw.MemoryImage image,
     ByteData ttf,
@@ -30,6 +43,49 @@ pw.Document genPDF(
           pw.Header(
             child: headerWidget,
             level: 2,
+          ),
+          pw.Table.fromTextArray(
+            context: context,
+            border: null,
+            headerAlignment: pw.Alignment.centerLeft,
+            cellAlignment: pw.Alignment.centerLeft,
+            headerDecoration: pw.BoxDecoration(
+              borderRadius: pw.BorderRadius.all(pw.Radius.circular(6)),
+              color: accentColor,
+            ),
+            headerHeight: 25,
+            cellHeight: 30,
+            headerStyle: pw.TextStyle(
+              color: _baseTextColor,
+              fontSize: 10,
+              fontWeight: pw.FontWeight.bold,
+              font: pw.TtfFont(ttf),
+            ),
+            cellStyle: pw.TextStyle(
+              color: _darkColor,
+              fontSize: 10,
+              font: pw.TtfFont(ttf),
+            ),
+            rowDecoration: pw.BoxDecoration(
+              border: pw.Border(
+                bottom: pw.BorderSide(color: accentColor, width: .5),
+              ),
+            ),
+            headers: List<String>.generate(
+              extraColumns.length,
+              (col) {
+                return extraColumns[col];
+              },
+            ),
+            data: List<List<String>>.generate(
+              1,
+              (row) => List<String>.generate(
+                extraColumns.length,
+                (col) {
+                  return extraData[col];
+                },
+              ),
+            ),
           ),
           pw.Image(image),
           pw.Table.fromTextArray(
@@ -60,24 +116,17 @@ pw.Document genPDF(
               ),
             ),
             headers: List<String>.generate(
-              columns.length + 1,
+              tableColumns.length,
               (col) {
-                if (col == 0) {
-                  return _graphType;
-                } else {
-                  return columns[col - 1];
-                }
+                return tableColumns[col];
               },
             ),
             data: List<List<String>>.generate(
               tableData.length,
               (row) => List<String>.generate(
-                columns.length + 1,
+                tableColumns.length,
                 (col) {
-                  if (col == 0) {
-                    return _typeValue;
-                  }
-                  return tableData[row][col - 1];
+                  return tableData[row][col];
                 },
               ),
             ),

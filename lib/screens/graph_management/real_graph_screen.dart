@@ -83,13 +83,22 @@ class _RealGraphState extends State<RealGraph> {
     final GraphArgument args =
         ModalRoute.of(context)!.settings.arguments as GraphArgument;
     _isDate = args.isDate;
+    if (_isDate) {
+      _graphType = '날짜';
+      _charTitleName = '7월 11일';
+      _tableColumn = ['날짜', '하위목록', '성공여부'];
+    } else {
+      _graphType = '하위목록';
+      _charTitleName = '인형 안아주기';
+      _tableColumn = ['하위목록', '날짜', '성공여부'];
+    }
     _chartData = getGraphData(_charTitleName);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
           "< 영수의 " + _graphType + "별 그래프 >",
-          style: TextStyle(fontFamily: 'korean'),
+          style: TextStyle(fontFamily: 'KoreanGothic'),
         ), // 아이의 이름값 갖고와야함.
         centerTitle: true,
         backgroundColor: Colors.grey,
@@ -101,38 +110,26 @@ class _RealGraphState extends State<RealGraph> {
         ),
       ),
       body: Center(
-        child: Column(
-          children: [
-            Container(
-              height: 400,
-              width: 400,
-              child: SfCartesianChart(
-                zoomPanBehavior: _zoomPanBehavior, // 1
-                // enableAxisAnimation: true,
-                key: _cartesianKey,
-                title: ChartTitle(
-                    text: _charTitleName,
-                    textStyle: TextStyle(fontFamily: 'korean')), // testdata의 회차
-                legend:
-                    Legend(isVisible: true, position: LegendPosition.bottom),
-                tooltipBehavior: _tooltipBehavior,
-                series: <ChartSeries>[
-                  LineSeries<GraphData, String>(
-                    name: '성공률',
-                    dataSource: _chartData,
-                    xValueMapper: (GraphData exp, _) {
-                      if (_isDate) {
-                        return exp.lowItem;
-                      } else {
-                        return exp.testDate;
-                      }
-                    },
-                    yValueMapper: (GraphData exp, _) => exp.successRate,
-                    markerSettings: MarkerSettings(isVisible: true),
-                  ),
-                  LineSeries<GraphData, String>(
-                      name: '평균 성공률',
-                      dashArray: <double>[5, 5],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                height: 430,
+                width: 400,
+                child: SfCartesianChart(
+                  //zoomPanBehavior: _zoomPanBehavior, // 1
+                  // enableAxisAnimation: true,
+                  key: _cartesianKey,
+                  title: ChartTitle(
+                      text: _charTitleName,
+                      textStyle: TextStyle(
+                          fontFamily: 'KoreanGothic')), // testdata의 회차
+                  legend:
+                      Legend(isVisible: true, position: LegendPosition.bottom),
+                  tooltipBehavior: _tooltipBehavior,
+                  series: <ChartSeries>[
+                    LineSeries<GraphData, String>(
+                      name: '성공률',
                       dataSource: _chartData,
                       xValueMapper: (GraphData exp, _) {
                         if (_isDate) {
@@ -141,50 +138,65 @@ class _RealGraphState extends State<RealGraph> {
                           return exp.testDate;
                         }
                       },
-                      yValueMapper: (GraphData exp, _) => exp.averageRate)
-                ],
-                primaryXAxis: CategoryAxis(
-                    rangePadding: ChartRangePadding.auto,
-                    labelIntersectAction: AxisLabelIntersectAction.rotate90,
-                    labelStyle: TextStyle(fontFamily: 'korean')),
-                primaryYAxis: NumericAxis(
-                  labelStyle: TextStyle(fontFamily: 'korean'),
-                  labelFormat: '{value}%',
-                  visibleMaximum: 100,
-                  visibleMinimum: 0,
-                  interval: 10,
+                      yValueMapper: (GraphData exp, _) => exp.successRate,
+                      markerSettings: MarkerSettings(isVisible: true),
+                    ),
+                    LineSeries<GraphData, String>(
+                        name: '평균 성공률',
+                        dashArray: <double>[5, 5],
+                        dataSource: _chartData,
+                        xValueMapper: (GraphData exp, _) {
+                          if (_isDate) {
+                            return exp.lowItem;
+                          } else {
+                            return exp.testDate;
+                          }
+                        },
+                        yValueMapper: (GraphData exp, _) => exp.averageRate)
+                  ],
+                  primaryXAxis: CategoryAxis(
+                      rangePadding: ChartRangePadding.auto,
+                      labelIntersectAction: AxisLabelIntersectAction.rotate90,
+                      labelStyle: TextStyle(fontFamily: 'KoreanGothic')),
+                  primaryYAxis: NumericAxis(
+                    labelStyle: TextStyle(fontFamily: 'KoreanGothic'),
+                    labelFormat: '{value}%',
+                    visibleMaximum: 100,
+                    visibleMinimum: 0,
+                    interval: 10,
+                  ),
                 ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FloatingActionButton.extended(
-                  heroTag: 'export_excel', // 버튼 구별을 위한 태그
-                  onPressed: () {
-                    exportExcel(_tableColumn, genTableData(_chartData));
-                  }, // 누르면 엑셀 내보내기
-                  label:
-                      Text('엑셀 내보내기', style: TextStyle(fontFamily: 'korean')),
-                  icon: Icon(LineIcons.excelFile),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                FloatingActionButton.extended(
-                  heroTag: 'export_pdf', // 버튼 구별을 위한 태그
-                  onPressed: () {
-                    exportPDF(_tableColumn, genTableData(_chartData));
-                  }, // 누르면 PDF 내보내기
-                  label: Text(
-                    'PDF 내보내기',
-                    style: TextStyle(fontFamily: 'korean'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FloatingActionButton.extended(
+                    heroTag: 'export_excel', // 버튼 구별을 위한 태그
+                    onPressed: () {
+                      exportExcel(_tableColumn, genTableData(_chartData));
+                    }, // 누르면 엑셀 내보내기
+                    label: Text('엑셀 내보내기',
+                        style: TextStyle(fontFamily: 'KoreanGothic')),
+                    icon: Icon(LineIcons.excelFile),
                   ),
-                  icon: Icon(LineIcons.pdfFile),
-                ),
-              ],
-            ),
-          ],
+                  SizedBox(
+                    width: 20,
+                  ),
+                  FloatingActionButton.extended(
+                    heroTag: 'export_pdf', // 버튼 구별을 위한 태그
+                    onPressed: () {
+                      exportPDF(_tableColumn, genTableData(_chartData));
+                    }, // 누르면 PDF 내보내기
+                    label: Text(
+                      'PDF 내보내기',
+                      style: TextStyle(fontFamily: 'KoreanGothic'),
+                    ),
+                    icon: Icon(LineIcons.pdfFile),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -243,7 +255,7 @@ class _RealGraphState extends State<RealGraph> {
     final graphImage = pw.MemoryImage(
       bytes!.buffer.asUint8List(),
     );
-    final ttf = await rootBundle.load('asset/font/한글틀고딕.ttf');
+    final ttf = await rootBundle.load('asset/font/korean.ttf');
 
     pw.Document graphPDF =
         genPDF(columns, tableData, graphImage, ttf, _graphType, _charTitleName);
@@ -271,7 +283,7 @@ class _RealGraphState extends State<RealGraph> {
           return AlertDialog(
             title: Text(
               '저장할 파일이름 입력',
-              style: TextStyle(fontFamily: 'korean'),
+              style: TextStyle(fontFamily: 'KoreanGothic'),
             ),
             content: TextField(
               onChanged: (text) {
@@ -283,14 +295,16 @@ class _RealGraphState extends State<RealGraph> {
               decoration: InputDecoration(
                 hintText: "파일이름 입력",
                 hintStyle: TextStyle(
-                    fontSize: 10, color: Colors.grey, fontFamily: 'korean'),
+                    fontSize: 10,
+                    color: Colors.grey,
+                    fontFamily: 'KoreanGothic'),
               ),
             ),
             actions: <Widget>[
               TextButton(
                 child: Text(
                   "취소",
-                  style: TextStyle(fontFamily: 'korean'),
+                  style: TextStyle(fontFamily: 'KoreanGothic'),
                 ),
                 style: TextButton.styleFrom(
                   primary: Colors.white,
@@ -307,7 +321,7 @@ class _RealGraphState extends State<RealGraph> {
               TextButton(
                 child: Text(
                   "확인",
-                  style: TextStyle(fontFamily: 'korean'),
+                  style: TextStyle(fontFamily: 'KoreanGothic'),
                 ),
                 style: TextButton.styleFrom(
                   primary: Colors.white,
@@ -354,18 +368,18 @@ class _RealGraphState extends State<RealGraph> {
     List<GraphData> chartData = []; // 선택한 하위항목과 테스트한 날짜 리스트
     num average = 66; // 선택한 하위항목의 전체 날짜 평균 성공률
     if (_isDate) {
-      chartData.add(new GraphData(_noChange, 'Item1', '+', average));
-      chartData.add(new GraphData(_noChange, 'Item2', '+', average));
-      chartData.add(new GraphData(_noChange, 'Item3', 'P', average));
-      chartData.add(new GraphData(_noChange, 'Item4', "-", average));
-      chartData.add(new GraphData(_noChange, 'Item5', "-", average));
-      chartData.add(new GraphData(_noChange, 'Item6', "P", average));
-      chartData.add(new GraphData(_noChange, 'Item7', "+", average));
-      chartData.add(new GraphData(_noChange, 'Item8', "+", average));
-      chartData.add(new GraphData(_noChange, 'Item9', "+", average));
+      chartData.add(new GraphData(_noChange, '인사하기', '+', average));
+      chartData.add(new GraphData(_noChange, '손잡기', '+', average));
+      chartData.add(new GraphData(_noChange, '눈 마주치기', 'P', average));
+      chartData.add(new GraphData(_noChange, '친구 옆에 앉기', "-", average));
+      chartData.add(new GraphData(_noChange, '친구에게 장난치기', "-", average));
+      chartData.add(new GraphData(_noChange, '차례 지키기', "P", average));
+      chartData.add(new GraphData(_noChange, '학용품 나눠쓰기', "+", average));
+      chartData.add(new GraphData(_noChange, '공동작품 만들기', "+", average));
+      chartData.add(new GraphData(_noChange, '친구와 율동하기', "+", average));
       chartData.add(new GraphData(_noChange, 'Item10', "+", average));
       chartData.add(new GraphData(_noChange, 'Item11', "-", average));
-      chartData.add(new GraphData(_noChange, 'Item12', "+", average));
+      chartData.add(new GraphData(_noChange, '친구를 이름으로 부르기', "+", average));
     } else {
       chartData.add(new GraphData('7월1일', _noChange, '+', average));
       chartData.add(new GraphData('7월2일', _noChange, '+', average));
