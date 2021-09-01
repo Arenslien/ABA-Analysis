@@ -1,3 +1,4 @@
+import 'package:aba_analysis/screens/graph_management/arguments.dart';
 import 'package:aba_analysis/screens/graph_management/generateExcel.dart';
 import 'package:aba_analysis/screens/graph_management/generatePDF.dart';
 import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
@@ -24,14 +25,19 @@ class RealGraph extends StatefulWidget {
 
 class _RealGraphState extends State<RealGraph> {
   late bool _isDate;
-
+  // String _subfield // 넘겨받은 subField이름.
+  // 이 값을 통해서 testId 리스트를 받아오고 testId 리스트를 통해서 date값을 받아온다.
+  // List<String> testId
+  // List<String> test_date
+  // List<String> item_result
+  // double averageRate //
   // 전역변수들
 
   late List<GraphData> _chartData;
   late List<String> _tableColumn;
   late TooltipBehavior _tooltipBehavior;
   late String _graphType;
-  late String _charTitleName;
+  late String _charTitleName; // test_date 이거나 subItem
   late num _averageRate;
   final GlobalKey<SfCartesianChartState> _cartesianKey = GlobalKey();
   String? _fileName;
@@ -44,6 +50,7 @@ class _RealGraphState extends State<RealGraph> {
   @override
   void initState() {
     _isDate = true; // 아이템 그래프인지 날짜 그래프인지
+
     if (_isDate) {
       _graphType = '날짜';
       _charTitleName = '7월 11일';
@@ -72,7 +79,12 @@ class _RealGraphState extends State<RealGraph> {
 
   @override
   Widget build(BuildContext context) {
-    _isDate = true;
+    //_isDate = true;
+    final GraphArgument args =
+        ModalRoute.of(context)!.settings.arguments as GraphArgument;
+    _isDate = args.isDate;
+    _chartData = getGraphData(_charTitleName);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(

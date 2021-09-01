@@ -22,11 +22,9 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
   // get areaList(selected_program_name);
   // 전역변수
 
-  // String _childNmae;
-  // String _program_area = '사회성 기술';
-  // String _low_area = '친구와 함께하는 기술';
-  List<String> low_item_list = [];
-  late Map<String, double> low_item_map = {};
+  List<String> low_item_list =
+      []; // 전 스크린에서 선택된 subField 값을 통해 subItem의 리스트를 받아온다.
+  late Map<String, double> low_item_map = {}; // subItem과 평균 성공률을 매치시켜준다.
   double? item_average;
   @override
   void initState() {
@@ -74,7 +72,7 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
             width: 32,
           ),
         ],
-      ), // 검색 필요X
+      ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: low_item_map.length,
@@ -91,10 +89,10 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
       titleText: lower,
       subtitleText: "평균성공률: $average%",
       onTap: () {
-        Navigator.pushNamed(
-          context,
-          '/real_graph',
-        ); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
+        Navigator.pushNamed(context, '/real_graph',
+            arguments: GraphArgument(
+                isDate:
+                    false)); // 클릭시 realgraph로 이동한다. subItem을 넘겨줘야 한다. 필요하다면 subField나 programField까지 넘겨준다.
       },
       trailing: Icon(Icons.keyboard_arrow_right),
     );

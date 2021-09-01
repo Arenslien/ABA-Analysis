@@ -148,10 +148,10 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
       titleText: lower,
       subtitleText: "평균성공률: $average%",
       onTap: () {
-        Navigator.pushNamed(
-          context,
-          '/real_graph',
-        ); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
+        Navigator.pushNamed(context, '/real_graph',
+            arguments: GraphArgument(
+                isDate:
+                    true)); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
       },
       trailing: Icon(Icons.keyboard_arrow_right),
     );
