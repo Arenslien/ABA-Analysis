@@ -1,7 +1,7 @@
+import 'package:aba_analysis/models/child.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/components/class/child_class.dart';
 import 'package:aba_analysis/screens/child_management/child_chapter_screen.dart';
 
 class ChildSubjectScreen extends StatefulWidget {
@@ -38,16 +38,16 @@ class _ChildSubjectScreenState extends State<ChildSubjectScreen> {
         backgroundColor: mainGreenColor,
       ),
       body: ListView.builder(
-        itemCount: child.subjectList.length,
+        itemCount: child.testList.length,
         itemBuilder: (BuildContext context, int index) {
           return buildListTile(
-            titleText: child.subjectList[index].name,
+            titleText: child.testList[index].programField,
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => ChildChapterScreen(
-                    child.subjectList[index],
+                    child.testList[index],
                     name: child.name,
                   ),
                 ),
