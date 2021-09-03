@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/build_no_list_widget.dart';
 import 'package:aba_analysis/components/class/subject_class.dart';
@@ -44,13 +45,13 @@ class _ChapterMainScreenState extends State<ChapterMainScreen> {
                 Navigator.pop(context);
               },
             ),
-            backgroundColor: Colors.white,
-            elevation: 0,
+            backgroundColor: mainGreenColor,
           ),
           body: subject.chapterList.length == 0
               ? noListData(Icons.library_add_outlined, '챕터 추가')
               : searchTextEditingController.text == ''
                   ? ListView.builder(
+                      padding: EdgeInsets.only(bottom: 50),
                       itemCount: subject.chapterList.length,
                       itemBuilder: (BuildContext context, int index) {
                         return buildListTile(
@@ -82,6 +83,7 @@ class _ChapterMainScreenState extends State<ChapterMainScreen> {
                       },
                     )
                   : ListView.builder(
+                      padding: EdgeInsets.only(bottom: 50),
                       itemCount: searchResult.length,
                       itemBuilder: (BuildContext context, int index) {
                         return buildListTile(

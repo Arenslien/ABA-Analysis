@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/class/subject_class.dart';
 import 'package:aba_analysis/screens/chapter_management/chapter_main_screen.dart';
@@ -29,6 +30,7 @@ class _SubjectMainScreenState extends State<SubjectMainScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('과목'),
+        backgroundColor: mainGreenColor,
       ),
       body: ListView.builder(
         itemCount: subjectList.length,
