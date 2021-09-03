@@ -1,3 +1,4 @@
+import 'package:aba_analysis/screens/graph_management/arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/class/child_class.dart';
@@ -14,7 +15,7 @@ class SelectProgramScreen extends StatefulWidget {
 }
 
 class _SelectProgramScreenState extends State<SelectProgramScreen> {
-  String? selected_child_name;
+  String? _selected_child_name;
   // String selected_program_name;
   // get areaList(selected_program_name);
   // 전역변수
@@ -31,18 +32,22 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
     '매칭'
   ];
 
-  bool? isDate; // 그래프 관련 전역변수 isDate 날짜그래프인지 아이템그래프인지
+  bool? _isDate; // 그래프 관련 전역변수 isDate 날짜그래프인지 아이템그래프인지
   void initState() {
     super.initState();
-    this.selected_child_name = '영수';
-    isDate = false;
   }
 
   @override
   Widget build(BuildContext context) {
+    final GraphToProgram args =
+        ModalRoute.of(context)!.settings.arguments as GraphToProgram;
+    // args에서 isDate, selectedChildName을 담아서 준다.
+    _selected_child_name = args.selectedChildName;
+    _isDate = args.isDate;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('${this.selected_child_name}의 프로그램 영역 선택',
+        title: Text('$_selected_child_name의 프로그램 영역 선택',
             style: TextStyle(fontFamily: 'korean')),
         backgroundColor: Colors.grey,
         centerTitle: true,
@@ -90,8 +95,12 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
       titleText: programName,
 //      subtitleText: "평균성공률: $average%",
       onTap: () {
-        Navigator.pushNamed(context,
-            '/select_area'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
+        Navigator.pushNamed(context, '/select_area',
+            arguments: ProgramToArea(
+                isDate: _isDate!,
+                selectedChildName: _selected_child_name!,
+                selectedProgramName:
+                    programName)); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
       },
       trailing: Icon(Icons.keyboard_arrow_right),
     );

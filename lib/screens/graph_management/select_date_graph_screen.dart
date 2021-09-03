@@ -23,9 +23,6 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
   DummyTestData dummy2 = new DummyTestData();
   bool isDate = true; // 그래프 관련 전역변수 isDate 날짜그래프인지 아이템그래프인지
 
-  List<String> dateList = [];
-  List<int> averageList = [];
-
   List<String> date_list = [];
   late Map<String, double> date_rate_map = {};
   double? date_average = 60;

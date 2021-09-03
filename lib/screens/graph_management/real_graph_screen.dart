@@ -24,7 +24,9 @@ class RealGraph extends StatefulWidget {
 }
 
 class _RealGraphState extends State<RealGraph> {
-  late bool _isDate;
+  late bool _isDate; // Date Graph인지 Item Graph인지
+  late String _childName;
+  late var selectedArgs;
   // String _subfield // 넘겨받은 subField이름.
   // 이 값을 통해서 testId 리스트를 받아오고 testId 리스트를 통해서 date값을 받아온다.
   // List<String> testId
@@ -80,16 +82,18 @@ class _RealGraphState extends State<RealGraph> {
   @override
   Widget build(BuildContext context) {
     //_isDate = true;
-    final GraphArgument args =
-        ModalRoute.of(context)!.settings.arguments as GraphArgument;
-    _isDate = args.isDate;
+
     if (_isDate) {
       _graphType = '날짜';
       _charTitleName = '7월 11일';
       _tableColumn = ['날짜', '하위목록', '성공여부'];
     } else {
+      final ItemToReal args =
+          ModalRoute.of(context)!.settings.arguments as ItemToReal;
+      _isDate = args.isDate;
+      _childName = args.selectedChildName;
       _graphType = '하위목록';
-      _charTitleName = '인형 안아주기';
+      _charTitleName = args.selectedItemName;
       _tableColumn = ['하위목록', '날짜', '성공여부'];
     }
     _chartData = getGraphData(_charTitleName);
@@ -97,7 +101,7 @@ class _RealGraphState extends State<RealGraph> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "< 영수의 " + _graphType + "별 그래프 >",
+          "< " + _childName + "의 " + _graphType + "별 그래프 >",
           style: TextStyle(fontFamily: 'KoreanGothic'),
         ), // 아이의 이름값 갖고와야함.
         centerTitle: true,
