@@ -78,7 +78,7 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
                               builder: (context) => ChildGetResultScreen(
                                 widget.child,
                                 widget.child.testList[index],
-                                name: widget.child.name,
+                                name: widget.child.name, 
                               ),
                             ),
                           );
