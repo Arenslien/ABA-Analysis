@@ -10,6 +10,8 @@ import 'package:aba_analysis/screens/child_management/child_modify_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_subject_screen.dart';
 import 'package:provider/provider.dart';
 
+import 'child_chapter_screen.dart';
+
 class ChildMainScreen extends StatefulWidget {
   const ChildMainScreen({Key? key}) : super(key: key);
 
@@ -71,9 +73,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ChildSubjectScreen(
-                                childList[index],
-                              ),
+                              builder: (context) => ChildChapterScreen(child: child),
                             ),
                           );
                         },
