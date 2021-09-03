@@ -1,6 +1,6 @@
+import 'package:aba_analysis/models/child.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/constants.dart';
-import 'package:aba_analysis/components/class/child_class.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
@@ -54,6 +54,9 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                     });
                   if (formkey.currentState!.validate() &&
                       isGenderSelected!) {
+                    // Firestore에 아동 추가
+
+                    // Provider ChildNotifier 수정
                     Navigator.pop(context, newChild);
                   }
                 },

@@ -1,6 +1,5 @@
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/test.dart';
-import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
@@ -10,7 +9,6 @@ import 'package:aba_analysis/components/build_text_form_field.dart';
 import 'package:aba_analysis/screens/chapter_management/chapter_input_screen.dart';
 import 'package:aba_analysis/screens/chapter_management/chapter_modify_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_get_result_screen.dart';
-import 'package:provider/provider.dart';
 
 
 class ChildChapterScreen extends StatefulWidget {

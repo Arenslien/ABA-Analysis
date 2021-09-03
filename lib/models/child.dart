@@ -29,8 +29,6 @@ class Child {
     };
   }
 
-
-
   void updateTestList(List<Test> testList) {
     _testList = testList;
   }
