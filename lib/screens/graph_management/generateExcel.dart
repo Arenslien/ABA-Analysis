@@ -47,8 +47,13 @@ xio.Workbook genExcel(
   // String typeValue = '7월21일';
 
   sheet.getRangeByName('B1').columnWidth = 17;
-  sheet.getRangeByName('I1').columnWidth = 22.5;
-  sheet.getRangeByName('J1').columnWidth = 17;
+  if (chartColumn[0] == '하위목록') {
+    sheet.getRangeByName('I1').columnWidth = 22.5;
+    sheet.getRangeByName('J1').columnWidth = 17;
+  } else if (chartColumn[0] == '날짜') {
+    sheet.getRangeByName('I1').columnWidth = 17;
+    sheet.getRangeByName('J1').columnWidth = 22.5;
+  }
   sheet.getRangeByName('K1').columnWidth = 13;
   sheet.getRangeByName('L1').setText(''); // 마지막 column을 비워둔다.
   // sheet.getRangeByName('L1').columnWidth = 13;
@@ -105,17 +110,22 @@ xio.Workbook genExcel(
   // chartDataNoChange.setText(typeValue);
   // // 변하지 않는 차트 데이터 삽입.
 
-  sheet.getRangeByName('B23').setText('담당 선생님');
-  sheet.getRangeByName('B24').setText('아동');
-  sheet.getRangeByName('B25').setText('프로그램 영역');
-  sheet.getRangeByName('B26').setText('하위 영역');
-  sheet.getRangeByName('B27').setText('평균 성공률');
+  List<String> extraColumns = ['담당 선생님', '아동', '프로그램 영역', '하위 영역', '평균 성공률'];
+  String teacher_name = '선생님 이름';
+  String child_name = '아동 이름';
+  String programField = '해당 프로그램 영역';
+  String subArea = '해당 하위 영역';
+  double averageRate = 60;
+  sheet.getRangeByName('B23').setText(extraColumns[0]);
+  sheet.getRangeByName('B24').setText(extraColumns[1]);
+  sheet.getRangeByName('B25').setText(extraColumns[2]);
+  sheet.getRangeByName('B26').setText(extraColumns[3]);
+  sheet.getRangeByName('B27').setText(extraColumns[4]);
   sheet.getRangeByName('B23:B27').cellStyle = extraDataStyle;
-
-  sheet.getRangeByName('C23').setText('선생님 이름');
-  sheet.getRangeByName('C24').setText('아동이름');
-  sheet.getRangeByName('C25').setText('해당 프로그램 영역');
-  sheet.getRangeByName('C26').setText('해당 하위 영역');
+  sheet.getRangeByName('C23').setText(teacher_name);
+  sheet.getRangeByName('C24').setText(child_name);
+  sheet.getRangeByName('C25').setText(programField);
+  sheet.getRangeByName('C26').setText(subArea);
   sheet.getRangeByName('C27').setText(averageRate.toString() + '%');
   sheet.getRangeByName('C23:C27').cellStyle = dataStyle;
   sheet.getRangeByName('C23:C27').cellStyle.hAlign = xio.HAlignType.left;

@@ -14,8 +14,11 @@ class SelectProgramScreen extends StatefulWidget {
 }
 
 class _SelectProgramScreenState extends State<SelectProgramScreen> {
-  List<Child> childData = []; // 순수 아이 데이터
-  List<DummyTestData> testData = []; // 테스트 관련 데이터
+  String? selected_child_name;
+  // String selected_program_name;
+  // get areaList(selected_program_name);
+  // 전역변수
+
   List<String> programList = [
     '수용언어',
     '표현언어',
@@ -27,61 +30,19 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
     '쓰기',
     '매칭'
   ];
-  Child dummy1 = new Child();
-  late DummyTestData dummy2 = new DummyTestData();
-  DummyTestData dummy3 = new DummyTestData();
 
-  List<String> lowerList = [];
-  List<int> averageList = [];
-
+  bool? isDate; // 그래프 관련 전역변수 isDate 날짜그래프인지 아이템그래프인지
   void initState() {
     super.initState();
-    this.testInit();
-  }
-
-  void testInit() {
-    dummy1.age = '88888888';
-    dummy1.gender = '남자';
-    dummy1.name = '영수';
-
-    dummy2.date = "21.7/2";
-    dummy2.average = "70";
-    dummy2.item.addAll({
-      '하위1': '상위1',
-      '하위2': '상위1',
-      '하위3': '상위2',
-      '하위4': '상위2',
-    });
-
-    dummy3.date = "21.8/5";
-    dummy3.average = "50";
-    dummy3.item.addAll({
-      '하위1': '상위1',
-      '하위2': '상위1',
-      '하위3': '상위2',
-      '하위4': '상위2',
-    });
-
-    childData.add(dummy1);
-    testData.add(dummy2);
-    testData.add(dummy3);
-
-    lowerList.add('하위1');
-    lowerList.add('하위2');
-    lowerList.add('하위3');
-    lowerList.add('하위4');
-
-    averageList.add(70);
-    averageList.add(60);
-    averageList.add(30);
-    averageList.add(80);
+    this.selected_child_name = '영수';
+    isDate = false;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${dummy1.name}의 프로그램 영역 선택',
+        title: Text('${this.selected_child_name}의 프로그램 영역 선택',
             style: TextStyle(fontFamily: 'korean')),
         backgroundColor: Colors.grey,
         centerTitle: true,
@@ -91,15 +52,13 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
             },
             icon: Icon(Icons.arrow_back)),
       ), // 검색 필요X
-      body: childData.length == 0
-          ? noTestData()
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: programList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return dataTile(programList[index], index);
-              },
-            ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: programList.length,
+        itemBuilder: (BuildContext context, int index) {
+          return dataTile(programList[index], index);
+        },
+      ),
     );
   }
 

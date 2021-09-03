@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 Widget buildTextFormField({
   String? text,
   Function(String)? onChanged,
+  Function()? onTap,
   String? Function(String?)? validator,
   TextEditingController? controller,
   String? hintText,
@@ -36,6 +37,7 @@ Widget buildTextFormField({
       ),
       initialValue: initialValue,
       onChanged: onChanged,
+      onTap: onTap,
       validator: validator,
       keyboardType: inputType == 'number' ? TextInputType.number : null,
       inputFormatters: inputType == 'number'

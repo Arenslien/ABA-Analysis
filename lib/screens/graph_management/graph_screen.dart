@@ -37,6 +37,21 @@ class _GraphScreenState extends State<GraphScreen> {
     dummy1.name = '영수';
 
     childData.add(dummy1);
+    childData.add(dummy1);
+    childData.add(dummy1);
+    childData.add(dummy1);
+    childData.add(dummy1);
+    childData.add(dummy1);
+    childData.add(dummy1);
+    childData.add(dummy1);
+    childData.add(dummy1);
+    childData.add(dummy1);
+    childData.add(dummy1);
+    childData.add(dummy1);
+    childData.add(dummy1);
+    childData.add(dummy1);
+    childData.add(dummy1);
+    childData.add(dummy1);
   }
 
   @override
@@ -86,6 +101,7 @@ class _GraphScreenState extends State<GraphScreen> {
         titleText: childData.name,
         subtitleText: "${childData.age}세",
         trailing: buildToggleButtons(
+          minWidth: 90,
           text: ['Date Graph', 'Item Graph'],
           onPressed: (index) {
             if (index == 0) {
