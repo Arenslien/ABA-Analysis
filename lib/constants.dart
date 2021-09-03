@@ -6,6 +6,28 @@ const mainYellowColor = Color(0xFFFFE082);
 const mainPurpleColor = Color(0xFFE1BEE7);
 const mainGreenColor = Color(0xFFA5D6A7);
 
+// 프로그램 영역 기본 값
+const programFieldList = [
+
+];
+
+// 하위 영역 기본 값
+const subFieldList = [
+
+];
+
+// 하위 목록 기본 값
+const subItemList = [
+
+];
+
+// ENUM 타입
+enum AutoID {
+  child, test, testItem
+}
+
+
+
 
 // // 그라데이션 컬러 -> box decoration에서 gradient같은 곳에 사용됨
 // const kPrimaryGradientColor = LinearGradient(

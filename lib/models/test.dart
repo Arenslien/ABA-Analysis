@@ -1,9 +1,11 @@
+import 'package:aba_analysis/models/test_item.dart';
+
 class Test {
   final int _testId;
   final int _childId; 
   DateTime _date;
   String _title;
-  List<int> _testItemList = [];
+  List<TestItem> _testItemList = [];
 
   Test(this._testId, this._childId, this._date, this._title);
 
@@ -11,7 +13,7 @@ class Test {
   int get childId => _childId;
   DateTime get date => _date;
   String get title => _title;
-  List<int> get testItemList => _testItemList;
+  List<TestItem> get testItemList => _testItemList;
 
   Map<String, dynamic> toMap() {
     return {
