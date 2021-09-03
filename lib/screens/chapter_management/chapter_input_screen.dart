@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/class/content_class.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
@@ -12,33 +14,55 @@ class ChapterInputScreen extends StatefulWidget {
 
 class _ChapterInputScreenState extends State<ChapterInputScreen> {
   _ChapterInputScreenState();
-
-  final formkey = GlobalKey<FormState>();
   Chapter newChapter = Chapter();
+  final formkey = GlobalKey<FormState>();
   List<ContentListTile> itemListTile = [];
+  TextEditingController date = TextEditingController(
+      text: DateFormat('yyyyMMdd').format(DateTime.now()));
 
   @override
   void initState() {
     super.initState();
-    // itemListTile.add(
-    //   ContentListTile(
-    //     tileWidget: buildTextFormField(
-    //       text: '날짜',
-    //       onChanged: (val) {
-    //         setState(() {
-    //           newChapter.date = val;
-    //         });
-    //       },
-    //       validator: (val) {
-    //         if (val!.length != 8) {
-    //           return 'YYYYMMDD';
-    //         }
-    //         return null;
-    //       },
-    //       inputType: 'number',
-    //     ),
-    //   ),
-    // );
+    itemListTile.add(
+      ContentListTile(
+        tileWidget: buildTextFormField(
+          controller: date,
+          text: '날짜',
+          onChanged: (val) {
+            setState(() {
+              newChapter.date = val;
+            });
+          },
+          onTap: () {
+            setState(() async {
+              DateTime? selectedDate = await showDatePicker(
+                context: context,
+                cancelText: '취소',
+                confirmText: '확인',
+                fieldLabelText: '날짜 설정',
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2018),
+                lastDate: DateTime(2030),
+                builder: (context, child) {
+                  return Theme(
+                    data: ThemeData.dark(),
+                    child: child!,
+                  );
+                },
+              );
+              date.text = DateFormat('yyyyMMdd').format(selectedDate!);
+            });
+          },
+          validator: (val) {
+            if (val!.length != 8) {
+              return 'YYYYMMDD';
+            }
+            return null;
+          },
+          inputType: 'number',
+        ),
+      ),
+    );
     itemListTile.add(
       ContentListTile(
         tileWidget: buildTextFormField(
@@ -116,8 +140,7 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
                 },
               ),
             ],
-            backgroundColor: Colors.white,
-            elevation: 0,
+            backgroundColor: mainGreenColor,
           ),
           body: ListView.builder(
             itemCount: itemListTile.length,
@@ -185,8 +208,8 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
                   onPressed: () {
                     if (newChapter.contentList.length != 1)
                       setState(() {
-                        newChapter.contentList
-                            .removeWhere((element) => element.contentId == tileId);
+                        newChapter.contentList.removeWhere(
+                            (element) => element.contentId == tileId);
                         itemListTile
                             .removeWhere((element) => element.tileId == tileId);
                       });
