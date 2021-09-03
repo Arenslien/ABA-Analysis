@@ -1,3 +1,4 @@
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/aba_user.dart';
 import 'package:aba_analysis/models/test.dart';
@@ -9,7 +10,11 @@ class FireStoreService {
   CollectionReference _programField = FirebaseFirestore.instance.collection('Program Field');
   CollectionReference _child = FirebaseFirestore.instance.collection('Child');
   CollectionReference _test = FirebaseFirestore.instance.collection('Test');
+  CollectionReference _autoId = FirebaseFirestore.instance.collection('Auto ID');
 
+  //=======================================================================================
+  //                          Firebase 연동 - 사용자 관련 함수들
+  //=======================================================================================
 
   // 사용자 생성
   Future createUser(ABAUser abaUser) async {
@@ -89,13 +94,36 @@ class FireStoreService {
     }
   }
 
-  Future createChild(Child child) {
-    // 1. 현재 맡고 있는 선생님에 대해 아이 추가
+  //=======================================================================================
+  //                          Firebase 연동 - 아이들 관련 함수들
+  //=======================================================================================
 
-    // 2. 데이터베이스에 Child 문서 추가
+  Future createChild(Child child) {
+    // 데이터베이스에 Child 문서 추가
     return _child.add(child.toMap())
-    .then((value) => print('아동이 성공적으로 추가되었습니다.'))
-    .catchError((error) => print('아동을 추가하지 못했습니다.\n에러 내용: $error'));
+        .then((value) => print('아동이 성공적으로 추가되었습니다.'))
+        .catchError((error) => print('아동을 추가하지 못했습니다.\n에러 내용: $error'));
+  }
+
+  // 교사가 맡고 있는 모든 아이들 데이터 가져오기
+  Future<List<Child>> readAllChild(String email) async {
+    // Child List 초기화 & 선언
+    List<Child> children = [];
+
+    // 모든 아이들 데이터 가져오기
+    await _child
+        .where('teacher-email', isEqualTo: email)
+        .get()
+        .then((QuerySnapshot snapshot) => snapshot.docs.forEach((document) {
+          dynamic data = document.data();
+          Child child = Child(data['child-id'], data['teacher-email'], data['name'], data['age'], data['gender']);
+          children.add(child);
+        }));
+    
+    // 이름 순으로 list 정렬
+    children.sort((a, b) => a.name.compareTo(b.name));
+
+    return children;
   }
 
   Future<Child> readChild(int childId) async {
@@ -106,43 +134,42 @@ class FireStoreService {
         .then((QuerySnapshot snapshot) => snapshot.docs[0].data());
 
     // db의 child 정보를 기반으로 Child 인스턴스 생성
-    Child child = new Child(childId, dbChild['teacher-uid'], dbChild['name'], dbChild['age'], dbChild['gender']);
+    Child child = new Child(dbChild['child-id'], dbChild['teacher-email'], dbChild['name'], dbChild['age'], dbChild['gender']);
 
     // Child 반환
     return child;
   }
 
-  // 모든 아이들 데이터 가져오기
-  Future<List<Child>> readAllChild() async {
-    // Child List 초기화 & 선언
-    List<Child> children = [];
+  // Future updateChild(int childId, Child child) async {
+  //   // 해당 email에 대한 QueryDocumentSnapshot
+  //   QueryDocumentSnapshot snapshot = await _user.where('email', isEqualTo: email).get().then((QuerySnapshot snapshot) => snapshot.docs[0]);
 
-    // DB에서 모든 Child Data 가져오기
-    _child.get().then((QuerySnapshot snapshot) => snapshot.docs.forEach((child) {
-      children.add(Child(child['child-id'], child['teacher-uid'], child['name'], child['age'], child['gender']));
-    }));
+  //   // 해당 이메일에 대한 User Document의 ID 가져오기
+  //   String id = snapshot.id;
 
-    return children;
-  }
+  //   // 해당 email을 지닌 User의 필드 내용을 가져오기
+  //   dynamic data = snapshot.data();
+  //   Map<String, Object> updateContent = {
+  //     'email': data['email'],
+  //     'name': data['name'],
+  //     'duty': data['duty'],
+  //   };
 
-  // 자신이 맡고 있는 모든 아이들 데이터 가져오기
-  // Future<List<Child>> readAllChild(String uid) async {
-  //   // Child List 초기화 & 선언
-  //   List<Child> children = [];
+  //   // 해당 ID에 대한 사용자 정보를 updateContent로 수정
+  //   updateContent['name'] = name;
+  //   updateContent['phone'] = phone;
+  //   updateContent['duty'] = duty;
 
-  //   // DB에서 모든 Child Data 가져오기
-  //   _child.get().then((QuerySnapshot snapshot) => snapshot.docs.forEach((child) {
-  //     children.add();
-  //   }));
+  //   return _user
+  //       .doc(id)
+  //       .update(updateContent)
+  //       .then((value) => print("$name의 정보가 업데이트 되었습니다."))
+  //       .catchError((error) => print("$name의 정보 업데이트를 실패했습니다. : $error"));
+  //   // String id = await _child
+  //   //     .where('child-id', isEqualTo: childId)
+  //   //     .get()
+  //   //     .then((QuerySnapshot snapshot) => snapshot.docs[0].id);
   // }
-
-
-  Future updateChild(int childId) async{
-    // String id = await _child
-    //     .where('child-id', isEqualTo: childId)
-    //     .get()
-    //     .then((QuerySnapshot snapshot) => snapshot.docs[0].id);
-  }
 
   Future deleteChild(int childId) async {
     // 해당 이메일에 대한 Child Document의 ID 가져오기
@@ -157,6 +184,11 @@ class FireStoreService {
         .then((value) => print("아동이 삭제되었습니다."))
         .catchError((error) => "아동을 삭제하지 못했습니다. : $error");
   }
+
+  //=======================================================================================
+  //                          Firebase 연동 - 하위 영역 관련 함수들
+  //=======================================================================================
+
 
   Future addSubField(String programFieldName, String fieldName, List<String> itemList) async {
     // 기존의 sub-field-list 가져오기
@@ -176,7 +208,7 @@ class FireStoreService {
   }
 
   Future readSubField() async {
-
+    
   }
 
   Future updateSubField() async {
@@ -187,6 +219,10 @@ class FireStoreService {
 
   }
 
+  //=======================================================================================
+  //                          Firebase 연동 - 테스트 관련 함수들
+  //=======================================================================================
+
   // Test 추가
   Future createTest(Child child, Test test) async {
     // Child 정보 가져온 후 수정하기
@@ -196,4 +232,66 @@ class FireStoreService {
     .then((value) => print('${child.name}에 대한 테스트가 성공적으로 추가되었습니다.'))
     .catchError((error) => print('${child.name}에 대한 테스트를 추가하지 못했습니다.\n에러 내용: $error'));
   }
+
+  //=======================================================================================
+  //                          Firebase 연동 - 테스트 관련 함수들
+  //=======================================================================================
+
+  Future<dynamic> readDocumentData() async {
+    // Auto ID 컬렉션의 AutoID 문서의 데이터를 가져옴
+    return _autoId
+        .doc('AutoID')
+        .get()
+        .then((DocumentSnapshot snapshot) => snapshot.data());
+  }
+
+  Future<int> readId(AutoID autoID) async {
+    // Auto ID 문서의 데이터 가져오기
+    dynamic data = await readDocumentData();
+
+    // 데이터의 필드값 중 child-id의 값 가져오기
+    int autoId;
+    switch(autoID) {
+      case AutoID.child:
+      autoId = data['child-id'];
+        break;
+      case AutoID.test:
+      autoId = data['test-id'];
+        break;
+      case AutoID.testItem:
+      autoId = data['test-item-id'];
+        break;
+    }
+
+    // autoId 반환
+    return autoId;
+  }
+
+  Future<int> updateId(AutoID autoID) async {
+    // id 값 읽어오기
+    int id = await readId(autoID);
+
+    // id 값 업데이트
+    switch(autoID) {
+      case AutoID.child:
+        _autoId
+        .doc('AutoID')
+        .update({'child-id': id + 1});
+        break;
+      case AutoID.test:
+        _autoId
+        .doc('AutoID')
+        .update({'test-id': id + 1});
+        break;
+      case AutoID.testItem:
+        _autoId
+        .doc('AutoID')
+        .update({'test-item-id': id + 1});
+        break;
+    }
+
+    // update 된 ID 값 반환
+    return id + 1;
+  }
 }
+

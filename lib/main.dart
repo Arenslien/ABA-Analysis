@@ -1,5 +1,7 @@
+import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
+import 'package:aba_analysis/services/firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,7 @@ void main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (_) => UserNotifier()),
+      ChangeNotifierProvider(create: (_) => ChildNotifier()),
     ],
     child: MyApp()
   ));
@@ -28,6 +31,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   // AuthService 초기화
   AuthService _auth = AuthService();
+  FireStoreService _store = FireStoreService();
 
   @override
   void initState() {
@@ -37,6 +41,7 @@ class _MyAppState extends State<MyApp> {
     // 로그인 유지일 경우 사용자 정보를 DB에서 가져옴
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       context.read<UserNotifier>().updateUser(await _auth.abaUser);
+      context.read<ChildNotifier>().updateChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
     });
   }
 

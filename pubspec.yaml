@@ -35,10 +35,7 @@ dependencies:
 
   # 전역 변수 관리 -> 모든 위젯에서 접근 가능
   provider: ^5.0.0
-
-  # SMS 전송
-  telephony: ^0.1.4
-  
+    
   syncfusion_flutter_charts: ^19.2.55
   line_icons: ^2.0.0
   pdf: ^3.4.2
