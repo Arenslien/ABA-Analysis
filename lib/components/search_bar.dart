@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:aba_analysis/constants.dart';
 
 AppBar searchBar({
   TextEditingController? controller,
@@ -10,14 +11,13 @@ AppBar searchBar({
       controller: controller,
       decoration: InputDecoration(
         hintText: '검색',
-        hintStyle: TextStyle(color: Colors.grey),
+        hintStyle: TextStyle(color: Colors.black),
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.black),
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.black),
         ),
-        filled: true,
         prefixIcon: Icon(
           Icons.search_outlined,
           color: Colors.black,
@@ -34,8 +34,11 @@ AppBar searchBar({
       onChanged: controlSearching,
       cursorColor: Colors.black,
       style: TextStyle(
-          fontSize: 18, color: Colors.black, fontFamily: 'KoreanGothic'),
+        fontSize: 18,
+        color: Colors.black,
+        fontFamily: 'korean',
+      ),
     ),
-    backgroundColor: Colors.white,
+    backgroundColor: mainGreenColor,
   );
 }

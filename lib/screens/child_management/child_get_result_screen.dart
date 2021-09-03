@@ -1,6 +1,7 @@
-import 'package:aba_analysis/components/class/subject_class.dart';
 import 'package:flutter/material.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
+import 'package:aba_analysis/components/class/subject_class.dart';
 import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 
@@ -108,8 +109,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
             },
           ),
         ],
-        backgroundColor: Colors.white,
-        elevation: 0,
+        backgroundColor: mainGreenColor,
       ),
       body: ListView.builder(
         itemCount: chapter.contentList.length,
