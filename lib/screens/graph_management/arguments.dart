@@ -41,6 +41,7 @@ class ItemToReal {
   final String selectedChildName;
   final String selectedProgramName;
   final String selectedAreaName;
+  final String selectedItemName;
   final bool isDate;
   final double averageRate;
   ItemToReal(
@@ -48,6 +49,7 @@ class ItemToReal {
       required this.selectedChildName,
       required this.selectedProgramName,
       required this.selectedAreaName,
+      required this.selectedItemName,
       required this.averageRate});
 }
 
