@@ -34,6 +34,7 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
     selected_program_name = '사회성 기술';
     selected_low_area_name = '친구와 함께하는 기술';
     low_item_list = [
+      // low area를 주고 low item list를 받아와야 한다.
       '인사하기',
       '손 집기',
       '눈 마주치기',
@@ -45,7 +46,7 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
       '공동작품 만들기',
       '친구와 율동하기'
     ];
-    item_average = 60;
+    item_average = 60; // 계산해야한다.
     for (String s in this.low_item_list) {
       low_item_map.addAll({
         s: item_average!,
@@ -55,6 +56,13 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AreaToItem args =
+        ModalRoute.of(context)!.settings.arguments as AreaToItem;
+    selected_child_name = args.selectedChildName;
+    selected_low_area_name = args.selectedAreaName;
+    selected_program_name = args.selectedProgramName;
+    _isDate = args.isDate;
+
     return Scaffold(
       appBar: AppBar(
         title: searchBar().title, // 해당 하위영역의 하위목록에 따라 검색한다.
@@ -85,15 +93,20 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
     );
   }
 
-  Widget dataTile(String lower, double average, int index) {
+  Widget dataTile(String item, double average, int index) {
     return buildListTile(
-      titleText: lower,
+      titleText: item,
       subtitleText: "평균성공률: $average%",
       onTap: () {
         Navigator.pushNamed(context, '/real_graph',
-            arguments: GraphArgument(
-                isDate:
-                    _isDate)); // 클릭시 realgraph로 이동한다. subItem을 넘겨줘야 한다. 필요하다면 subField나 programField까지 넘겨준다.
+            arguments: ItemToReal(
+                isDate: _isDate,
+                selectedChildName: selected_child_name!,
+                selectedProgramName: selected_program_name!,
+                selectedAreaName: selected_low_area_name!,
+                averageRate: item_average!,
+                selectedItemName:
+                    item)); // 클릭시 realgraph로 이동한다. subItem을 넘겨줘야 한다. 필요하다면 subField나 programField까지 넘겨준다.
       },
       trailing: Icon(Icons.keyboard_arrow_right),
     );

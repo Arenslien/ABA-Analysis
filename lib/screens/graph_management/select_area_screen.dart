@@ -1,3 +1,4 @@
+import 'package:aba_analysis/screens/graph_management/arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/class/child_class.dart';
@@ -14,8 +15,9 @@ class SelectAreaScreen extends StatefulWidget {
 }
 
 class _SelectAreaScreenState extends State<SelectAreaScreen> {
-  String? selected_child_name;
-  // String selected_program_name;
+  String? _selected_child_name;
+  bool? _isDate;
+  String? _selected_program_name;
   // get areaList(selected_program_name);
   // 전역변수
 
@@ -30,16 +32,23 @@ class _SelectAreaScreenState extends State<SelectAreaScreen> {
   List<int> averageList = [];
 
   void initState() {
-    this.selected_child_name = '영수';
+    this._selected_child_name = '영수';
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final ProgramToArea args =
+        ModalRoute.of(context)!.settings.arguments as ProgramToArea;
+    _selected_child_name = args.selectedChildName;
+    _selected_program_name = args.selectedProgramName;
+    _isDate = args.isDate;
+
+    //areaList = get areaList(selected_program_name); // program_name을 통해 areaList를 받아온다.
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '${this.selected_child_name}의 하위영역 선택',
+          '${this._selected_child_name}의 하위영역 선택',
           style: TextStyle(fontFamily: 'korean'),
         ),
         backgroundColor: Colors.grey,
@@ -60,14 +69,19 @@ class _SelectAreaScreenState extends State<SelectAreaScreen> {
     );
   }
 
-  Widget dataTile(String programName, int index) {
+  Widget dataTile(String areaName, int index) {
     return buildListTile(
       titleSize: 20,
-      titleText: programName,
+      titleText: areaName,
 //      subtitleText: "평균성공률: $average%",
       onTap: () {
-        Navigator.pushNamed(context,
-            '/select_item'); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
+        Navigator.pushNamed(context, '/select_item',
+            arguments: AreaToItem(
+                isDate: _isDate!,
+                selectedChildName: _selected_child_name!,
+                selectedProgramName: _selected_program_name!,
+                selectedAreaName:
+                    areaName)); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
       },
       trailing: Icon(Icons.keyboard_arrow_right),
     );
