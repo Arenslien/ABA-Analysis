@@ -1,12 +1,16 @@
+import 'package:aba_analysis/models/child.dart';
+import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/search_bar.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/components/class/child_class.dart';
 import 'package:aba_analysis/components/build_no_list_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/screens/child_management/child_input_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_modify_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_subject_screen.dart';
+import 'package:provider/provider.dart';
+
+import 'child_chapter_screen.dart';
 
 class ChildMainScreen extends StatefulWidget {
   const ChildMainScreen({Key? key}) : super(key: key);
@@ -21,6 +25,16 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
   TextEditingController searchTextEditingController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    
+    // childList 초기화
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+      childList = context.read<ChildNotifier>().children;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -32,8 +46,8 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                 searchResult.clear();
                 for (int i = 0; i < childList.length; i++) {
                   bool flag = false;
-                  if (childList[i].age!.contains(str)) flag = true;
-                  if (childList[i].name!.contains(str)) flag = true;
+                  if (childList[i].age.toString().contains(str)) flag = true;
+                  if (childList[i].name.contains(str)) flag = true;
                   if (flag) {
                     searchResult.add(childList[i]);
                   }
@@ -54,14 +68,12 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                       return buildListTile(
                         icon: Icons.person,
                         titleText: childList[index].name,
-                        subtitleText: childList[index].age,
+                        subtitleText: childList[index].age.toString(),
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ChildSubjectScreen(
-                                childList[index],
-                              ),
+                              builder: (context) => ChildChapterScreen(child: child),
                             ),
                           );
                         },
