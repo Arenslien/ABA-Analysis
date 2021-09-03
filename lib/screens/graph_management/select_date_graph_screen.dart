@@ -1,7 +1,7 @@
-import 'package:aba_analysis/components/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/class/child_class.dart';
+import 'package:aba_analysis/components/build_text_form_field.dart';
 
 import 'arguments.dart';
 import 'graph_screen.dart';
@@ -26,6 +26,11 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
   List<String> date_list = [];
   late Map<String, double> date_rate_map = {};
   double? date_average = 60;
+
+  // 검색 관련 변수
+  TextEditingController searchTextEditingController = TextEditingController();
+  List<String> searchResult = [];
+
   void initState() {
     super.initState();
     date_list.add("2021년7월11일");
@@ -65,34 +70,53 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     return GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-          appBar: AppBar(
-            title: searchBar().title,
-            leadingWidth: 32,
-            leading: new IconButton(
-                padding: EdgeInsets.only(left: 1.0),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: new Icon(
-                  Icons.arrow_back,
-                  color: Colors.black,
-                )),
-            actions: <Widget>[
-              SizedBox(
-                width: 32,
-              ),
-            ],
-          ),
           body: date_list.length == 0
               ? noTestData()
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: date_list.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return dataTile(date_rate_map.keys.toList()[index],
-                        date_rate_map.values.toList()[index], index);
-                  },
-                ),
+              : searchTextEditingController.text == ''
+                  ? ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 50),
+                      itemCount: date_list.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return dataTile(
+                          date_rate_map.keys.toList()[index],
+                          date_rate_map.values.toList()[index],
+                          index,
+                        );
+                      },
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 50),
+                      itemCount: searchResult.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return dataTile(
+                          searchResult[index],
+                          60,
+                          index,
+                        );
+                      },
+                    ),
+          bottomSheet: buildTextFormField(
+            controller: searchTextEditingController,
+            hintText: '검색',
+            icon: Icon(
+              Icons.search_outlined,
+              color: Colors.black,
+              size: 30,
+            ),
+            onChanged: (str) {
+              setState(() {
+                searchResult.clear();
+                for (int i = 0; i < date_rate_map.length; i++) {
+                  bool flag = false;
+                  if (date_rate_map.containsKey(str)) flag = true;
+                  if (flag) {
+                    searchResult.add(date_rate_map.keys.toString()[i]);
+                  }
+                }
+              });
+            },
+            search: true,
+          ),
         ));
   }
 

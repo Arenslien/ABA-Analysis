@@ -1,5 +1,7 @@
 import 'package:aba_analysis/components/setting/setting_default_button.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
+import 'package:aba_analysis/models/test.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
@@ -75,16 +77,23 @@ class _BodyState extends State<Body> {
                           //   title: Text('정말 회원 탈퇴를 하시겠습니까?'),
                             
                           // );
-
-
-                          // 삭제
-                          store.deleteUser(context.read<UserNotifier>().abaUser!.email);
                         }),
-                        SettingDefaultButton(text: '테스트용', onTap: () {
+                        SettingDefaultButton(text: '테스트용', onTap: () async {
                           FireStoreService _store = FireStoreService();
+                          // Child child = Child(await _store.updateId(AutoID.child), 'hippo9851@gmail.com', '박채정', 12, '남');
+                          // _store.createChild(child);
 
-                          _store.createChild(Child(1, 'arenslien@gmail.com', '홍길동', 10, '남'));
+                          // Test test = Test();
                           
+                          // List<Child> children = await _store.readAllChild(context.read<UserNotifier>().abaUser!.email);
+                          // for (int i=0; i<children.length; i++) {
+                          //   print(children[i].name);
+                          // }
+                          // List<Child> children2 = await _store.readAllChild('hippo9851@gmail.com');
+                          // for (int i=0; i<children2.length; i++) {
+                          //   print(children2[i].name);
+                          // }
+                          // _store.createTest(child, test);
                         }),
                       ],
                     ),

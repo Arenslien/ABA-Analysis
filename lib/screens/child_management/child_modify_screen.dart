@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/components/class/child_class.dart';
+import 'package:aba_analysis/components/show_dialog_delete.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
@@ -57,7 +59,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  Navigator.pop(context, Child());
+                  showDialogDelete('아동', context, Child());
                 },
               ),
               IconButton(
@@ -72,8 +74,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                 },
               ),
             ],
-            backgroundColor: Colors.white,
-            elevation: 0,
+            backgroundColor: mainGreenColor,
           ),
           body: Column(
             children: [

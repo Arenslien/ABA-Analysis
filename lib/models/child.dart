@@ -1,3 +1,5 @@
+import 'package:aba_analysis/models/test.dart';
+
 class Child {
   // Child
   final int _childId; // PK
@@ -5,7 +7,7 @@ class Child {
   final String _name;
   final int _age;
   final String _gender;
-  List<int> _testList = [];
+  List<Test> _testList = [];
 
   Child(this._childId, this._teacherEmail, this._name, this._age, this._gender);
 
@@ -15,7 +17,7 @@ class Child {
   int get age => _age;
   String get gender => _gender;
   String get teacherUid => _teacherEmail;
-  List<int> get testList => _testList;
+  List<Test> get testList => _testList;
 
   Map<String, dynamic> toMap() {
     return {
@@ -24,8 +26,21 @@ class Child {
       'name': _name,
       'age': _age,
       'gender': _gender,
-      'test-list': _testList,
     };
+  }
+
+
+
+  void updateTestList(List<Test> testList) {
+    _testList = testList;
+  }
+
+  void addTest(Test test) {
+    _testList.add(test);
+  }
+
+  void removeTest(Test test) {
+    _testList.remove(test);
   }
 }
 

@@ -4,7 +4,6 @@ class ABAUser {
   final String _name;
   final String _phone;
   late final String _duty;
-  List<int> _children = [];
 
   ABAUser(this._email, this._name, this._phone, this._duty);
 
@@ -13,7 +12,6 @@ class ABAUser {
   String get name => _name;
   String get phone => _phone;
   String get duty => _duty;
-  List<int> get children => _children;
 
   Map<String, dynamic> toMap () {
     return {
@@ -21,7 +19,6 @@ class ABAUser {
       'name': _name,
       'phone': _phone,
       'duty': _duty,
-      'children': _children,
     };
   }
 }

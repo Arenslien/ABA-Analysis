@@ -5,15 +5,19 @@ import 'package:flutter/rendering.dart';
 Widget buildTextFormField({
   String? text,
   Function(String)? onChanged,
+  Function()? onTap,
   String? Function(String?)? validator,
   TextEditingController? controller,
   String? hintText,
   String? initialValue,
   String? inputType,
   Widget? icon,
+  bool? search,
 }) {
   return Padding(
-    padding: const EdgeInsets.all(16.0),
+    padding: search == null
+        ? const EdgeInsets.all(16)
+        : const EdgeInsets.fromLTRB(16, 0, 16, 3),
     child: TextFormField(
       controller: controller,
       decoration: InputDecoration(
@@ -33,6 +37,7 @@ Widget buildTextFormField({
       ),
       initialValue: initialValue,
       onChanged: onChanged,
+      onTap: onTap,
       validator: validator,
       keyboardType: inputType == 'number' ? TextInputType.number : null,
       inputFormatters: inputType == 'number'
