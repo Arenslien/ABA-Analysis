@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/components/class/subject_class.dart';
-import 'package:aba_analysis/components/class/chapter_class.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 
 class ChildGetResultScreen extends StatefulWidget {

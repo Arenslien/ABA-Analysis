@@ -81,7 +81,9 @@ class _BodyState extends State<Body> {
                         SettingDefaultButton(text: '테스트용', onTap: () async {
                           FireStoreService _store = FireStoreService();
                           Child child = Child(await _store.updateId(AutoID.child), 'hippo9851@gmail.com', '배태경', 12, '남');
-                          _store.createChild(child);
+                          // _store.createChild(child);
+
+                          // _store
 
                           // Test test = Test();
                           

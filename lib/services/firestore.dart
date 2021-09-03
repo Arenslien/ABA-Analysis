@@ -224,20 +224,18 @@ class FireStoreService {
   //=======================================================================================
 
   // Test 추가
-  Future createTest(Child child, Test test) async {
-    // Child 정보 가져온 후 수정하기
-    
-    // 
+  Future createTest(Test test) async {
+    // 데이터베이스에 Test 문서 추가
     return _test.add(test.toMap())
-    .then((value) => print('${child.name}에 대한 테스트가 성공적으로 추가되었습니다.'))
-    .catchError((error) => print('${child.name}에 대한 테스트를 추가하지 못했습니다.\n에러 내용: $error'));
+        .then((value) => print(' 테스트가 성공적으로 추가되었습니다.'))
+        .catchError((error) => print('테스트를 추가하지 못했습니다.\n에러 내용: $error'));
   }
 
   //=======================================================================================
   //                          Firebase 연동 - 테스트 관련 함수들
   //=======================================================================================
 
-  Future<dynamic> readDocumentData() async {
+  Future<dynamic> readAutoIDDocumentData() async {
     // Auto ID 컬렉션의 AutoID 문서의 데이터를 가져옴
     return _autoId
         .doc('AutoID')
@@ -247,7 +245,7 @@ class FireStoreService {
 
   Future<int> readId(AutoID autoID) async {
     // Auto ID 문서의 데이터 가져오기
-    dynamic data = await readDocumentData();
+    dynamic data = await readAutoIDDocumentData();
 
     // 데이터의 필드값 중 child-id의 값 가져오기
     int autoId;

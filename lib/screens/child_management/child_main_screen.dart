@@ -22,6 +22,8 @@ class ChildMainScreen extends StatefulWidget {
 class _ChildMainScreenState extends State<ChildMainScreen> {
   List<Child> childList = [];
   List<Child> searchResult = [];
+  List<Widget> childCardList = [];
+  List<Widget> searchChildCardList = [];
   TextEditingController searchTextEditingController = TextEditingController();
 
   @override
@@ -32,7 +34,61 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       childList = context.read<ChildNotifier>().children;
     });
+
+    // childList를 ListTile로 변환
+    childCardList = convertChildToListTile(childList);
   }
+
+  List<Widget> convertChildToListTile(List<Child> childList) {
+    List<Widget> list = [];
+
+    if (childList.length != 0) {
+      childList.forEach((Child child) {
+        // 리스트 타일 생성
+        Widget listTile = buildListTile(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context) => ChildChapterScreen(
+                  child: child
+                ),
+              ),
+            );
+          },
+          trailing: buildToggleButtons(
+            text: ['그래프', '설정'],
+            onPressed: (idx) async {
+              if (idx == 1) {
+                final Child? editChild = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ChildModifyScreen(child),
+                  ),
+                );
+                setState(() {
+                  if (editChild!.name == null) {
+                    childList.removeAt(childList.indexWhere(
+                        (element) =>
+                            element.childId ==
+                            child.childId));
+                  } else {
+                    childList[childList.indexWhere((element) =>
+                        element.childId ==
+                        child.childId)] = editChild;
+                  }
+                  searchTextEditingController.text = '';
+                });
+              }
+            },
+          ),
+        );
+        list.add(listTile);
+      });
+    }
+
+    return list;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +108,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                     searchResult.add(childList[i]);
                   }
                 }
+                searchChildCardList = convertChildToListTile(searchResult);
               });
             },
             onPressed: () {
@@ -62,92 +119,94 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
         body: childList.length == 0
             ? noListData(Icons.group, '아동 추가')
             : searchTextEditingController.text.isEmpty
-                ? ListView.builder(
-                    itemCount: childList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return buildListTile(
-                        icon: Icons.person,
-                        titleText: childList[index].name,
-                        subtitleText: childList[index].age.toString(),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChildChapterScreen(child: child),
-                            ),
-                          );
-                        },
-                        trailing: buildToggleButtons(
-                          text: ['그래프', '설정'],
-                          onPressed: (idx) async {
-                            if (idx == 1) {
-                              final Child? editChild = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ChildModifyScreen(childList[index]),
-                                ),
-                              );
-                              if (editChild != null) {
-                                setState(() {
-                                  childList[index] = editChild;
-                                  if (editChild.name == null) {
-                                    childList.removeAt(index);
-                                  }
-                                });
-                              }
-                            }
-                          },
-                        ),
-                      );
-                    },
-                  )
-                : ListView.builder(
-                    itemCount: searchResult.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return buildListTile(
-                        icon: Icons.person,
-                        titleText: searchResult[index].name,
-                        subtitleText: searchResult[index].age,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChildSubjectScreen(
-                                searchResult[index],
-                              ),
-                            ),
-                          );
-                        },
-                        trailing: buildToggleButtons(
-                          text: ['그래프', '설정'],
-                          onPressed: (idx) async {
-                            if (idx == 1) {
-                              final Child? editChild = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ChildModifyScreen(searchResult[index]),
-                                ),
-                              );
-                              setState(() {
-                                if (editChild!.name == null) {
-                                  childList.removeAt(childList.indexWhere(
-                                      (element) =>
-                                          element.childId ==
-                                          searchResult[index].childId));
-                                } else {
-                                  childList[childList.indexWhere((element) =>
-                                      element.childId ==
-                                      searchResult[index].childId)] = editChild;
-                                }
-                                searchTextEditingController.text = '';
-                              });
-                            }
-                          },
-                        ),
-                      );
-                    }),
+                ? ListView(children: childCardList)
+                // ListView.builder(
+                //     itemCount: childList.length,
+                //     itemBuilder: (BuildContext context, int index) {
+                //       return buildListTile(
+                //         icon: Icons.person,
+                //         titleText: childList[index].name,
+                //         subtitleText: childList[index].age.toString(),
+                //         onTap: () {
+                //           Navigator.push(
+                //             context,
+                //             MaterialPageRoute(
+                //               builder: (context) => ChildChapterScreen(child: child),
+                //             ),
+                //           );
+                //         },
+                //         trailing: buildToggleButtons(
+                //           text: ['그래프', '설정'],
+                //           onPressed: (idx) async {
+                //             if (idx == 1) {
+                //               final Child? editChild = await Navigator.push(
+                //                 context,
+                //                 MaterialPageRoute(
+                //                   builder: (context) =>
+                //                       ChildModifyScreen(childList[index]),
+                //                 ),
+                //               );
+                //               if (editChild != null) {
+                //                 setState(() {
+                //                   childList[index] = editChild;
+                //                   if (editChild.name == null) {
+                //                     childList.removeAt(index);
+                //                   }
+                //                 });
+                //               }
+                //             }
+                //           },
+                //         ),
+                //       );
+                //     },
+                //   )
+                : ListView(children: searchChildCardList),
+                // ListView.builder(
+                //     itemCount: searchResult.length,
+                //     itemBuilder: (BuildContext context, int index) {
+                //       return buildListTile(
+                //         icon: Icons.person,
+                //         titleText: searchResult[index].name,
+                //         subtitleText: searchResult[index].age,
+                //         onTap: () {
+                //           Navigator.push(
+                //             context,
+                //             MaterialPageRoute(
+                //               builder: (context) => ChildSubjectScreen(
+                //                 searchResult[index],
+                //               ),
+                //             ),
+                //           );
+                //         },
+                //         trailing: buildToggleButtons(
+                //           text: ['그래프', '설정'],
+                //           onPressed: (idx) async {
+                //             if (idx == 1) {
+                //               final Child? editChild = await Navigator.push(
+                //                 context,
+                //                 MaterialPageRoute(
+                //                   builder: (context) =>
+                //                       ChildModifyScreen(searchResult[index]),
+                //                 ),
+                //               );
+                //               setState(() {
+                //                 if (editChild!.name == null) {
+                //                   childList.removeAt(childList.indexWhere(
+                //                       (element) =>
+                //                           element.childId ==
+                //                           searchResult[index].childId));
+                //                 } else {
+                //                   childList[childList.indexWhere((element) =>
+                //                       element.childId ==
+                //                       searchResult[index].childId)] = editChild;
+                //                 }
+                //                 searchTextEditingController.text = '';
+                //               });
+                //             }
+                //           },
+                //         ),
+                //       );
+                //     }),
         floatingActionButton: FloatingActionButton(
           child: Icon(
             Icons.add_rounded,
@@ -175,6 +234,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                     break;
                   }
                 }
+                
               });
             }
           },
