@@ -1,16 +1,15 @@
-import 'package:aba_analysis/models/child.dart';
-import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/components/search_bar.dart';
+import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/build_no_list_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/screens/child_management/child_input_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_modify_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_subject_screen.dart';
-import 'package:provider/provider.dart';
-
-import 'child_chapter_screen.dart';
+import 'package:aba_analysis/screens/child_management/child_chapter_screen.dart';
 
 class ChildMainScreen extends StatefulWidget {
   const ChildMainScreen({Key? key}) : super(key: key);
@@ -27,7 +26,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
   @override
   void initState() {
     super.initState();
-    
+
     // childList 초기화
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       childList = context.read<ChildNotifier>().children;
@@ -73,7 +72,8 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ChildChapterScreen(child: child),
+                              builder: (context) =>
+                                  ChildChapterScreen(child: childList[index]),
                             ),
                           );
                         },
@@ -91,7 +91,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                               if (editChild != null) {
                                 setState(() {
                                   childList[index] = editChild;
-                                  if (editChild.name == null) {
+                                  if (editChild.name == '') {
                                     childList.removeAt(index);
                                   }
                                 });
@@ -108,7 +108,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                       return buildListTile(
                         icon: Icons.person,
                         titleText: searchResult[index].name,
-                        subtitleText: searchResult[index].age,
+                        subtitleText: searchResult[index].age.toString(),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -131,7 +131,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                                 ),
                               );
                               setState(() {
-                                if (editChild!.name == null) {
+                                if (editChild!.name == '') {
                                   childList.removeAt(childList.indexWhere(
                                       (element) =>
                                           element.childId ==
@@ -163,18 +163,6 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
             if (newChildData != null) {
               setState(() {
                 childList.add(newChildData);
-                for (int i = 0; i < 100; i++) {
-                  bool flag = false;
-                  for (int j = 0; j < childList.length; j++)
-                    if (childList[j].childId == i) {
-                      flag = true;
-                      break;
-                    }
-                  if (!flag) {
-                    childList[childList.length - 1].childId = i;
-                    break;
-                  }
-                }
               });
             }
           },
