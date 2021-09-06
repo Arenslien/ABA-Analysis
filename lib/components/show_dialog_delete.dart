@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-showDialogDelete(String name, BuildContext context, dynamic returnClass) {
+showDialogDelete(String name, BuildContext context) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -24,7 +24,7 @@ showDialogDelete(String name, BuildContext context, dynamic returnClass) {
             ),
             onPressed: () {
               Navigator.pop(context);
-              Navigator.pop(context, returnClass);
+              Navigator.pop(context, null);
             },
           ),
         ],
