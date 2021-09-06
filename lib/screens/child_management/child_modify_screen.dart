@@ -1,6 +1,6 @@
+import 'package:aba_analysis/models/child.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/constants.dart';
-import 'package:aba_analysis/components/class/child_class.dart';
 import 'package:aba_analysis/components/show_dialog_delete.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';

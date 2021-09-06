@@ -5,16 +5,17 @@ class Child {
   final int _childId; // PK
   final String _teacherEmail; // FK
   final String _name;
-  final int _age;
+  final DateTime _birthday;
   final String _gender;
+  
   List<Test> _testList = [];
 
-  Child(this._childId, this._teacherEmail, this._name, this._age, this._gender);
+  Child(this._childId, this._teacherEmail, this._name, this._birthday, this._gender);
 
   // Getter Function
   int get childId => _childId;
   String get name => _name;
-  int get age => _age;
+  int get age => DateTime.now().year - _birthday.year + 1;
   String get gender => _gender;
   String get teacherUid => _teacherEmail;
   List<Test> get testList => _testList;
@@ -24,8 +25,8 @@ class Child {
       'child-id': _childId,
       'teacher-email': _teacherEmail,
       'name': _name,
-      'age': _age,
       'gender': _gender,
+      'birthday': _birthday
     };
   }
 
