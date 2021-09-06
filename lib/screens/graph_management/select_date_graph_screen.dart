@@ -1,6 +1,7 @@
+import 'package:aba_analysis/models/child.dart';
+import 'package:aba_analysis/screens/graph_management/select_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/components/class/child_class.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
 import 'arguments.dart';
@@ -15,12 +16,12 @@ class SelectDateScreen extends StatefulWidget {
 }
 
 class _SelectDateScreenState extends State<SelectDateScreen> {
-  String? selected_child_name;
+  String? _selected_child_name;
   bool? _isDate = true;
-  List<Child> childData = []; // 순수 아이 데이터
-  List<DummyTestData> testData = []; // 테스트 관련 데이터
-  Child dummy1 = new Child();
-  DummyTestData dummy2 = new DummyTestData();
+  // List<Child> childData = []; // 순수 아이 데이터
+  // List<DummyTestData> testData = []; // 테스트 관련 데이터
+  // // Child dummy1 = new Child();
+  // DummyTestData dummy2 = new DummyTestData();
   bool isDate = true; // 그래프 관련 전역변수 isDate 날짜그래프인지 아이템그래프인지
 
   List<String> date_list = [];
@@ -56,7 +57,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     date_list.add("2021년9월13일");
     date_list.add("2021년9월14일");
     date_list.add("2021년9월15일");
-    selected_child_name = '영수';
+    _selected_child_name = '영수';
     for (String s in this.date_list) {
       date_rate_map.addAll({
         s: date_average!,
@@ -67,9 +68,16 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final GraphToDate args =
+        ModalRoute.of(context)!.settings.arguments as GraphToDate;
+    // args에서 isDate, selectedChildName을 담아서 준다.
+    _selected_child_name = args.selectedChildName;
+    _isDate = args.isDate;
     return GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
+          appBar: SearchAppBar(
+              context, (_selected_child_name! + "의 테스트 날짜(or 제목) 선택")),
           body: date_list.length == 0
               ? noTestData()
               : searchTextEditingController.text == ''
@@ -143,15 +151,17 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     );
   }
 
-  Widget dataTile(String lower, double average, int index) {
+  Widget dataTile(String testDate, double average, int index) {
     return buildListTile(
-      titleText: lower,
+      titleText: testDate,
       subtitleText: "평균성공률: $average%",
       onTap: () {
         Navigator.pushNamed(context, '/real_graph',
-            arguments: GraphArgument(
-                isDate:
-                    _isDate!)); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
+            arguments: DateToReal(
+                isDate: isDate,
+                selectedChildName: _selected_child_name!,
+                selectedDate:
+                    testDate)); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
       },
       trailing: Icon(Icons.keyboard_arrow_right),
     );

@@ -1,6 +1,7 @@
 import 'package:aba_analysis/screens/graph_management/arguments.dart';
 import 'package:aba_analysis/screens/graph_management/generateExcel.dart';
 import 'package:aba_analysis/screens/graph_management/generatePDF.dart';
+import 'package:aba_analysis/screens/graph_management/select_appbar.dart';
 import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -84,10 +85,14 @@ class _RealGraphState extends State<RealGraph> {
     //_isDate = true;
 
     if (_isDate) {
+      final DateToReal args =
+          ModalRoute.of(context)!.settings.arguments as DateToReal;
+      _isDate = args.isDate;
+      _childName = args.selectedChildName;
       _graphType = '날짜';
-      _charTitleName = '7월 11일';
+      _charTitleName = args.selectedDate;
       _tableColumn = ['날짜', '하위목록', '성공여부'];
-    } else {
+    } else if (_isDate == false) {
       final ItemToReal args =
           ModalRoute.of(context)!.settings.arguments as ItemToReal;
       _isDate = args.isDate;
@@ -99,20 +104,8 @@ class _RealGraphState extends State<RealGraph> {
     _chartData = getGraphData(_charTitleName);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "< " + _childName + "의 " + _graphType + "별 그래프 >",
-          style: TextStyle(fontFamily: 'KoreanGothic'),
-        ), // 아이의 이름값 갖고와야함.
-        centerTitle: true,
-        backgroundColor: Colors.grey,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          }, // 누르면 전 화면으로
-        ),
-      ),
+      appBar: SearchAppBar(
+          context, "< " + _childName + "의 " + _graphType + "별 그래프 >"),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
