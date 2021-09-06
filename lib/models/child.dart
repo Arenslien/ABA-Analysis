@@ -16,6 +16,7 @@ class Child {
   int get childId => _childId;
   String get name => _name;
   int get age => DateTime.now().year - _birthday.year + 1;
+  DateTime get birthday => _birthday;
   String get gender => _gender;
   String get teacherUid => _teacherEmail;
   List<Test> get testList => _testList;

@@ -1,6 +1,9 @@
-import 'package:aba_analysis/models/child.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
+import 'package:aba_analysis/models/child.dart';
+import 'package:aba_analysis/services/firestore.dart';
+import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
@@ -13,11 +16,13 @@ class ChildInputScreen extends StatefulWidget {
 
 class _ChildInputScreenState extends State<ChildInputScreen> {
   _ChildInputScreenState();
-
-  final formkey = GlobalKey<FormState>();
-  Child newChild = Child();
-  final List<bool> gender = [false, false];
+  late String name;
+  late int age;
+  late String gender;
+  final List<bool> genderSelected = [false, false];
   bool? isGenderSelected;
+  FireStoreService _store = FireStoreService();
+  final formkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -47,17 +52,23 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                   Icons.check_rounded,
                   color: Colors.black,
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (isGenderSelected != true)
                     setState(() {
                       isGenderSelected = false;
                     });
-                  if (formkey.currentState!.validate() &&
-                      isGenderSelected!) {
+                  if (formkey.currentState!.validate() && isGenderSelected!) {
                     // Firestore에 아동 추가
 
                     // Provider ChildNotifier 수정
-                    Navigator.pop(context, newChild);
+                    Navigator.pop(
+                        context,
+                        Child(
+                            await _store.updateId(AutoID.child),
+                            context.read<UserNotifier>().abaUser!.email,
+                            name,
+                            age,
+                            gender));
                   }
                 },
               ),
@@ -70,7 +81,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                 text: '이름',
                 onChanged: (val) {
                   setState(() {
-                    newChild.name = val;
+                    name = val;
                   });
                 },
                 validator: (val) {
@@ -84,7 +95,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                 text: '생년월일',
                 onChanged: (val) {
                   setState(() {
-                    newChild.age = val;
+                    //age = val;
                   });
                 },
                 validator: (val) {
@@ -99,22 +110,22 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: buildToggleButtons(
                   text: ['남자', '여자'],
-                  isSelected: gender,
+                  isSelected: genderSelected,
                   onPressed: (index) {
-                    if (!gender[index])
+                    if (!genderSelected[index])
                       setState(() {
                         isGenderSelected = true;
                         if (index == 0)
-                          newChild.gender = '남자';
+                          gender = '남자';
                         else
-                          newChild.gender = '여자';
+                          gender = '여자';
                         for (int buttonIndex = 0;
-                            buttonIndex < gender.length;
+                            buttonIndex < genderSelected.length;
                             buttonIndex++) {
                           if (buttonIndex == index) {
-                            gender[buttonIndex] = true;
+                            genderSelected[buttonIndex] = true;
                           } else {
-                            gender[buttonIndex] = false;
+                            genderSelected[buttonIndex] = false;
                           }
                         }
                       });

@@ -1,47 +1,86 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/constants.dart';
+import 'package:aba_analysis/models/test.dart';
 import 'package:aba_analysis/components/show_dialog_delete.dart';
-import 'package:aba_analysis/components/class/chapter_class.dart';
-import 'package:aba_analysis/components/class/content_class.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class ChapterModifyScreen extends StatefulWidget {
-  const ChapterModifyScreen(this.chapter, {Key? key}) : super(key: key);
-  final Chapter chapter;
+  const ChapterModifyScreen({required this.test, Key? key}) : super(key: key);
+  final Test test;
   @override
-  _ChapterModifyScreenState createState() => _ChapterModifyScreenState(chapter);
+  _ChapterModifyScreenState createState() => _ChapterModifyScreenState();
 }
 
 class _ChapterModifyScreenState extends State<ChapterModifyScreen> {
-  _ChapterModifyScreenState(this.chapter);
-  final Chapter chapter;
+  _ChapterModifyScreenState();
+  late DateTime date;
+  late String title;
+  TextEditingController dateTextEditingController = TextEditingController(
+      text: DateFormat('yyyyMMdd').format(DateTime.now()));
   final formkey = GlobalKey<FormState>();
-  Chapter newChapter = Chapter();
   List<ContentListTile> contentListTile = [];
 
   @override
   void initState() {
     super.initState();
-    newChapter.date = chapter.date;
-    newChapter.name = chapter.name;
 
     contentListTile.add(
       ContentListTile(
         tileWidget: buildTextFormField(
-          text: '챕터 이름',
-          controller: TextEditingController(text: newChapter.name),
+          controller: dateTextEditingController,
+          text: '날짜',
           onChanged: (val) {
             setState(() {
-              newChapter.name = val;
+              date = DateFormat('yyyyMMdd').parse(val);
+            });
+          },
+          onTap: () {
+            setState(() async {
+              DateTime? selectedDate = await showDatePicker(
+                context: context,
+                cancelText: '취소',
+                confirmText: '확인',
+                fieldLabelText: '날짜 설정',
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2018),
+                lastDate: DateTime(2030),
+                builder: (context, child) {
+                  return Theme(
+                    data: ThemeData.dark(),
+                    child: child!,
+                  );
+                },
+              );
+              dateTextEditingController.text =
+                  DateFormat('yyyyMMdd').format(selectedDate!);
             });
           },
           validator: (val) {
-            if (val!.length < 1) {
-              return '이름은 필수사항입니다.';
+            if (val!.length != 8) {
+              return 'YYYYMMDD';
             }
             return null;
           },
+          inputType: 'number',
         ),
+      ),
+    );
+    ContentListTile(
+      tileWidget: buildTextFormField(
+        text: '챕터 이름',
+        controller: TextEditingController(text: widget.test.title),
+        onChanged: (val) {
+          setState(() {
+            title = val;
+          });
+        },
+        validator: (val) {
+          if (val!.length < 1) {
+            return '이름은 필수사항입니다.';
+          }
+          return null;
+        },
       ),
     );
     contentListTile.add(
@@ -55,7 +94,7 @@ class _ChapterModifyScreenState extends State<ChapterModifyScreen> {
                 icon: Icon(Icons.add_rounded),
                 onPressed: () {
                   setState(() {
-                    buildItemListTile(newChapter.contentList.length);
+                    //buildItemListTile(newChapter.contentList.length);
                   });
                 },
               ),
@@ -64,13 +103,13 @@ class _ChapterModifyScreenState extends State<ChapterModifyScreen> {
         ),
       ),
     );
-    for (int i = 0; i < chapter.contentList.length; i++) {
-      newChapter.contentList.add(Content());
-      newChapter.contentList[i].name = chapter.contentList[i].name;
-      newChapter.contentList[i].result = chapter.contentList[i].result;
-      newChapter.contentList[i].contentId = chapter.contentList[i].contentId;
-      buildItemListTile(i);
-    }
+    // for (int i = 0; i < chapter.contentList.length; i++) {
+    //   newChapter.contentList.add(Content());
+    //   newChapter.contentList[i].name = chapter.contentList[i].name;
+    //   newChapter.contentList[i].result = chapter.contentList[i].result;
+    //   newChapter.contentList[i].contentId = chapter.contentList[i].contentId;
+    //   buildItemListTile(i);
+    // }
   }
 
   @override
@@ -102,7 +141,7 @@ class _ChapterModifyScreenState extends State<ChapterModifyScreen> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  showDialogDelete('챕터', context, Chapter());
+                  showDialogDelete('챕터', context);
                 },
               ),
               IconButton(
@@ -112,7 +151,10 @@ class _ChapterModifyScreenState extends State<ChapterModifyScreen> {
                 ),
                 onPressed: () {
                   if (formkey.currentState!.validate()) {
-                    Navigator.pop(context, newChapter);
+                    Navigator.pop(
+                        context,
+                        Test(widget.test.testId, widget.test.childId, date,
+                            title));
                   }
                 },
               ),

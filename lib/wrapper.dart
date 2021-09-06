@@ -37,11 +37,11 @@ class _WrapperState extends State<Wrapper> {
   Widget build(BuildContext context) {
     //SizeConfig를 사용하기 위해서 초기화
     SizeConfig().init(context);
-    
+
     // UserNotifier Provider 지속적으로 값 확인
     User? user = context.watch<User?>();
 
     // return 홈스크린 or 인증스크린
-    return user == null? SignInScreen() : HomeScreen();
+    return HomeScreen();
   }
 }
