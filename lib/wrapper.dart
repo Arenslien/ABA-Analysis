@@ -22,7 +22,7 @@ class _WrapperState extends State<Wrapper> {
   void initState() {
     super.initState();
 
-    // 인스턴스 초기화
+    // 인스턴스 초기화 
     AuthService _auth = AuthService();
     FireStoreService _store = FireStoreService();
 

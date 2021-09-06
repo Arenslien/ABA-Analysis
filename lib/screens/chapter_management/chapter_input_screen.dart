@@ -1,12 +1,17 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 import 'package:aba_analysis/constants.dart';
-import 'package:aba_analysis/components/class/chapter_class.dart';
-import 'package:aba_analysis/components/class/content_class.dart';
+import 'package:aba_analysis/models/test.dart';
+import 'package:aba_analysis/models/test_item.dart';
+import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class ChapterInputScreen extends StatefulWidget {
-  const ChapterInputScreen({Key? key}) : super(key: key);
+  const ChapterInputScreen(
+      {required this.test, required this.childId, Key? key})
+      : super(key: key);
+  final Test test;
+  final int childId;
 
   @override
   _ChapterInputScreenState createState() => _ChapterInputScreenState();
@@ -14,23 +19,25 @@ class ChapterInputScreen extends StatefulWidget {
 
 class _ChapterInputScreenState extends State<ChapterInputScreen> {
   _ChapterInputScreenState();
-  Chapter newChapter = Chapter();
-  final formkey = GlobalKey<FormState>();
-  List<ContentListTile> itemListTile = [];
-  TextEditingController date = TextEditingController(
+  late DateTime date;
+  late String title;
+  List<ContentListTile> itemCardList = [];
+  FireStoreService _store = FireStoreService();
+  TextEditingController dateTextEditingController = TextEditingController(
       text: DateFormat('yyyyMMdd').format(DateTime.now()));
+  final formkey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
-    itemListTile.add(
+    itemCardList.add(
       ContentListTile(
         tileWidget: buildTextFormField(
-          controller: date,
+          controller: dateTextEditingController,
           text: '날짜',
           onChanged: (val) {
             setState(() {
-              newChapter.date = val;
+              date = DateFormat('yyyyMMdd').parse(val);
             });
           },
           onTap: () {
@@ -50,7 +57,8 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
                   );
                 },
               );
-              date.text = DateFormat('yyyyMMdd').format(selectedDate!);
+              dateTextEditingController.text =
+                  DateFormat('yyyyMMdd').format(selectedDate!);
             });
           },
           validator: (val) {
@@ -63,13 +71,13 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
         ),
       ),
     );
-    itemListTile.add(
+    itemCardList.add(
       ContentListTile(
         tileWidget: buildTextFormField(
           text: '챕터 이름',
           onChanged: (val) {
             setState(() {
-              newChapter.name = val;
+              title = val;
             });
           },
           validator: (val) {
@@ -81,7 +89,7 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
         ),
       ),
     );
-    itemListTile.add(
+    itemCardList.add(
       ContentListTile(
         tileWidget: Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -133,9 +141,16 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
                   Icons.check_rounded,
                   color: Colors.black,
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (formkey.currentState!.validate()) {
-                    Navigator.pop(context, newChapter);
+                    Navigator.pop(
+                        context,
+                        Test(
+                          await _store.updateId(AutoID.test),
+                          0,
+                          date,
+                          title,
+                        ));
                   }
                 },
               ),
@@ -143,9 +158,9 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
             backgroundColor: mainGreenColor,
           ),
           body: ListView.builder(
-            itemCount: itemListTile.length,
+            itemCount: itemCardList.length,
             itemBuilder: (BuildContext context, int index) {
-              return itemListTile[index].tileWidget!;
+              return itemCardList[index].tileWidget!;
             },
           ),
         ),
@@ -153,28 +168,35 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
     );
   }
 
-  buildItemListTile() {
-    int len = newChapter.contentList.length;
-    newChapter.contentList.add(Content());
+  buildItemListTile() async {
+    int testItemId = await _store.updateId(AutoID.testItem);
+    widget.test.testItemList.add(TestItem(
+      testItemId,
+      widget.test.testId,
+      '_programField',
+      '_subField',
+      '_subItem',
+    ));
     TextEditingController textEditingController = TextEditingController();
 
-    int tileId = 0;
-    for (int i = 0; i < 100; i++) {
-      bool flag = false;
-      for (int j = 0; j < len + 1; j++)
-        if (newChapter.contentList[j].contentId == i) {
-          flag = true;
-          break;
-        }
-      if (!flag) {
-        newChapter.contentList[len].contentId = i;
-        tileId = i;
-        break;
-      }
-    }
-    itemListTile.add(
+    //int len = widget.test.testItemList.length;
+    // int tileId = 0;
+    // for (int i = 0; i < 100; i++) {
+    //   bool flag = false;
+    //   for (int j = 0; j < len + 1; j++)
+    //     if (widget.test.testItemList[j].contentId == i) {
+    //       flag = true;
+    //       break;
+    //     }
+    //   if (!flag) {
+    //     widget.test.testItemList[len].contentId = i;
+    //     tileId = i;
+    //     break;
+    //   }
+    // }
+    itemCardList.add(
       ContentListTile(
-        tileId: tileId,
+        tileId: testItemId,
         tileWidget: Row(
           children: [
             Flexible(
@@ -183,14 +205,8 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
                 hintText: '콘텐츠 이름을 입력하세요.',
                 controller: textEditingController,
                 onChanged: (val) {
-                  int index = 0;
-                  for (int i = 0; i < newChapter.contentList.length; i++)
-                    if (newChapter.contentList[i].contentId == tileId) {
-                      index = i;
-                      break;
-                    }
                   setState(() {
-                    newChapter.contentList[index].name = val;
+                    //widget.test.testItemList[widget.test.testItemList.indexWhere((element) => element.testItemId ==testItemId)]. = val;
                   });
                 },
                 validator: (val) {
@@ -206,12 +222,12 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
               child: IconButton(
                   icon: Icon(Icons.remove_rounded),
                   onPressed: () {
-                    if (newChapter.contentList.length != 1)
+                    if (widget.test.testItemList.length != 1)
                       setState(() {
-                        newChapter.contentList.removeWhere(
-                            (element) => element.contentId == tileId);
-                        itemListTile
-                            .removeWhere((element) => element.tileId == tileId);
+                        widget.test.testItemList.removeWhere(
+                            (element) => element.testItemId == testItemId);
+                        itemCardList.removeWhere(
+                            (element) => element.tileId == testItemId);
                       });
                   }),
             ),
