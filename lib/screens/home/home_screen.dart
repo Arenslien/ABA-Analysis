@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Container(
             color: Colors.white,
-            child: SubjectMainScreen(),
+            //child: SubjectMainScreen(),
           ),
           Container(
             color: Colors.white,
