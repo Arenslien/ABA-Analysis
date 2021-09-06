@@ -1,3 +1,4 @@
+import 'package:aba_analysis/models/child.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
@@ -15,7 +16,7 @@ class ChildModifyScreen extends StatefulWidget {
 class _ChildModifyScreenState extends State<ChildModifyScreen> {
   _ChildModifyScreenState();
   late String name;
-  late int age;
+  late DateTime birthday;
   late String gender;
   List<bool> genderselected = [false, false];
   final formkey = GlobalKey<FormState>();
@@ -26,7 +27,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
     //widget.child.childId,
     //widget.child.teacherUid,
     name = widget.child.name;
-    age = widget.child.age;
+    birthday = widget.child.birthday;
     gender = widget.child.gender;
   }
 
@@ -75,7 +76,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                           widget.child.childId,
                           widget.child.teacherUid,
                           name,
-                          age,
+                          birthday,
                           gender,
                         ));
                   }
@@ -103,7 +104,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
               ),
               buildTextFormField(
                 text: '생년월일',
-                initialValue: age.toString(),
+                initialValue: widget.child.birthday.toString(),
                 onChanged: (val) {
                   setState(() {
                     //age = val;

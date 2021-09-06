@@ -7,7 +7,7 @@ class Test {
   String _title;
   List<TestItem> _testItemList = [];
 
-  Test(this._testId, this._childId, this._date, this._title);
+  Test(this._testId, this._childId, this._date, this._title, this._testItemList);
 
   int get testId => _testId;
   int get childId => _childId;

@@ -7,6 +7,7 @@ class TestItem {
   int _plusCount = 0;
   int _minusCount = 0;
   int _pCount = 0;
+  String? _result;
 
   TestItem(this._testItemId, this._testId, this._programField, this._subField, this._subItem);
 
@@ -18,6 +19,7 @@ class TestItem {
   int get plusCount => _plusCount;
   int get minusCount => _minusCount;
   int get pCount => _pCount;
+  String? get result => _result;
 
   Map<String, dynamic> toMap() {
     return {
@@ -29,6 +31,7 @@ class TestItem {
       'plus-count': _plusCount,
       'minus-count': _minusCount,
       'p-count': _pCount,
+      'result': _result,
     };
   }
 }
