@@ -1,7 +1,9 @@
-import 'package:aba_analysis/models/child.dart';
-import 'package:aba_analysis/models/test.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/constants.dart';
+import 'package:aba_analysis/models/test.dart';
+import 'package:aba_analysis/models/child.dart';
+import 'package:aba_analysis/models/test_item.dart';
+import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/build_no_list_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
@@ -10,23 +12,22 @@ import 'package:aba_analysis/screens/chapter_management/chapter_input_screen.dar
 import 'package:aba_analysis/screens/chapter_management/chapter_modify_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_get_result_screen.dart';
 
-
 class ChildChapterScreen extends StatefulWidget {
-  const ChildChapterScreen({required this.child, Key? key})
-      : super(key: key);
+  const ChildChapterScreen({required this.child, Key? key}) : super(key: key);
   final Child child;
 
   @override
-  _ChildChapterScreenState createState() =>
-      _ChildChapterScreenState();
+  _ChildChapterScreenState createState() => _ChildChapterScreenState();
 }
 
 class _ChildChapterScreenState extends State<ChildChapterScreen> {
   _ChildChapterScreenState();
+  List<Test> testList = [];
   List<Test> searchResult = [];
+  List<Widget> testCardList = [];
+  List<Widget> searchTestCardList = [];
+  FireStoreService _store = FireStoreService();
   TextEditingController searchTextEditingController = TextEditingController();
-
-  late List<Test> testList;
 
   @override
   void initState() {
@@ -35,6 +36,8 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       testList = widget.child.testList;
     });
+
+    testCardList = convertChildToListTile(testList);
   }
 
   @override
@@ -61,180 +64,24 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
         ),
         body: widget.child.testList.length == 0
             ? noListData(Icons.library_add_outlined, '테스트 추가')
-            : searchTextEditingController.text == ''
-                ? ListView.builder(
-                    padding: EdgeInsets.only(bottom: 50),
-                    itemCount: widget.child.testList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return buildListTile(
-                        titleText: widget.child.testList[index].title,
-                        subtitleText: widget.child.testList[index].date.toString(),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChildGetResultScreen(
-                                widget.child,
-                                widget.child.testList[index],
-                                name: widget.child.name, 
-                              ),
-                            ),
-                          );
-                        },
-                        trailing: buildToggleButtons(
-                          text: ['복사', '설정'],
-                          onPressed: (idx) async {
-                            if (idx == 0) {
-                              setState(() {
-                                Chapter copyChapter = Chapter();
-                                copyChapter.name =
-                                    widget.child.testList[index].name;
-                                copyChapter.date =
-                                    widget.child.testList[index].date;
-                                for (int i = 0;
-                                    i <
-                                        widget.child.testList[index].contentList
-                                            .length;
-                                    i++) {
-                                  copyChapter.contentList.add(Content());
-                                  copyChapter.contentList[i].name = widget.child
-                                      .testList[index].contentList[i].name;
-                                  copyChapter.contentList[i].result = null;
-                                }
-                                for (int i = 0; i < 100; i++) {
-                                  bool flag = false;
-                                  for (int j = 0;
-                                      j < widget.child.testList.length;
-                                      j++)
-                                    if (widget.child.testList[j].chapterId == i) {
-                                      flag = true;
-                                      break;
-                                    }
-                                  if (!flag) {
-                                    copyChapter.chapterId = i;
-                                    break;
-                                  }
-                                }
-                                widget.child.testList.add(copyChapter);
-                              });
-                            } else if (idx == 1) {
-                              final Chapter? editChapter = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ChapterModifyScreen(
-                                      widget.child.testList[index]),
-                                ),
-                              );
-                              if (editChapter != null)
-                                setState(() {
-                                  widget.child.testList[index] = editChapter;
-                                  if (editChapter.name == null) {
-                                    widget.child.testList.removeAt(index);
-                                  }
-                                });
-                            }
-                          },
-                        ),
-                      );
-                    },
-                  )
-                : ListView.builder(
-                    padding: EdgeInsets.only(bottom: 50),
-                    itemCount: searchResult.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return buildListTile(
-                        titleText: searchResult[index].name,
-                        trailing: buildToggleButtons(
-                          text: ['복사', '설정'],
-                          onPressed: (idx) async {
-                            if (idx == 0) {
-                              setState(() {
-                                Chapter copyChapter = Chapter();
-                                copyChapter.name = searchResult[index].name;
-                                copyChapter.date = searchResult[index].date;
-                                for (int i = 0;
-                                    i < searchResult[index].contentList.length;
-                                    i++) {
-                                  copyChapter.contentList.add(Content());
-                                  copyChapter.contentList[i].name = widget.child
-                                      .testList[index].contentList[i].name;
-                                  copyChapter.contentList[i].result = null;
-                                }
-                                for (int i = 0; i < 100; i++) {
-                                  bool flag = false;
-                                  for (int j = 0;
-                                      j < widget.child.testList.length;
-                                      j++)
-                                    if (widget.child.testList[j].chapterId == i) {
-                                      flag = true;
-                                      break;
-                                    }
-                                  if (!flag) {
-                                    copyChapter.chapterId = i;
-                                    break;
-                                  }
-                                }
-                                widget.child.testList.add(copyChapter);
-                                searchTextEditingController.text = '';
-                              });
-                            } else if (idx == 1) {
-                              final Chapter? editChapter = await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ChapterModifyScreen(searchResult[index]),
-                                ),
-                              );
-                              setState(() {
-                                if (editChapter!.name == null) {
-                                  widget.child.testList.removeAt(widget.child
-                                      .testList
-                                      .indexWhere((element) =>
-                                          element.chapterId ==
-                                          searchResult[index].chapterId));
-                                } else {
-                                  widget.child.testList[widget.child.testList
-                                          .indexWhere((element) =>
-                                              element.chapterId ==
-                                              searchResult[index].chapterId)] =
-                                      editChapter;
-                                }
-                                searchTextEditingController.text = '';
-                              });
-                            }
-                          },
-                        ),
-                      );
-                    },
-                  ),
+            : searchTextEditingController.text.isEmpty
+                ? ListView(children: testCardList)
+                : ListView(children: searchTestCardList),
         floatingActionButton: FloatingActionButton(
           child: Icon(
             Icons.add_rounded,
             size: 40,
           ),
           onPressed: () async {
-            final Chapter? newChapter = await Navigator.push(
+            final Test? newTest = await Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ChapterInputScreen(),
+                builder: (context) => ChapterInputScreen(child: widget.child),
               ),
             );
-            if (newChapter != null)
+            if (newTest != null)
               setState(() {
-                widget.child.testList.add(newChapter);
-                for (int i = 0; i < 100; i++) {
-                  bool flag = false;
-                  for (int j = 0; j < widget.child.testList.length; j++)
-                    if (widget.child.testList[j].chapterId == i) {
-                      flag = true;
-                      break;
-                    }
-                  if (!flag) {
-                    widget.child.testList[widget.child.testList.length - 1]
-                        .chapterId = i;
-                    break;
-                  }
-                }
+                widget.child.testList.add(newTest);
               });
           },
           backgroundColor: Colors.black,
@@ -258,6 +105,7 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
                   searchResult.add(widget.child.testList[i]);
                 }
               }
+              searchTestCardList = convertChildToListTile(searchResult);
             });
           },
           search: true,
@@ -265,4 +113,219 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
       ),
     );
   }
+
+  List<Widget> convertChildToListTile(List<Test> testList) {
+    List<Widget> list = [];
+
+    if (testList.length != 0) {
+      testList.forEach((Test test) {
+        // 리스트 타일 생성
+        Widget listTile = buildListTile(
+          onTap: () {
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //       builder: (context) => ChildChapterScreen(child: test)),
+            // );
+          },
+          trailing: buildToggleButtons(
+            text: ['복사', '설정'],
+            onPressed: (idx) async {
+              if (idx == 0) {
+                setState(() async {
+                  Test copyTest = Test(
+                    await _store.updateId(AutoID.test),
+                    widget.child.childId,
+                    test.date,
+                    test.title,
+                  );
+                  // for (int i = 0;
+                  //     i < searchResult[index].contentList.length;
+                  //     i++) {
+                  //   copyTest.contentList.add(Content());
+                  //   copyTest.contentList[i].name =
+                  //       widget.child.testList[index].contentList[i].name;
+                  //   copyTest.contentList[i].result = null;
+                  // }
+                  testList.add(copyTest);
+                  searchTextEditingController.text = '';
+                });
+              } else if (idx == 1) {
+                final Test? editTest = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ChapterModifyScreen(searchResult[index]),
+                  ),
+                );
+                setState(() {
+                  if (editTest!.title == '') {
+                    widget.child.testList.removeAt(widget.child.testList
+                        .indexWhere(
+                            (element) => element.testId == test.testId));
+                  } else {
+                    widget.child.testList[widget.child.testList.indexWhere(
+                        (element) => element.testId == test.testId)] = editTest;
+                  }
+                  searchTextEditingController.text = '';
+                });
+              }
+            },
+          ),
+        );
+        list.add(listTile);
+      });
+    }
+    return list;
+  }
 }
+// ? ListView.builder(
+                //     padding: EdgeInsets.only(bottom: 50),
+                //     itemCount: widget.child.testList.length,
+                //     itemBuilder: (BuildContext context, int index) {
+                //       return buildListTile(
+                //         titleText: widget.child.testList[index].title,
+                //         subtitleText:
+                //             widget.child.testList[index].date.toString(),
+                //         onTap: () {
+                //           Navigator.push(
+                //             context,
+                //             MaterialPageRoute(
+                //               builder: (context) => ChildGetResultScreen(
+                //                 widget.child,
+                //                 widget.child.testList[index],
+                //                 name: widget.child.name,
+                //               ),
+                //             ),
+                //           );
+                //         },
+                //         trailing: buildToggleButtons(
+                //           text: ['복사', '설정'],
+                //           onPressed: (idx) async {
+                //             if (idx == 0) {
+                //               setState(() {
+                //                 Test copyTest = Test(
+                //                   widget.child.testList[index].testId,
+                //                   widget.child.testList[index].childId,
+                //                   widget.child.testList[index].date,
+                //                   widget.child.testList[index].title,
+                //                 );
+                //                 for (int i = 0;
+                //                     i <
+                //                         widget.child.testList[index]
+                //                             .testItemList.length;
+                //                     i++) {
+                //                   copyTest.testItemList.add(TestItem());
+                //                   copyTest.contentList[i].name = widget.child
+                //                       .testList[index].contentList[i].name;
+                //                   copyTest.contentList[i].result = null;
+                //                 }
+                //                 for (int i = 0; i < 100; i++) {
+                //                   bool flag = false;
+                //                   for (int j = 0;
+                //                       j < widget.child.testList.length;
+                //                       j++)
+                //                     if (widget.child.testList[j].chapterId ==
+                //                         i) {
+                //                       flag = true;
+                //                       break;
+                //                     }
+                //                   if (!flag) {
+                //                     copyTest.chapterId = i;
+                //                     break;
+                //                   }
+                //                 }
+                //                 widget.child.testList.add(copyTest);
+                //               });
+                //             } else if (idx == 1) {
+                //               final Chapter? editChapter = await Navigator.push(
+                //                 context,
+                //                 MaterialPageRoute(
+                //                   builder: (context) => ChapterModifyScreen(
+                //                       widget.child.testList[index]),
+                //                 ),
+                //               );
+                //               if (editChapter != null)
+                //                 setState(() {
+                //                   widget.child.testList[index] = editChapter;
+                //                   if (editChapter.name == null) {
+                //                     widget.child.testList.removeAt(index);
+                //                   }
+                //                 });
+                //             }
+                //           },
+                //         ),
+                //       );
+                //     },
+                //   )
+
+                // : ListView.builder(
+                //     padding: EdgeInsets.only(bottom: 50),
+                //     itemCount: searchResult.length,
+                //     itemBuilder: (BuildContext context, int index) {
+                //       return buildListTile(
+                //         titleText: searchResult[index].name,
+                //         trailing: buildToggleButtons(
+                //           text: ['복사', '설정'],
+                //           onPressed: (idx) async {
+                //             if (idx == 0) {
+                //               setState(() {
+                //                 Chapter copyChapter = Chapter();
+                //                 copyChapter.name = searchResult[index].name;
+                //                 copyChapter.date = searchResult[index].date;
+                //                 for (int i = 0;
+                //                     i < searchResult[index].contentList.length;
+                //                     i++) {
+                //                   copyChapter.contentList.add(Content());
+                //                   copyChapter.contentList[i].name = widget.child
+                //                       .testList[index].contentList[i].name;
+                //                   copyChapter.contentList[i].result = null;
+                //                 }
+                //                 for (int i = 0; i < 100; i++) {
+                //                   bool flag = false;
+                //                   for (int j = 0;
+                //                       j < widget.child.testList.length;
+                //                       j++)
+                //                     if (widget.child.testList[j].chapterId ==
+                //                         i) {
+                //                       flag = true;
+                //                       break;
+                //                     }
+                //                   if (!flag) {
+                //                     copyChapter.chapterId = i;
+                //                     break;
+                //                   }
+                //                 }
+                //                 widget.child.testList.add(copyChapter);
+                //                 searchTextEditingController.text = '';
+                //               });
+                //             } else if (idx == 1) {
+                //               final Chapter? editChapter = await Navigator.push(
+                //                 context,
+                //                 MaterialPageRoute(
+                //                   builder: (context) =>
+                //                       ChapterModifyScreen(searchResult[index]),
+                //                 ),
+                //               );
+                //               setState(() {
+                //                 if (editChapter!.name == null) {
+                //                   widget.child.testList.removeAt(widget
+                //                       .child.testList
+                //                       .indexWhere((element) =>
+                //                           element.chapterId ==
+                //                           searchResult[index].chapterId));
+                //                 } else {
+                //                   widget.child.testList[widget.child.testList
+                //                           .indexWhere((element) =>
+                //                               element.chapterId ==
+                //                               searchResult[index].chapterId)] =
+                //                       editChapter;
+                //                 }
+                //                 searchTextEditingController.text = '';
+                //               });
+                //             }
+                //           },
+                //         ),
+                //       );
+                //     },
+                //   ),

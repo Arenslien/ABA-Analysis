@@ -29,7 +29,7 @@ class _WrapperState extends State<Wrapper> {
     // 로그인 유지일 경우 사용자 정보를 DB에서 가져옴
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       context.read<UserNotifier>().updateUser(await _auth.abaUser);
-      context.read<ChildNotifier>().updateChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
+      context.read<ChildNotifier>().initChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
     });
   }
 
@@ -37,11 +37,11 @@ class _WrapperState extends State<Wrapper> {
   Widget build(BuildContext context) {
     //SizeConfig를 사용하기 위해서 초기화
     SizeConfig().init(context);
-    
+
     // UserNotifier Provider 지속적으로 값 확인
     User? user = context.watch<User?>();
 
     // return 홈스크린 or 인증스크린
-    return user == null? SignInScreen() : HomeScreen();
+    return HomeScreen();
   }
 }

@@ -2,6 +2,7 @@ import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/aba_user.dart';
 import 'package:aba_analysis/models/test.dart';
+import 'package:aba_analysis/models/test_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FireStoreService {
@@ -100,7 +101,9 @@ class FireStoreService {
 
   Future createChild(Child child) {
     // 데이터베이스에 Child 문서 추가
-    return _child.add(child.toMap())
+    return _child
+        .doc(child.childId.toString())
+        .set(child.toMap())
         .then((value) => print('아동이 성공적으로 추가되었습니다.'))
         .catchError((error) => print('아동을 추가하지 못했습니다.\n에러 내용: $error'));
   }
@@ -116,7 +119,7 @@ class FireStoreService {
         .get()
         .then((QuerySnapshot snapshot) => snapshot.docs.forEach((document) {
           dynamic data = document.data();
-          Child child = Child(data['child-id'], data['teacher-email'], data['name'], data['age'], data['gender']);
+          Child child = Child(data['child-id'], data['teacher-email'], data['name'], data['birthday'], data['gender']);
           children.add(child);
         }));
     
@@ -128,58 +131,34 @@ class FireStoreService {
 
   Future<Child> readChild(int childId) async {
     // 해당 이메일에 대한 Child 정보 가져오기
-    dynamic dbChild = await _child
-        .where('child-id', isEqualTo: childId)
+    dynamic data = await _child
+        .doc(childId.toString())
         .get()
-        .then((QuerySnapshot snapshot) => snapshot.docs[0].data());
+        .then((DocumentSnapshot snapshot) => snapshot.data());
 
     // db의 child 정보를 기반으로 Child 인스턴스 생성
-    Child child = new Child(dbChild['child-id'], dbChild['teacher-email'], dbChild['name'], dbChild['age'], dbChild['gender']);
+    Child child = new Child(data['child-id'], data['teacher-email'], data['name'], data['birthday'], data['gender']);
 
     // Child 반환
     return child;
   }
 
-  // Future updateChild(int childId, Child child) async {
-  //   // 해당 email에 대한 QueryDocumentSnapshot
-  //   QueryDocumentSnapshot snapshot = await _user.where('email', isEqualTo: email).get().then((QuerySnapshot snapshot) => snapshot.docs[0]);
-
-  //   // 해당 이메일에 대한 User Document의 ID 가져오기
-  //   String id = snapshot.id;
-
-  //   // 해당 email을 지닌 User의 필드 내용을 가져오기
-  //   dynamic data = snapshot.data();
-  //   Map<String, Object> updateContent = {
-  //     'email': data['email'],
-  //     'name': data['name'],
-  //     'duty': data['duty'],
-  //   };
-
-  //   // 해당 ID에 대한 사용자 정보를 updateContent로 수정
-  //   updateContent['name'] = name;
-  //   updateContent['phone'] = phone;
-  //   updateContent['duty'] = duty;
-
-  //   return _user
-  //       .doc(id)
-  //       .update(updateContent)
-  //       .then((value) => print("$name의 정보가 업데이트 되었습니다."))
-  //       .catchError((error) => print("$name의 정보 업데이트를 실패했습니다. : $error"));
-  //   // String id = await _child
-  //   //     .where('child-id', isEqualTo: childId)
-  //   //     .get()
-  //   //     .then((QuerySnapshot snapshot) => snapshot.docs[0].id);
-  // }
+  Future updateChild(int childId, String name, DateTime birthday, String gender) async {
+    // 해당 아이의 Document 업데이트 -> 사전에 변경될 name, birthday, gender 값이 필수로 꼭 필요! 변경이 없다면 기존의 값을 그대로 넣어야 함
+    await _child
+        .doc(childId.toString())
+        .update({
+          'name': name,
+          'birtday': birthday,
+          'gender': gender,
+        })
+        .then((value) => print("$name의 정보가 업데이트 되었습니다."))
+        .catchError((error) => print("$name의 정보 업데이트를 실패했습니다. : $error"));
+  }
 
   Future deleteChild(int childId) async {
-    // 해당 이메일에 대한 Child Document의 ID 가져오기
-    String id = await _child
-        .where('child-id', isEqualTo: childId)
-        .get()
-        .then((QuerySnapshot snapshot) => snapshot.docs[0].id);
-
-    return await _child
-        .doc(id)
+    await _child
+        .doc(childId.toString())
         .delete()
         .then((value) => print("아동이 삭제되었습니다."))
         .catchError((error) => "아동을 삭제하지 못했습니다. : $error");
@@ -226,13 +205,65 @@ class FireStoreService {
   // Test 추가
   Future createTest(Test test) async {
     // 데이터베이스에 Test 문서 추가
-    return _test.add(test.toMap())
+    return await _test
+        .doc(test.testId.toString())
+        .set(test.toMap())
         .then((value) => print(' 테스트가 성공적으로 추가되었습니다.'))
         .catchError((error) => print('테스트를 추가하지 못했습니다.\n에러 내용: $error'));
   }
 
+  // Test 복사
+  Future copyTest(Test test) async {
+    Test copiedTest = Test(await updateId(AutoID.test), test.childId, test.date, test.title, test.testItemList);
+    await _test
+        .doc(copiedTest.testId.toString())
+        .set(copiedTest.toMap())
+        .then((value) => print(' 테스트가 성공적으로 복사되었습니다.'))
+        .catchError((error) => print('테스트를 복사하지 못했습니다.\n에러 내용: $error'));
+  }
+
+  // Test 열람
+  Future<Test> readTest(int testId) async {
+    // 해당 testId에 대한 Document 정보 가져오기
+    dynamic data = await _test
+        .doc(testId.toString())
+        .get()
+        .then((DocumentSnapshot snapshot) => snapshot.data());
+
+    // Document data 기반 Test 객체 생성
+    Test test = Test(data['test-id'], data['child-id'], data['date'],  data['title'], data['test-item-list']);
+
+    // Test 반환
+    return test;
+  }
+
+  // Test 수정
+  Future updateTest(int testId, DateTime date, String title, List<TestItem> testItemList) async {
+    // 해당 Test의 Document 업데이트 -> 사전에 변경될 date, title, testItemList 값이 필수로 꼭 필요! 변경이 없다면 기존의 값을 그대로 넣어야 함
+    await _test
+        .doc(testId.toString())
+        .update({
+          'date': date,
+          'title': title,
+          'test-item-list': testItemList,
+        })
+        .then((value) => print("[ID: $testId]의 테스트가 업데이트 되었습니다."))
+        .catchError((error) => print("[ID: $testId]의 테스트 정보 업데이트를 실패했습니다. : $error"));
+  }
+
+  // Test 삭제
+  Future deleteTest(int testId) async {
+    await _test
+        .doc(testId.toString())
+        .delete()
+        .then((value) => print("테스트가 삭제되었습니다."))
+        .catchError((error) => "테스트를 삭제하지 못했습니다. : $error");
+  }
+
+
+
   //=======================================================================================
-  //                          Firebase 연동 - 테스트 관련 함수들
+  //                          Firebase 연동 - AutoID 관련 함수들
   //=======================================================================================
 
   Future<dynamic> readAutoIDDocumentData() async {
