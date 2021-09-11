@@ -1,13 +1,13 @@
+import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/screens/graph_management/arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/search_bar.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/components/class/child_class.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 
-class DummyTestData {
+class childTestData {
   // 테스트 데이터 더미 데이터 클래스
-  DummyTestData();
+  childTestData();
   String date = "00.0/0"; // 날짜
   String average = "00"; // 평균값
   Map<String, String> item = {
@@ -25,8 +25,8 @@ class GraphScreen extends StatefulWidget {
 
 class _GraphScreenState extends State<GraphScreen> {
   List<Child> childData = []; // 순수 아이 데이터
-  Child dummy1 = new Child();
-  Child dummy2 = new Child();
+  Child child1 = new Child();
+  Child child2 = new Child();
 
   bool? _isDate;
   void initState() {
@@ -36,94 +36,94 @@ class _GraphScreenState extends State<GraphScreen> {
 
   void testInit() {
     // test Data
-    dummy1.age = '3세';
-    dummy1.genderSelected = '남자';
-    dummy1.name = '영수';
-    childData.add(this.dummy1);
-    dummy1 = new Child();
+    child1.age = '3세';
+    child1.genderSelected = '남자';
+    child1.name = '영수';
+    childData.add(this.child1);
+    child1 = new Child();
 
-    dummy2.age = '5세';
-    dummy2.genderSelected = '남자';
-    dummy2.name = '철수';
-    childData.add(this.dummy2);
+    child2.age = '5세';
+    child2.genderSelected = '남자';
+    child2.name = '철수';
+    childData.add(this.child2);
 
-    dummy1.age = '7세';
-    dummy1.genderSelected = '여자';
-    dummy1.name = '철희';
-    childData.add(this.dummy1);
-    dummy1 = new Child();
+    child1.age = '7세';
+    child1.genderSelected = '여자';
+    child1.name = '철희';
+    childData.add(this.child1);
+    child1 = new Child();
 
-    dummy1.age = '5세';
-    dummy1.genderSelected = '남자';
-    dummy1.name = '철민';
-    childData.add(dummy1);
-    dummy1 = new Child();
+    child1.age = '5세';
+    child1.genderSelected = '남자';
+    child1.name = '철민';
+    childData.add(child1);
+    child1 = new Child();
 
-    dummy1.age = '4세';
-    dummy1.genderSelected = '남자';
-    dummy1.name = '민수';
-    childData.add(dummy1);
-    dummy1 = new Child();
+    child1.age = '4세';
+    child1.genderSelected = '남자';
+    child1.name = '민수';
+    childData.add(child1);
+    child1 = new Child();
 
-    dummy1.age = '2세';
-    dummy1.genderSelected = '여자';
-    dummy1.name = '민희';
-    childData.add(dummy1);
-    dummy1 = new Child();
+    child1.age = '2세';
+    child1.genderSelected = '여자';
+    child1.name = '민희';
+    childData.add(child1);
+    child1 = new Child();
 
-    dummy1.age = '5세';
-    dummy1.genderSelected = '여자';
-    dummy1.name = '영희';
-    childData.add(dummy1);
-    dummy1 = new Child();
+    child1.age = '5세';
+    child1.genderSelected = '여자';
+    child1.name = '영희';
+    childData.add(child1);
+    child1 = new Child();
 
-    dummy1.age = '1세';
-    dummy1.genderSelected = '여자';
-    dummy1.name = '윤빈';
-    childData.add(dummy1);
-    dummy1 = new Child();
+    child1.age = '1세';
+    child1.genderSelected = '여자';
+    child1.name = '윤빈';
+    childData.add(child1);
+    child1 = new Child();
 
-    dummy1.age = '5세';
-    dummy1.genderSelected = '남자';
-    dummy1.name = '영주';
-    childData.add(dummy1);
-    dummy1 = new Child();
+    child1.age = '5세';
+    child1.genderSelected = '남자';
+    child1.name = '영주';
+    childData.add(child1);
+    child1 = new Child();
 
-    dummy1.age = '3세';
-    dummy1.genderSelected = '남자';
-    dummy1.name = '성훈';
-    childData.add(dummy1);
-    dummy1 = new Child();
+    child1.age = '3세';
+    child1.genderSelected = '남자';
+    child1.name = '성훈';
+    childData.add(child1);
+    child1 = new Child();
 
-    dummy1.age = '5세';
-    dummy1.genderSelected = '남자';
-    dummy1.name = '선우';
-    childData.add(dummy1);
-    dummy1 = new Child();
+    child1.age = '5세';
+    child1.genderSelected = '남자';
+    child1.name = '선우';
+    childData.add(child1);
+    child1 = new Child();
 
-    dummy1.age = '2세';
-    dummy1.genderSelected = '남자';
-    dummy1.name = '선규';
-    childData.add(dummy1);
-    dummy1 = new Child();
+    child1.age = '2세';
+    child1.genderSelected = '남자';
+    child1.name = '선규';
+    childData.add(child1);
+    child1 = new Child();
 
-    dummy1.age = '5세';
-    dummy1.genderSelected = '여자';
-    dummy1.name = '선영';
-    childData.add(dummy1);
-    dummy1 = new Child();
+    child1.age = '5세';
+    child1.genderSelected = '여자';
+    child1.name = '선영';
+    childData.add(child1);
+    child1 = new Child();
 
-    dummy1.age = '4세';
-    dummy1.genderSelected = '남자';
-    dummy1.name = '영규';
-    childData.add(dummy1);
-    dummy1 = new Child();
+    child1.age = '4세';
+    child1.genderSelected = '남자';
+    child1.name = '영규';
+    childData.add(child1);
+    child1 = new Child();
 
-    dummy1.age = '5세';
-    dummy1.genderSelected = '남자';
-    dummy1.name = '철수2';
-    childData.add(dummy1);
-    dummy1 = new Child();
+    child1.age = '5세';
+    child1.genderSelected = '남자';
+    child1.name = '철수2';
+    childData.add(child1);
+    child1 = new Child();
 
     for (Child c in childData) {
       print(c.name);
