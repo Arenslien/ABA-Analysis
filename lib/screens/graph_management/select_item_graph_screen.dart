@@ -1,10 +1,8 @@
 import 'package:aba_analysis/components/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/components/class/child_class.dart';
 
 import 'arguments.dart';
-import 'graph_screen.dart';
 
 // select_date 복붙한거라 select_item버전으로 다시 코딩 필요
 class SelectItemScreen extends StatefulWidget {

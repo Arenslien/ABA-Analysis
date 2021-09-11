@@ -1,7 +1,6 @@
 import 'package:aba_analysis/screens/graph_management/arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/components/class/child_class.dart';
 
 import 'graph_screen.dart';
 
