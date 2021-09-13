@@ -73,11 +73,11 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                     Navigator.pop(
                         context,
                         Child(
-                          widget.child.childId,
-                          widget.child.teacherUid,
-                          name,
-                          birthday,
-                          gender,
+                          childId: widget.child.childId,
+                          teacherEmail: widget.child.teacherEmail,
+                          name: name,
+                          birthday: birthday,
+                          gender: gender,
                         ));
                   }
                 },

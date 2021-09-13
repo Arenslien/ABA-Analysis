@@ -8,22 +8,24 @@ const mainGreenColor = Color(0xFFA5D6A7);
 
 // 프로그램 영역 기본 값
 const programFieldList = [
-
-];
-
-// 하위 영역 기본 값
-const subFieldList = [
-
-];
-
-// 하위 목록 기본 값
-const subItemList = [
-
+  'acceptance',
+  'expression',
+  'dynamic-imitation',
+  'play-skills',
+  'social-skills',
+  'self-help-skills',
+  'math',
+  'write',
+  'match',
 ];
 
 // ENUM 타입
 enum AutoID {
   child, test, testItem
+}
+
+enum Result {
+  plus, minus, p
 }
 
 

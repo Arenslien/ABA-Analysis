@@ -1,25 +1,16 @@
-
-import 'package:aba_analysis/models/aba_user.dart';
-import 'package:aba_analysis/services/auth.dart';
+import 'package:aba_analysis/models/program_field.dart';
 import 'package:flutter/foundation.dart';
 
-class UserNotifier extends ChangeNotifier {
+class ProgramFieldNotifier extends ChangeNotifier {
+  // 전역 관리하는 program field list
+  List<ProgramField> _programFieldList = [];
 
-    
+  // Getter Function
+  List<ProgramField> get programFieldList => _programFieldList;
 
-
-  ABAUser? _abaUser;
-
-  void updateUser(ABAUser? abaUser) {
-    _abaUser = abaUser;
+  // 프로그램 필드 리스트 업데이트
+  void updateProgramFieldList(List<ProgramField> programFieldList) {
+    _programFieldList = programFieldList;
     notifyListeners();
   }
-
-  Future initUser() async {
-    AuthService _auth = AuthService();
-    _abaUser = await _auth.abaUser;
-    notifyListeners();
-  }
-
-  ABAUser? get abaUser => _abaUser;
 }

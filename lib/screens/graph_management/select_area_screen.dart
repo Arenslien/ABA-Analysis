@@ -22,7 +22,6 @@ class _SelectAreaScreenState extends State<SelectAreaScreen> {
   // 전역변수
 
   List<Child> childData = []; // 순수 아이 데이터
-  List<DummyTestData> testData = []; // 테스트 관련 데이터
   List<String> areaList = [
     '교사가 지시한 한 단계 동작 지시 10가지 따르기 ',
     '사물의 사진을 보고 이름 말하기',

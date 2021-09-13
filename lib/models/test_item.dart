@@ -1,37 +1,57 @@
+import 'package:aba_analysis/constants.dart';
+
 class TestItem {
-  int _testItemId; // PK
-  int _testId; // FK
-  String _programField;
-  String _subField;
-  String _subItem;
-  int _plusCount = 0;
-  int _minusCount = 0;
-  int _pCount = 0;
-  String? _result;
+  final int testItemId; // PK
+  final int testId; // FK
+  final String programField;
+  final String subField;
+  final String subItem;
+  int plusCount = 0;
+  int minusCount = 0;
+  int pCount = 0;
+  Result? _result;
 
-  TestItem(this._testItemId, this._testId, this._programField, this._subField, this._subItem);
-
-  int get testItemId => _testItemId;
-  int get testId => _testId;
-  String get programField => _programField;
-  String get subField => _subField;
-  String get subItem => _subItem;
-  int get plusCount => _plusCount;
-  int get minusCount => _minusCount;
-  int get pCount => _pCount;
-  String? get result => _result;
+  TestItem({ required this.testItemId, required this.testId, required this.programField, required this.subField, required this.subItem});
 
   Map<String, dynamic> toMap() {
     return {
-      'test-item-id': _testItemId,
-      'test-id': _testId,
-      'program-field': _programField,
-      'sub-field': _subField,
-      'sub-item': _subItem,
-      'plus-count': _plusCount,
-      'minus-count': _minusCount,
-      'p-count': _pCount,
-      'result': _result,
+      'test-item-id': testItemId,
+      'test-id': testId,
+      'program-field': programField,
+      'sub-field': subField,
+      'sub-item': subItem,
+      'plus-count': plusCount,
+      'minus-count': minusCount,
+      'p-count': pCount,
+      'result': result,
     };
+  }
+
+  void setResult(Result result) {
+    switch(result) {
+      case Result.plus:
+        plusCount = 1;
+        break;
+      case Result.minus:
+        minusCount = 1;
+        break;
+      case Result.p:
+        pCount = 1;
+        break;
+    }
+    this._result = result;
+  }
+
+  String? get result {
+    switch(this._result) {
+      case Result.plus:
+        return '+';
+      case Result.minus:
+        return '-';
+      case Result.p:
+        return 'p';
+      default: 
+        return null;
+    }
   }
 }

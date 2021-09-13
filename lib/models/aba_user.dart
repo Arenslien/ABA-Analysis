@@ -1,24 +1,18 @@
 class ABAUser {
   // ABA User 
-  final String _email;
-  final String _name;
-  final String _phone;
-  late final String _duty;
+  final String email;
+  final String name;
+  final String phone;
+  late final String duty;
 
-  ABAUser(this._email, this._name, this._phone, this._duty);
-
-  // Getter Function
-  String get email => _email;
-  String get name => _name;
-  String get phone => _phone;
-  String get duty => _duty;
+  ABAUser({required this.email, required this.name, required this.phone, required this.duty});
 
   Map<String, dynamic> toMap () {
     return {
-      'email': _email,
-      'name': _name,
-      'phone': _phone,
-      'duty': _duty,
+      'email': email,
+      'name': name,
+      'phone': phone,
+      'duty': duty,
     };
   }
 }

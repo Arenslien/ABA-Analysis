@@ -1,4 +1,5 @@
 import 'package:aba_analysis/provider/child_notifier.dart';
+import 'package:aba_analysis/provider/program_field_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
 import 'package:aba_analysis/services/auth.dart';
@@ -29,7 +30,8 @@ class _WrapperState extends State<Wrapper> {
     // 로그인 유지일 경우 사용자 정보를 DB에서 가져옴
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       context.read<UserNotifier>().updateUser(await _auth.abaUser);
-      context.read<ChildNotifier>().initChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
+      context.read<ChildNotifier>().updateChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
+      context.read<ProgramFieldNotifier>().updateProgramFieldList(await _store.readProgramField());
     });
   }
 

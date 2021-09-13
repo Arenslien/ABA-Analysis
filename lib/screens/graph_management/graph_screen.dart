@@ -7,17 +7,6 @@ import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:provider/provider.dart';
 
-class DummyTestData {
-  // 테스트 데이터 더미 데이터 클래스
-  DummyTestData();
-  String date = "00.0/0"; // 날짜
-  String average = "00"; // 평균값
-  Map<String, String> item = {
-    '하위1': '상위1',
-  }; // 상위항목과 하위항목
-  List<String> lowerList = ['하위1']; // 하위항목 리스트
-}
-
 class GraphScreen extends StatefulWidget {
   const GraphScreen({Key? key}) : super(key: key);
 
@@ -26,19 +15,12 @@ class GraphScreen extends StatefulWidget {
 }
 
 class _GraphScreenState extends State<GraphScreen> {
-  List<Child> childData = []; // 순수 아이 데이터
   // Child dummy1 = new Child();
   // Child dummy2 = new Child();
-  late List<Child> childList;
   bool? _isDate;
   void initState() {
     super.initState();
-    // this.testInit();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
-      childList = context.read<ChildNotifier>().children;
-    });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -46,13 +28,13 @@ class _GraphScreenState extends State<GraphScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: searchBar(),
-        body: childData.length == 0
+        body: context.watch<ChildNotifier>().children.length == 0
             ? noChildData()
             : ListView.builder(
                 padding: const EdgeInsets.all(16),
-                itemCount: childData.length,
+                itemCount: context.watch<ChildNotifier>().children.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return dataTile(childData[index]);
+                  return dataTile(context.watch<ChildNotifier>().children[index]);
                 },
               ),
       ),
@@ -82,10 +64,10 @@ class _GraphScreenState extends State<GraphScreen> {
     );
   }
 
-  Widget dataTile(Child childData) {
+  Widget dataTile(Child childList) {
     return buildListTile(
-        titleText: childData.name,
-        subtitleText: '${childData.age.toString()}세',
+        titleText: childList.name,
+        subtitleText: '${childList.age.toString()}세',
         trailing: buildToggleButtons(
           minWidth: 90,
           text: ['Date Graph', 'Item Graph'],
@@ -94,12 +76,12 @@ class _GraphScreenState extends State<GraphScreen> {
               _isDate = true;
               Navigator.pushNamed(context, '/select_date',
                   arguments: GraphToDate(
-                      isDate: _isDate!, selectedChildName: childData.name));
+                      isDate: _isDate!, selectedChildName: childList.name));
             } else if (index == 1) {
               _isDate = false;
               Navigator.pushNamed(context, '/select_program',
                   arguments: GraphToProgram(
-                      isDate: _isDate!, selectedChildName: childData.name));
+                      isDate: _isDate!, selectedChildName: childList.name));
             }
           },
         ));

@@ -2,45 +2,39 @@ import 'package:aba_analysis/models/test.dart';
 
 class Child {
   // Child
-  final int _childId; // PK
-  final String _teacherEmail; // FK
-  final String _name;
-  final DateTime _birthday;
-  final String _gender;
+  final int childId; // PK
+  final String teacherEmail; // FK
+  final String name;
+  final DateTime birthday;
+  final String gender;
   
-  List<Test> _testList = [];
+  List<Test> testList = [];
 
-  Child(this._childId, this._teacherEmail, this._name, this._birthday, this._gender);
+  Child({required this.childId, required this.teacherEmail, required this.name, required this.birthday, required this.gender});
 
-  // Getter Function
-  int get childId => _childId;
-  String get name => _name;
-  int get age => DateTime.now().year - _birthday.year + 1;
-  DateTime get birthday => _birthday;
-  String get gender => _gender;
-  String get teacherUid => _teacherEmail;
-  List<Test> get testList => _testList;
+  int get age => DateTime.now().year - birthday.year + 1;
+
 
   Map<String, dynamic> toMap() {
     return {
-      'child-id': _childId,
-      'teacher-email': _teacherEmail,
-      'name': _name,
-      'gender': _gender,
-      'birthday': _birthday
+      'child-id': childId,
+      'teacher-email': teacherEmail,
+      'name': name,
+      'gender': gender,
+      'birthday': birthday
     };
   }
 
   void updateTestList(List<Test> testList) {
-    _testList = testList;
+    testList = testList;
   }
 
   void addTest(Test test) {
-    _testList.add(test);
+    testList.add(test);
   }
 
   void removeTest(Test test) {
-    _testList.remove(test);
+    testList.remove(test);
   }
 }
 

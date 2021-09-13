@@ -1,6 +1,8 @@
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/aba_user.dart';
+import 'package:aba_analysis/models/program_field.dart';
+import 'package:aba_analysis/models/sub_field.dart';
 import 'package:aba_analysis/models/test.dart';
 import 'package:aba_analysis/models/test_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -34,7 +36,12 @@ class FireStoreService {
         .then((QuerySnapshot snapshot) => snapshot.docs[0].data());
 
     // User 정보를 기반으로 ABAUser 인스턴스 생성
-    ABAUser abaUser = ABAUser(dbUser['email'], dbUser['name'], dbUser['phone'], dbUser['duty']);
+    ABAUser abaUser = ABAUser(
+      email: dbUser['email'], 
+      name: dbUser['name'], 
+      phone: dbUser['phone'],
+      duty: dbUser['duty']
+    );
 
     // ABAUser 반환
     return abaUser;
@@ -119,7 +126,14 @@ class FireStoreService {
         .get()
         .then((QuerySnapshot snapshot) => snapshot.docs.forEach((document) {
           dynamic data = document.data();
-          Child child = Child(data['child-id'], data['teacher-email'], data['name'], data['birthday'], data['gender']);
+          Timestamp date = data['birthday'];
+          Child child = Child(
+            childId: data['child-id'], 
+            teacherEmail: data['teacher-email'], 
+            name: data['name'], 
+            birthday: date.toDate(),
+            gender: data['gender']
+          );
           children.add(child);
         }));
     
@@ -137,7 +151,13 @@ class FireStoreService {
         .then((DocumentSnapshot snapshot) => snapshot.data());
 
     // db의 child 정보를 기반으로 Child 인스턴스 생성
-    Child child = new Child(data['child-id'], data['teacher-email'], data['name'], data['birthday'], data['gender']);
+    Child child = new Child(
+      childId: data['child-id'], 
+      teacherEmail: data['teacher-email'], 
+      name: data['name'], 
+      birthday: data['birthday'], 
+      gender: data['gender']
+    );
 
     // Child 반환
     return child;
@@ -168,20 +188,60 @@ class FireStoreService {
   //                          Firebase 연동 - 하위 영역 관련 함수들
   //=======================================================================================
 
+  Future readProgramField() async {
+    // return result 
+    List<ProgramField> result = [];
 
-  Future addSubField(String programFieldName, String fieldName, List<String> itemList) async {
+    // Firebase Program Field docs
+    List<QueryDocumentSnapshot> docs = await _programField.get().then((QuerySnapshot snapshot) => snapshot.docs);
+
+    // docs -> to Program Field
+    docs.forEach((snapshot) {
+      // 데이터 초기화
+      dynamic data = snapshot.data()!;
+      
+      // Sub Field List 생성
+      List<SubField> subFieldList = [];
+
+      // DB의 Sub Field List 생성
+      List<dynamic> subFieldListOfDB = data['sub-field-list'];
+
+      subFieldListOfDB.forEach((subField) {
+        // Sub Item List 생성
+        List<String> subItemList = [];
+
+        // DB의 Sub Item List 생성
+        List<dynamic> subItemListOfDB = subField['sub-item-list'];
+
+        // Sub Item 추가
+        subItemListOfDB.forEach((element) {
+          subItemList.add(element.toString());
+        });
+
+        // SubField 인스턴스 생성 & 추가 
+        subFieldList.add(SubField(subFieldName: subField['sub-field-name'], subItemList: subItemList));
+      });
+
+      // Program Field 인스턴스 생성 & 추가
+      result.add(ProgramField(title: data['title'], subFieldList: subFieldList));
+    });
+    
+    return result;
+  }
+
+  Future addSubField(String title, SubField subField) async {
     // 기존의 sub-field-list 가져오기
-    dynamic result = await _programField.doc(programFieldName).get().then((DocumentSnapshot snapshot) => snapshot.data());
+    dynamic result = await _programField.doc(title).get().then((DocumentSnapshot snapshot) => snapshot.data());
     List<dynamic> newSubFieldList = result['sub-field-list'];
 
     // 기존의 sub-field-list에 새로운 sub-field 추가
     newSubFieldList.add({
-      'sub-field-name': fieldName,
-      'sub-item-list': itemList,
+      'sub-field-name': subField.subFieldName,
+      'sub-item-list': subField.subItemList,
     });
 
     // 변경된 sub-field DB에 저장
-    _programField.doc(programFieldName).set({
+    _programField.doc(title).set({
       'sub-field-list': newSubFieldList
     });
   }
@@ -214,7 +274,13 @@ class FireStoreService {
 
   // Test 복사
   Future copyTest(Test test) async {
-    Test copiedTest = Test(await updateId(AutoID.test), test.childId, test.date, test.title, test.testItemList);
+    Test copiedTest = Test(
+      testId: await updateId(AutoID.test), 
+      childId: test.childId, 
+      date: test.date, 
+      title: test.title, 
+      testItemList: test.testItemList
+    );
     await _test
         .doc(copiedTest.testId.toString())
         .set(copiedTest.toMap())
@@ -231,7 +297,13 @@ class FireStoreService {
         .then((DocumentSnapshot snapshot) => snapshot.data());
 
     // Document data 기반 Test 객체 생성
-    Test test = Test(data['test-id'], data['child-id'], data['date'],  data['title'], data['test-item-list']);
+    Test test = Test(
+      testId: data['test-id'],
+      childId: data['child-id'], 
+      date: data['date'], 
+      title: data['title'], 
+      testItemList: data['test-item-list']
+    );
 
     // Test 반환
     return test;
