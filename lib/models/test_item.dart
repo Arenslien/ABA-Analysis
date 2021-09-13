@@ -27,7 +27,7 @@ class TestItem {
     };
   }
 
-  void setResult(Result result) {
+  void setResult(Result? result) {
     switch(result) {
       case Result.plus:
         plusCount = 1;
@@ -37,6 +37,8 @@ class TestItem {
         break;
       case Result.p:
         pCount = 1;
+        break;
+      default:
         break;
     }
     this._result = result;
@@ -54,4 +56,22 @@ class TestItem {
         return null;
     }
   }
+
+  static Result? convertResult(String? result) {
+    switch(result) {
+      case '+':
+        return Result.plus;
+      case '-':
+        return Result.minus;
+      case 'p':
+        return Result.p;
+      default:
+        return null;
+    }
+  }
+
+  String toString() {
+    return '[TestItem ID: $testItemId & Test ID: $testId] - $programField/$subField$subItem/ - $result';
+  }
+
 }

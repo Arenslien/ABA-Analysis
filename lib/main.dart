@@ -1,5 +1,6 @@
 import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:aba_analysis/provider/program_field_notifier.dart';
+import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
@@ -18,6 +19,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => UserNotifier()),
       ChangeNotifierProvider(create: (_) => ChildNotifier()),
       ChangeNotifierProvider(create: (_) => ProgramFieldNotifier()),
+      ChangeNotifierProvider(create: (_) => TestNotifier()),
     ],
     child: MyApp()
   ));
@@ -45,6 +47,7 @@ class _MyAppState extends State<MyApp> {
       context.read<UserNotifier>().updateUser(await _auth.abaUser);
       context.read<ChildNotifier>().updateChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
       context.read<ProgramFieldNotifier>().updateProgramFieldList(await _store.readProgramField());
+      context.read<TestNotifier>().updateTest(await _store.readAllTest());
     });
   }
 
@@ -57,7 +60,7 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'ABA Analysis',
-        theme: theme(),
+        theme: theme(), 
         routes: routes,
         initialRoute: '/wrapper',
       ),

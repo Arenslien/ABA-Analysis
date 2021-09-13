@@ -1,6 +1,10 @@
 import 'package:aba_analysis/models/child.dart';
+import 'package:aba_analysis/models/test.dart';
 import 'package:aba_analysis/provider/child_notifier.dart';
+import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:aba_analysis/screens/graph_management/arguments.dart';
+import 'package:aba_analysis/screens/graph_management/select_date_graph_screen.dart';
+import 'package:aba_analysis/screens/graph_management/select_program_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/search_bar.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
@@ -15,8 +19,6 @@ class GraphScreen extends StatefulWidget {
 }
 
 class _GraphScreenState extends State<GraphScreen> {
-  // Child dummy1 = new Child();
-  // Child dummy2 = new Child();
   bool? _isDate;
   void initState() {
     super.initState();
@@ -27,7 +29,7 @@ class _GraphScreenState extends State<GraphScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: searchBar(),
+        appBar: searchBar(), 
         body: context.watch<ChildNotifier>().children.length == 0
             ? noChildData()
             : ListView.builder(
@@ -64,24 +66,23 @@ class _GraphScreenState extends State<GraphScreen> {
     );
   }
 
-  Widget dataTile(Child childList) {
+  Widget dataTile(Child child) {
     return buildListTile(
-        titleText: childList.name,
-        subtitleText: '${childList.age.toString()}세',
+        titleText: child.name,
+        subtitleText: '${child.age.toString()}세',
         trailing: buildToggleButtons(
           minWidth: 90,
           text: ['Date Graph', 'Item Graph'],
-          onPressed: (index) {
+          onPressed: (index) async {
             if (index == 0) {
-              _isDate = true;
-              Navigator.pushNamed(context, '/select_date',
-                  arguments: GraphToDate(
-                      isDate: _isDate!, selectedChildName: childList.name));
+              List<Test> testList = await context.read<TestNotifier>().getAllTestListOf(child.childId);
+              Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                SelectDateScreen(child: child, isDate: true, testList: testList)
+              ));
             } else if (index == 1) {
-              _isDate = false;
-              Navigator.pushNamed(context, '/select_program',
-                  arguments: GraphToProgram(
-                      isDate: _isDate!, selectedChildName: childList.name));
+               Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                SelectProgramScreen(child: child, isDate: true)
+              ));
             }
           },
         ));

@@ -139,7 +139,7 @@ class FireStoreService {
     
     // 이름 순으로 list 정렬
     children.sort((a, b) => a.name.compareTo(b.name));
-
+    
     return children;
   }
 
@@ -308,6 +308,93 @@ class FireStoreService {
     // Test 반환
     return test;
   }
+
+  Future readAllTest() async {
+    List<Test> allTestList = [];
+
+    List<QueryDocumentSnapshot> docs = await _test
+        .get()
+        .then((QuerySnapshot snapshot) => snapshot.docs);
+
+    for (QueryDocumentSnapshot doc in docs) {
+      dynamic data = doc.data();
+      List<TestItem> testItemList = [];
+      Timestamp date = data['date'];
+      // testItemList 테스트 아이템 추가
+      for(dynamic item in data['test-item-list']) {        
+        // 테스트 아이템 생성 & 추가
+        TestItem testItem = TestItem(
+          testItemId: item['test-item-id'],
+          testId: item['test-id'],
+          programField: item['program-field'],
+          subField: item['sub-field'],
+          subItem: item['sub-item'],
+        );
+
+        testItem.setResult(TestItem.convertResult(item['result']));
+        testItemList.add(testItem);
+      }
+
+      // 테스트 생성 & 추가
+      Test test = Test(
+        testId: data['test-id'],
+        childId: data['child-id'],
+        date: date.toDate(),
+        title: data['title'],
+        testItemList: testItemList,
+      );
+      allTestList.add(test);
+    }
+    
+
+    return allTestList;
+  }
+
+  Future<List<Test>> readTestList(int childId) async {
+    List<Test> testList = [];
+    // 해당 childId에 대한 
+    List<QueryDocumentSnapshot> docs = await _test
+        .where('child-id', isEqualTo: childId)
+        .get()
+        .then((QuerySnapshot snapshot) => snapshot.docs);
+
+    // 각각의 문서를 Test 인스턴스로 변환 후 추가
+    for (QueryDocumentSnapshot doc in docs) {
+      dynamic data = doc.data();
+      Timestamp date = data['date'];
+      List<TestItem> testItemList = [];
+
+      // testItemList 테스트 아이템 추가
+      for(dynamic item in data['test-item-list']) {        
+        // 테스트 아이템 생성 & 추가
+        TestItem testItem = TestItem(
+          testItemId: item['test-item-id'],
+          testId: item['test-id'],
+          programField: item['program-field'],
+          subField: item['sub-field'],
+          subItem: item['sub-item'],
+        );
+
+        testItem.setResult(TestItem.convertResult(item['result']));
+        testItemList.add(testItem);
+      }
+
+      // Test 생성 & 추가
+      Test test = Test(
+        testId: data['test-id'],
+        childId: data['child-id'],
+        date: date.toDate(),
+        title: data['title'],
+        testItemList: testItemList,
+      );
+      testList.add(test);
+    }
+
+    return testList;
+  }
+
+
+
 
   // Test 수정
   Future updateTest(int testId, DateTime date, String title, List<TestItem> testItemList) async {

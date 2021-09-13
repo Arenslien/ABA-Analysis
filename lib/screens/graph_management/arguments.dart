@@ -1,3 +1,6 @@
+import 'package:aba_analysis/models/child.dart';
+import 'package:aba_analysis/models/test.dart';
+
 class args {
   final String itemName;
   final bool isDate;
@@ -55,16 +58,8 @@ class ItemToReal {
 
 class GraphToDate {
   final bool isDate;
-  final String selectedChildName;
-  GraphToDate({required this.isDate, required this.selectedChildName});
+  Child child;
+  List<Test> testList;
+  GraphToDate({required this.isDate, required this.child, required this.testList});
 }
 
-class DateToReal {
-  final bool isDate;
-  final String selectedChildName;
-  final String selectedDate;
-  DateToReal(
-      {required this.isDate,
-      required this.selectedChildName,
-      required this.selectedDate});
-}
