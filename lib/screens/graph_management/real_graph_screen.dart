@@ -130,7 +130,7 @@ class _RealGraphState extends State<RealGraph> {
                       dataSource: _chartData,
                       xValueMapper: (GraphData exp, _) {
                         if (_isDate) {
-                          return exp.lowItem;
+                          return exp.subItem;
                         } else {
                           return exp.testDate;
                         }
@@ -144,7 +144,7 @@ class _RealGraphState extends State<RealGraph> {
                         dataSource: _chartData,
                         xValueMapper: (GraphData exp, _) {
                           if (_isDate) {
-                            return exp.lowItem;
+                            return exp.subItem;
                           } else {
                             return exp.testDate;
                           }
@@ -231,12 +231,12 @@ class _RealGraphState extends State<RealGraph> {
     if (_isDate) {
       // 날짜그래프라면 날짜, 하위목록, 성공여부 순으로
       for (GraphData d in chartData) {
-        tableData.add(<String>[d.testDate, d.lowItem, d.isSuccess.toString()]);
+        tableData.add(<String>[d.testDate, d.subItem, d.result.toString()]);
       }
     } else {
       // 아이템그래프라면 하위목록, 날짜, 성공여부 순으로
       for (GraphData d in chartData) {
-        tableData.add(<String>[d.lowItem, d.testDate, d.isSuccess.toString()]);
+        tableData.add(<String>[d.subItem, d.testDate, d.result.toString()]);
       }
     }
 
@@ -362,8 +362,8 @@ class _RealGraphState extends State<RealGraph> {
 
   List<GraphData> getGraphData(String _noChange) {
     // 통일된거
-    List<GraphData> chartData = []; // 선택한 하위항목과 테스트한 날짜 리스트
-    num average = 66; // 선택한 하위항목의 전체 날짜 평균 성공률
+    List<GraphData> chartData = []; // 선택한 하위목록과 테스트한 날짜 리스트
+    num average = 66; // 선택한 하위목록의 전체 날짜 평균 성공률
     if (_isDate) {
       chartData.add(new GraphData(_noChange, '인사하기', '+', average));
       chartData.add(new GraphData(_noChange, '손잡기', '+', average));
@@ -391,82 +391,22 @@ class _RealGraphState extends State<RealGraph> {
       chartData.add(new GraphData("7월11일", _noChange, "-", average));
       chartData.add(new GraphData("7월12일", _noChange, "+", average));
     } // 날짜 그래프인지 아이템 그래프인지
-
-    // chartData.add(new ItemData("7월13일", "+", average));
-    // chartData.add(new ItemData("7월14일", "+", average));
-    // chartData.add(new ItemData("7월15일", "+", average));
-    // chartData.add(new ItemData("7월16일", "-", average));
-    // chartData.add(new ItemData("7월17일", "+", average));
-    // chartData.add(new ItemData("7월18일", "-", average));
-    // chartData.add(new ItemData("7월19일", "+", average));
-    // chartData.add(new ItemData("7월20일", "-", average));
-    // chartData.add(new ItemData("7월21일", "+", average));
-    // chartData.add(new ItemData("7월22일", "-", average));
-    // chartData.add(new ItemData("7월23일", "+", average));
-    // chartData.add(new ItemData("7월24일", "-", average));
-    // chartData.add(new ItemData("7월25일", "+", average));
-    // chartData.add(new ItemData("7월26일", "-", average));
-
     return chartData;
   }
-
-  List<DateData> getDateData() {
-    // 안씀
-    List<DateData> chartData = []; // 그 날의 하위항목과 그 항목의 성공률 리스트
-    num average = 66; // 그 날의 평균 성공률 값
-    DateData dummy1 = new DateData('존댓말하기', '+', average);
-    DateData dummy2 = new DateData('세모따라그리기', '-', average);
-    DateData dummy3 = new DateData('네모그리기', 'P', average);
-    chartData.add(dummy1);
-    chartData.add(dummy2);
-    chartData.add(dummy3);
-
-    return chartData;
-  }
-}
-
-class ItemData {
-  // 안씀
-  ItemData(this.testDate, this.isSuccess, this.averageRate) {
-    if (this.isSuccess == '+') {
-      this.successRate = 100;
-    } else if (this.isSuccess == '-' || this.isSuccess == 'P') {
-      this.successRate = 0;
-    }
-  }
-  final String testDate; // 선택한 하위항목을 테스트한 날짜 또는 테스트한 회차
-  final String isSuccess; // 날짜 또는 회차에따른 +, -, P
-  late num successRate; // +, -, P에 따른 성공률
-  final num averageRate; // 평균 성공률
-}
-
-class DateData {
-  // 안씀
-  DateData(this.lowItem, this.isSuccess, this.averageRate) {
-    if (this.isSuccess == '+') {
-      this.successRate = 100;
-    } else if (this.isSuccess == '-' || this.isSuccess == 'P') {
-      this.successRate = 0;
-    }
-  }
-  final String lowItem; // 하위항목 이름
-  final String isSuccess; // 날짜 또는 회차에따른 +, -, P
-  late num successRate; // +, -, P에 따른 성공률
-  final num averageRate; // 평균 성공률
 }
 
 class GraphData {
   // 통일된거
-  GraphData(this.testDate, this.lowItem, this.isSuccess, this.averageRate) {
-    if (this.isSuccess == '+') {
+  GraphData(this.testDate, this.subItem, this.result, this.averageRate) {
+    if (this.result == '+') {
       this.successRate = 100;
-    } else if (this.isSuccess == '-' || this.isSuccess == 'P') {
+    } else if (this.result == '-' || this.result == 'P') {
       this.successRate = 0;
     }
   }
-  final String testDate; // 선택한 하위항목을 테스트한 날짜 또는 테스트한 회차
-  final String lowItem; // 하위항목 이름
-  final String isSuccess; // 날짜 또는 회차에따른 +, -, P
+  final String testDate; // 선택한 하위목록을 테스트한 날짜 또는 테스트한 회차
+  final String subItem; // 하위목록 이름
+  final String result; // 날짜 또는 회차에따른 +, -, P
   late num successRate; // +, -, P에 따른 성공률
   final num averageRate; // 평균 성공률
 }
