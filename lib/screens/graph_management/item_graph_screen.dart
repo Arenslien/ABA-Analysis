@@ -1,7 +1,5 @@
-import 'package:aba_analysis/models/test.dart';
+import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/test_item.dart';
-import 'package:aba_analysis/provider/child_notifier.dart';
-import 'package:aba_analysis/screens/graph_management/arguments.dart';
 import 'package:aba_analysis/screens/graph_management/generateExcel.dart';
 import 'package:aba_analysis/screens/graph_management/generatePDF.dart';
 import 'package:aba_analysis/screens/graph_management/select_appbar.dart';
@@ -11,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:provider/provider.dart';
 import 'dart:ui' as dart_ui;
 
 import 'dart:io';
@@ -20,18 +17,16 @@ import 'package:open_file/open_file.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xio;
 
 // date_graph + item_graph
-class RealGraph extends StatefulWidget {
-  final Test test;
-  final bool isDate;
-  const RealGraph({Key? key, required this.test, required this.isDate}) : super(key: key);
+class ItemGraphScreen extends StatefulWidget {
+  final List<SubItemAndDate> subItemList;
+  final Child child;
+  const ItemGraphScreen({Key? key, required this.subItemList, required this.child}) : super(key: key);
 
   @override
-  _RealGraphState createState() => _RealGraphState();
+  _ItemGraphScreenState createState() => _ItemGraphScreenState();
 }
 
-class _RealGraphState extends State<RealGraph> {
-  late bool _isDate; // Date Graph인지 Item Graph인지
-  late String _childName;
+class _ItemGraphScreenState extends State<ItemGraphScreen> {
   late var selectedArgs;
   // String _subfield // 넘겨받은 subField이름.
   // 이 값을 통해서 testId 리스트를 받아오고 testId 리스트를 통해서 date값을 받아온다.
@@ -58,19 +53,13 @@ class _RealGraphState extends State<RealGraph> {
   @override
   void initState() {
     super.initState();
+ // 아이템 그래프인지 날짜 그래프인지
 
-    _isDate = true; // 아이템 그래프인지 날짜 그래프인지
+    _graphType = '하위목록';
+    _charTitleName = '인형 안아주기';
+    _tableColumn = ['하위목록', '날짜', '성공여부'];
 
-    if (_isDate) {
-      _graphType = '날짜';
-      _charTitleName = '7월 11일';
-      _tableColumn = ['날짜', '하위목록', '성공여부'];
-    } else {
-      _graphType = '하위목록';
-      _charTitleName = '인형 안아주기';
-      _tableColumn = ['하위목록', '날짜', '성공여부'];
-    }
-    _chartData = getGraphData(_charTitleName, widget.test);
+    _chartData = getGraphData(_charTitleName, widget.subItemList);
 
     _fileName = null;
     valueText = null;
@@ -88,29 +77,16 @@ class _RealGraphState extends State<RealGraph> {
 
   @override
   Widget build(BuildContext context) {
-    //_isDate = true;
+    //widget.isDate = true;
 
-    if (_isDate) {
-      
-      _isDate = widget.isDate;
-      _childName = context.read<ChildNotifier>().getChild(widget.test.childId)!.name;
-      _graphType = '날짜';
-      _charTitleName = widget.test.date.toString();
-      _tableColumn = ['날짜', '하위목록', '성공여부'];
-    } else if (_isDate == false) {
-      final ItemToReal args =
-          ModalRoute.of(context)!.settings.arguments as ItemToReal;
-      _isDate = args.isDate;
-      _childName = args.selectedChildName;
-      _graphType = '하위목록';
-      _charTitleName = args.selectedItemName;
-      _tableColumn = ['하위목록', '날짜', '성공여부'];
-    }
-    _chartData = getGraphData(_charTitleName, widget.test);
+    _graphType = '하위목록';
+    _charTitleName = widget.subItemList[0].testItem.subItem;
+    _tableColumn = ['하위목록', '날짜', '성공여부'];
+    _chartData = getGraphData(_charTitleName, widget.subItemList);
 
     return Scaffold(
       appBar: SearchAppBar(
-          context, "< " + _childName + "의 " + _graphType + "별 그래프 >"),
+          context, "< " + widget.child.name + "의 " + _graphType + "별 그래프 >"),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -134,11 +110,7 @@ class _RealGraphState extends State<RealGraph> {
                       name: '성공률',
                       dataSource: _chartData,
                       xValueMapper: (GraphData exp, _) {
-                        if (_isDate) {
-                          return exp.subItem;
-                        } else {
-                          return exp.testDate;
-                        }
+                        return exp.testDate;
                       },
                       yValueMapper: (GraphData exp, _) => exp.successRate,
                       markerSettings: MarkerSettings(isVisible: true),
@@ -148,11 +120,7 @@ class _RealGraphState extends State<RealGraph> {
                         dashArray: <double>[5, 5],
                         dataSource: _chartData,
                         xValueMapper: (GraphData exp, _) {
-                          if (_isDate) {
-                            return exp.subItem;
-                          } else {
-                            return exp.testDate;
-                          }
+                          return exp.testDate;
                         },
                         yValueMapper: (GraphData exp, _) => exp.averageRate)
                   ],
@@ -213,7 +181,7 @@ class _RealGraphState extends State<RealGraph> {
     final graphImage = bytes!.buffer.asUint8List();
 
     final xio.Workbook graphWorkbook = genExcel(columns, excelChartData,
-        graphImage, _graphType, _charTitleName, _averageRate, _isDate);
+        graphImage, _graphType, _charTitleName, _averageRate, false);
     final List<int> excelBytes = graphWorkbook.saveAsStream();
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
@@ -233,16 +201,10 @@ class _RealGraphState extends State<RealGraph> {
 
   List<List<String>> genTableData(List<GraphData> chartData) {
     List<List<String>> tableData = [];
-    if (_isDate) {
-      // 날짜그래프라면 날짜, 하위목록, 성공여부 순으로
-      for (GraphData d in chartData) {
-        tableData.add(<String>[d.testDate, d.subItem, d.result.toString()]);
-      }
-    } else {
-      // 아이템그래프라면 하위목록, 날짜, 성공여부 순으로
-      for (GraphData d in chartData) {
-        tableData.add(<String>[d.subItem, d.testDate, d.result.toString()]);
-      }
+    
+    // 아이템그래프라면 하위목록, 날짜, 성공여부 순으로
+    for (GraphData d in chartData) {
+      tableData.add(<String>[d.subItem, d.testDate, d.result.toString()]);
     }
 
     print(tableData);
@@ -365,29 +327,21 @@ class _RealGraphState extends State<RealGraph> {
         });
   }
 
-  List<GraphData> getGraphData(String _noChange, Test test) {
+  List<GraphData> getGraphData(String _noChange, List<SubItemAndDate> subItemList) {
     // 통일된거
     List<GraphData> chartData = []; // 선택한 하위목록과 테스트한 날짜 리스트
-    num average = test.average; // 선택한 하위목록의 전체 날짜 평균 성공률
-    if (_isDate) {
-      for (TestItem testItem in test.testItemList) {
-        print(testItem.toString());
-        chartData.add(GraphData(_noChange, testItem.subItem, testItem.result!, average));
+    int cnt = 0;
+    
+    for (SubItemAndDate subItemAndDate in subItemList) {
+      if (subItemAndDate.testItem.result == '+') {
+        cnt += 1;
       }
-    } else {
-      chartData.add(new GraphData('7월1일', _noChange, '+', average));
-      chartData.add(new GraphData('7월2일', _noChange, '+', average));
-      chartData.add(new GraphData('7월3일', _noChange, 'P', average));
-      chartData.add(new GraphData("7월4일", _noChange, "-", average));
-      chartData.add(new GraphData("7월5일", _noChange, "-", average));
-      chartData.add(new GraphData("7월6일", _noChange, "P", average));
-      chartData.add(new GraphData("7월7일", _noChange, "+", average));
-      chartData.add(new GraphData("7월8일", _noChange, "+", average));
-      chartData.add(new GraphData("7월9일", _noChange, "+", average));
-      chartData.add(new GraphData("7월10일", _noChange, "+", average));
-      chartData.add(new GraphData("7월11일", _noChange, "-", average));
-      chartData.add(new GraphData("7월12일", _noChange, "+", average));
-    } // 날짜 그래프인지 아이템 그래프인지
+    }
+
+    for (SubItemAndDate subItemAndDate in subItemList) {
+      chartData.add(GraphData(subItemAndDate.date.toString(), _noChange, subItemAndDate.testItem.result!, (cnt/subItemList.length * 100).toInt()));
+    }
+
     return chartData;
   }
 }
@@ -407,4 +361,11 @@ class GraphData {
       this.successRate = 0;
     }
   }
+}
+
+class SubItemAndDate {
+  final TestItem testItem;
+  DateTime date;
+
+  SubItemAndDate({required this.testItem, required this.date});
 }

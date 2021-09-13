@@ -1,5 +1,7 @@
+import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:aba_analysis/provider/program_field_notifier.dart';
+import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
 import 'package:aba_analysis/services/auth.dart';
@@ -32,6 +34,7 @@ class _WrapperState extends State<Wrapper> {
       context.read<UserNotifier>().updateUser(await _auth.abaUser);
       context.read<ChildNotifier>().updateChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
       context.read<ProgramFieldNotifier>().updateProgramFieldList(await _store.readProgramField());
+      context.read<TestNotifier>().updateTest(await _store.readAllTest());
     });
   }
 
@@ -44,6 +47,6 @@ class _WrapperState extends State<Wrapper> {
     User? user = context.watch<User?>();
 
     // return 홈스크린 or 인증스크린
-    return HomeScreen();
+    return user == null? SignInScreen() : HomeScreen();
   }
 }

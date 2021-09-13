@@ -22,6 +22,16 @@ class ChildNotifier extends ChangeNotifier {
     _children.remove(child);
   }
 
+  Child? getChild(int childId) {
+    // 시간 되면 -> 아이들정렬을 id ㅅ순으로 해서 이진 탐색
+    for (Child child in _children) {
+      if (child.childId == childId) {
+        return child;
+      }
+    }
+    return null;
+  }
+
   // GETTER FUNCTION: children List 제공
   List<Child> get children => _children;
 }
