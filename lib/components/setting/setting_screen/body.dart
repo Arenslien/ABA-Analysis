@@ -1,7 +1,11 @@
 import 'package:aba_analysis/components/setting/setting_default_button.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
+import 'package:aba_analysis/models/program_field.dart';
+import 'package:aba_analysis/models/sub_field.dart';
 import 'package:aba_analysis/models/test.dart';
+import 'package:aba_analysis/models/test_item.dart';
+import 'package:aba_analysis/provider/program_field_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
@@ -80,13 +84,52 @@ class _BodyState extends State<Body> {
                         }),
                         SettingDefaultButton(text: '테스트용', onTap: () async {
                           FireStoreService _store = FireStoreService();
-                          Child child = Child(await _store.updateId(AutoID.child), context.read<UserNotifier>().abaUser!.email, '배태경', DateTime(2000, 5, 6), '남', );
+                          // Child child = Child(
+                          //   childId: await _store.updateId(AutoID.child), 
+                          //   teacherEmail: context.read<UserNotifier>().abaUser!.email, 
+                          //   name: '하성렬', 
+                          //   birthday: DateTime(2000, 5, 6), 
+                          //   gender: '남자', 
+                          // );
                           // _store.createChild(child);
 
-                          // _store
+                          List<ProgramField> programFieldList = context.read<ProgramFieldNotifier>().programFieldList;
 
-                          // Test test = Test();
-                          
+                          for (ProgramField programField in programFieldList) {
+                            print(programField.title);
+                            
+                            List<SubField> subFieldList = programField.subFieldList;
+                            for (SubField subField in subFieldList) {
+                              print(subField.subFieldName);
+                              print(subField.subItemList);
+                            }
+
+                          }
+
+                          // Test test = Test(
+                          //   testId: await _store.updateId(AutoID.test),
+                          //   childId: 1,
+                          //   date: DateTime.now(),
+                          //   title: '테스트 제목',
+                          //   testItemList: [
+                          //     TestItem(
+                          //       testItemId: await _store.updateId(AutoID.testItem), 
+                          //       testId: 1, 
+                          //       programField: '프로그램 영역 1', 
+                          //       subField: '하위 영역 1', 
+                          //       subItem: '하위 목록 5'
+                          //     ),
+                          //     TestItem(
+                          //       testItemId: await _store.updateId(AutoID.testItem), 
+                          //       testId: 1, 
+                          //       programField: '프로그램 영역 2', 
+                          //       subField: '하위 영역 1', 
+                          //       subItem: '하위 목록 3'
+                          //     ),
+                          //   ],
+                          // );
+                          // await _store.createTest(test);
+                          print('완료');
                           // List<Child> children = await _store.readAllChild(context.read<UserNotifier>().abaUser!.email);
                           // for (int i=0; i<children.length; i++) {
                           //   print(children[i].name);

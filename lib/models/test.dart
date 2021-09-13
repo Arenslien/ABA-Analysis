@@ -1,27 +1,31 @@
 import 'package:aba_analysis/models/test_item.dart';
 
 class Test {
-  final int _testId;
-  final int _childId; 
-  DateTime _date;
-  String _title;
-  List<TestItem> _testItemList = [];
+  final int testId;
+  final int childId; 
+  final DateTime date;
+  final String title;
+  List<TestItem> testItemList = [];
 
-  Test(this._testId, this._childId, this._date, this._title, this._testItemList);
-
-  int get testId => _testId;
-  int get childId => _childId;
-  DateTime get date => _date;
-  String get title => _title;
-  List<TestItem> get testItemList => _testItemList;
+  Test({ required this.testId, required this.childId, required this.date, required this.title, required this.testItemList });
 
   Map<String, dynamic> toMap() {
     return {
-      'test-id': _testId,
-      'child-id': _childId,
-      'date': _date,
-      'title': _title,
-      'test-item-list': _testItemList,
+      'test-id': testId,
+      'child-id': childId,
+      'date': date,
+      'title': title,
+      'test-item-list': testItemListToMap(),
     };
+  }
+
+  List<Map<String, dynamic>> testItemListToMap() {
+    List<Map<String, dynamic>> result = [];
+    
+    for (TestItem testItem in testItemList) {
+      result.add(testItem.toMap());
+    }
+    print(result);
+    return result;
   }
 }

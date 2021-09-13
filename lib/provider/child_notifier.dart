@@ -1,4 +1,3 @@
-
 import 'package:aba_analysis/models/child.dart';
 import 'package:flutter/foundation.dart';
 
@@ -7,7 +6,7 @@ class ChildNotifier extends ChangeNotifier {
   List<Child> _children = [];
 
   // children 리스트 초기화
-  void initChildren(List<Child> children) {
+  void updateChildren(List<Child> children) {
     _children = children;
     notifyListeners();
   }

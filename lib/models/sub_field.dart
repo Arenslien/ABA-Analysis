@@ -1,7 +1,6 @@
 class SubField {
-  String subFieldName;
-  List<String> subItemList;
+  final String subFieldName;
+  final List<String> subItemList;
 
   SubField({required this.subFieldName, required this.subItemList});
-  
 }

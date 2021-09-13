@@ -68,7 +68,12 @@ class AuthService {
       );
 
       // User 정보를 기반으로 abaUser 생성
-      ABAUser abaUser = ABAUser(email, name, phone, "치료사");
+      ABAUser abaUser = ABAUser(
+        email: email, 
+        name: name, 
+        phone: phone, 
+        duty: "치료사"
+      );
 
       // abaUser 정보 DB에 등록
       await _store.createUser(abaUser);
