@@ -6,9 +6,8 @@ xio.Workbook genExcel(
     List<List<String>> excelChartData,
     Uint8List graphImage,
     String graphType,
-    String typeValue,
-    num averageRate,
-    bool isDate) {
+    bool isDate,
+    ExportData exportData) {
   xio.Workbook workbook = new xio.Workbook();
   final xio.Worksheet sheet = workbook.worksheets[0];
   // 엑셀 초기 설정. 시트생성, 차트->그림
@@ -40,11 +39,7 @@ xio.Workbook genExcel(
   dataStyle.fontSize = 12;
   dataStyle.vAlign = xio.VAlignType.center;
   dataStyle.hAlign = xio.HAlignType.center;
-  // workbook.styles.addStyle(columnNameStyle);
   // 필요한 스타일 추가
-
-  // String graphType = '날짜';
-  // String typeValue = '7월21일';
 
   sheet.getRangeByName('B1').columnWidth = 17;
   if (chartColumn[0] == '하위목록') {
@@ -56,18 +51,15 @@ xio.Workbook genExcel(
   }
   sheet.getRangeByName('K1').columnWidth = 13;
   sheet.getRangeByName('L1').setText(''); // 마지막 column을 비워둔다.
-  // sheet.getRangeByName('L1').columnWidth = 13;
   // 기본 Column Width 설정
 
   final xio.Range titleRange = sheet.getRangeByName('B3:K5');
   sheet.getRangeByName('B3').cellStyle = titleStyle;
-  sheet.getRangeByName('B3').setText('< 영수의 ' + graphType + '별 그래프 >');
+  sheet
+      .getRangeByName('B3')
+      .setText('< ' + exportData.childName + '의 ' + graphType + '별 그래프 >');
   titleRange.merge();
   // 제목 설정
-
-  // sheet.getRangeByName('B1:C1').columnWidth = 17.5;
-  // sheet.getRangeByName('D1').columnWidth = 13.20;
-  // // Column길이 설정
 
   final xio.Picture picture = sheet.pictures.addStream(7, 2, graphImage);
   picture.lastRow = 21;
@@ -79,10 +71,6 @@ xio.Workbook genExcel(
 
   sheet.getRangeByName('I7:K7').cellStyle = columnNameStyle;
   sheet.getRangeByName('I7:K7').cellStyle.hAlign = xio.HAlignType.center;
-
-  // sheet.getRangeByName('I7').setText(graphType);
-  // sheet.getRangeByName('J7').setText(chartColumn[0]);
-  // sheet.getRangeByName('K7').setText(chartColumn[1]);
 
   sheet.getRangeByName('I7').setText(chartColumn[0]);
   sheet.getRangeByName('J7').setText(chartColumn[1]);
@@ -105,46 +93,70 @@ xio.Workbook genExcel(
   chartDataRange.cellStyle = dataStyle;
   // 차트데이터 스타일 지정 ( 일단 폰트사이즈 9 )
 
-  // final xio.Range chartDataNoChange =
-  //     sheet.getRangeByIndex(8, 9, 7 + excelChartData.length, 9);
-  // chartDataNoChange.setText(typeValue);
-  // // 변하지 않는 차트 데이터 삽입.
   List<String> extraColumns = ['담당 선생님', '아동', '평균 성공률'];
-  String teacher_name = '선생님 이름';
-  String child_name = '아동 이름';
-  double averageRate = 60;
+  String teacherName = exportData.teacherName;
+  String childName = exportData.childName;
+  num averageRate = exportData.averageRate;
+  int lastColumn = 27;
   if (isDate == false) {
     extraColumns = ['담당 선생님', '아동', '프로그램 영역', '하위 영역', '평균 성공률'];
-    String programField = '해당 프로그램 영역';
-    String subArea = '해당 하위 영역';
-    sheet.getRangeByName('C25').setText(programField);
-    sheet.getRangeByName('C26').setText(subArea);
+    String programField = exportData.programField!;
+    String subArea = exportData.subArea!;
+    sheet.getRangeByName('B23').setText(extraColumns[0]);
+    sheet.getRangeByName('B24').setText(extraColumns[1]);
+    sheet.getRangeByName('B25').setText(extraColumns[2]);
     sheet.getRangeByName('B26').setText(extraColumns[3]);
     sheet.getRangeByName('B27').setText(extraColumns[4]);
-  } else if (isDate == true) {}
-  sheet.getRangeByName('B23').setText(extraColumns[0]);
-  sheet.getRangeByName('B24').setText(extraColumns[1]);
-  sheet.getRangeByName('B25').setText(extraColumns[2]);
-  sheet.getRangeByName('B23:B27').cellStyle = extraDataStyle;
-  sheet.getRangeByName('C23').setText(teacher_name);
-  sheet.getRangeByName('C24').setText(child_name);
-  sheet.getRangeByName('C27').setText(averageRate.toString() + '%');
-  sheet.getRangeByName('C23:C27').cellStyle = dataStyle;
-  sheet.getRangeByName('C23:C27').cellStyle.hAlign = xio.HAlignType.left;
-  // 위의 내용은 데이터를 받아와야 함.
+    sheet.getRangeByName('B23:B27').cellStyle = extraDataStyle;
 
-  sheet.getRangeByName('C23:G23').merge();
-  sheet.getRangeByName('C24:G24').merge();
-  sheet.getRangeByName('C25:G25').merge();
-  sheet.getRangeByName('C26:G26').merge();
-  sheet.getRangeByName('C26:G26').merge();
+    sheet.getRangeByName('C23').setText(teacherName);
+    sheet.getRangeByName('C24').setText(childName);
+    sheet.getRangeByName('C25').setText(programField);
+    sheet.getRangeByName('C26').setText(subArea);
+    sheet.getRangeByName('C27').setText(averageRate.toString() + '%');
+    sheet.getRangeByName('C23:C27').cellStyle = dataStyle;
+    sheet.getRangeByName('C23:C27').cellStyle.hAlign = xio.HAlignType.left;
 
+    sheet.getRangeByName('C23:G23').merge();
+    sheet.getRangeByName('C24:G24').merge();
+    sheet.getRangeByName('C25:G25').merge();
+    sheet.getRangeByName('C26:G26').merge();
+    sheet.getRangeByName('C27:G27').merge();
+  } else if (isDate == true) {
+    sheet.getRangeByName('B23').setText(extraColumns[0]);
+    sheet.getRangeByName('B24').setText(extraColumns[1]);
+    sheet.getRangeByName('B25').setText(extraColumns[2]);
+    sheet.getRangeByName('B23:B25').cellStyle = extraDataStyle;
+
+    sheet.getRangeByName('C23').setText(teacherName);
+    sheet.getRangeByName('C24').setText(childName);
+    sheet.getRangeByName('C25').setText(averageRate.toString() + '%');
+    sheet.getRangeByName('C23:C25').cellStyle = dataStyle;
+    sheet.getRangeByName('C23:C25').cellStyle.hAlign = xio.HAlignType.left;
+
+    sheet.getRangeByName('C23:G23').merge();
+    sheet.getRangeByName('C24:G24').merge();
+    sheet.getRangeByName('C25:G25').merge();
+
+    lastColumn = 25;
+  }
   // 기타 데이터 삽입
 
-  final xio.Range footRange = sheet.getRangeByIndex(29, 2, 31, 11);
+  final xio.Range footRange =
+      sheet.getRangeByIndex(lastColumn + 2, 2, lastColumn + 4, 11);
   footRange.cellStyle.backColor = _titleBackColor;
   footRange.merge();
 
   // 맨 아래 배경 삽입
   return workbook;
+}
+
+class ExportData {
+  String teacherName;
+  String childName;
+  num averageRate;
+  String? programField;
+  String? subArea;
+  ExportData(this.teacherName, this.childName, this.averageRate,
+      this.programField, this.subArea);
 }

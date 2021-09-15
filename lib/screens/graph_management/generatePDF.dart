@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:aba_analysis/screens/graph_management/generateExcel.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -11,19 +12,6 @@ PdfColor accentColor = PdfColor.fromInt(0xfff1c0c0);
 PdfColor green = PdfColor.fromInt(0xffe06c6c); //darker background color
 PdfColor lightGreen = PdfColor.fromInt(0x0Dedabab); //light background color
 
-List<String> extraColumns = ['담당 선생님', '아동', '프로그램 영역', '하위 영역', '평균 성공률'];
-String teacher_name = '선생님 이름';
-String child_name = '아동 이름';
-String programField = '해당 프로그램 영역';
-String subArea = '해당 하위 영역';
-double averageRate = 60;
-List<String> extraData = [
-  teacher_name,
-  child_name,
-  programField,
-  subArea,
-  averageRate.toString() + '%'
-];
 pw.Document genPDF(
     // PDF page 추가 후
     List<String> tableColumns,
@@ -31,10 +19,34 @@ pw.Document genPDF(
     pw.MemoryImage image,
     ByteData ttf,
     String _graphType,
-    String _typeValue) {
+    String _typeValue,
+    bool isDate,
+    ExportData exportData) {
+  List<String> extraColumns = [];
+  List<String> extraData = [];
+  if (isDate) {
+    // 날짜그래프
+    extraColumns = ['담당 선생님', '아동', '평균 성공률'];
+    extraData = [
+      exportData.teacherName,
+      exportData.childName,
+      exportData.averageRate.toString() + '%',
+    ];
+  } else if (isDate == false) {
+    // 아이템그래프
+    extraColumns = ['담당 선생님', '아동', '프로그램 영역', '하위 영역', '평균 성공률'];
+    extraData = [
+      exportData.teacherName,
+      exportData.childName,
+      exportData.programField!,
+      exportData.subArea!,
+      exportData.averageRate.toString() + '%',
+    ];
+  }
+
   pw.PageTheme pageTheme = _myPageTheme(PdfPageFormat.a4); // PDF theme 받아옴
-  pw.Widget headerWidget =
-      pdfHeader(ttf, _graphType, _typeValue); // PDF header 받아옴
+  pw.Widget headerWidget = pdfHeader(
+      ttf, _graphType, _typeValue, exportData.childName); // PDF header 받아옴
   final pdf = pw.Document();
   pdf.addPage(pw.MultiPage(
       pageTheme: pageTheme,
@@ -44,6 +56,7 @@ pw.Document genPDF(
             child: headerWidget,
             level: 2,
           ),
+          pw.Image(image),
           pw.Table.fromTextArray(
             context: context,
             border: null,
@@ -87,7 +100,6 @@ pw.Document genPDF(
               ),
             ),
           ),
-          pw.Image(image),
           pw.Table.fromTextArray(
             context: context,
             border: null,
@@ -192,7 +204,8 @@ pw.PageTheme _myPageTheme(PdfPageFormat format) {
 }
 
 //pdf header body
-pw.Widget pdfHeader(ByteData ttf, String _graphType, String _typeValue) {
+pw.Widget pdfHeader(
+    ByteData ttf, String _graphType, String _typeValue, String _childName) {
   print(ttf);
   return pw.Container(
       decoration: pw.BoxDecoration(
@@ -206,7 +219,7 @@ pw.Widget pdfHeader(ByteData ttf, String _graphType, String _typeValue) {
           crossAxisAlignment: pw.CrossAxisAlignment.center,
           children: [
             pw.Text(
-              "<영수의 " + _graphType + "별 그래프>",
+              "< " + _childName + "의 " + _graphType + "별 그래프 >",
               style: pw.TextStyle(
                 fontSize: 32,
                 color: _darkColor,

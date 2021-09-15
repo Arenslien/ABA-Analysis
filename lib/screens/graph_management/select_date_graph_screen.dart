@@ -1,9 +1,11 @@
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/test.dart';
 import 'package:aba_analysis/screens/graph_management/date_graph_screen.dart';
 import 'package:aba_analysis/screens/graph_management/select_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
+import 'package:intl/intl.dart';
 
 class SelectDateScreen extends StatefulWidget {
   final bool isDate; // 그래프 관련 전역변수 isDate 날짜그래프인지 아이템그래프인지
@@ -43,8 +45,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     return GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-          appBar:
-              SearchAppBar(context, (widget.child.name + "의 테스트 날짜(or 제목) 선택")),
+          appBar: SearchAppBar(context, (widget.child.name + "의 테스트 날짜 선택")),
           body: widget.testList.length == 0
               ? noTestData()
               : searchTextEditingController.text == ''
@@ -121,7 +122,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
 
   Widget dataTile(Test test, int index) {
     return buildListTile(
-      titleText: test.date.toString(),
+      titleText: DateFormat(graphDateFormat).format(test.date),
       subtitleText: "평균성공률: ${test.average}%",
       onTap: () {
         Navigator.push(

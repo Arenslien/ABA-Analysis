@@ -1,6 +1,9 @@
+import 'package:aba_analysis/constants.dart';
+import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/test.dart';
 import 'package:aba_analysis/models/test_item.dart';
 import 'package:aba_analysis/provider/child_notifier.dart';
+import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/screens/graph_management/generateExcel.dart';
 import 'package:aba_analysis/screens/graph_management/generatePDF.dart';
 import 'package:aba_analysis/screens/graph_management/select_appbar.dart';
@@ -8,6 +11,7 @@ import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +36,6 @@ class DateGraph extends StatefulWidget {
 class _DateGraphState extends State<DateGraph> {
   final bool _isDate = true; // Date Graph인지 Item Graph인지
   late String _childName;
-  late var selectedArgs;
   // String _subfield // 넘겨받은 subField이름.
   // 이 값을 통해서 testId 리스트를 받아오고 testId 리스트를 통해서 date값을 받아온다.
   // List<String> testId
@@ -40,10 +43,11 @@ class _DateGraphState extends State<DateGraph> {
   // List<String> item_result
   // double averageRate //
   // 전역변수들
+  late ExportData exportData;
+  late Child _child;
 
   late List<GraphData> _chartData;
   late List<String> _tableColumn;
-  late TooltipBehavior _tooltipBehavior;
   late String _graphType;
   late String _charTitleName; // test_date 이거나 subItem
   late num _averageRate;
@@ -59,25 +63,26 @@ class _DateGraphState extends State<DateGraph> {
     super.initState();
 
     _graphType = '날짜';
-    _charTitleName = '7월 11일';
+    _charTitleName = DateFormat(graphDateFormat).format(widget.test.date);
     _tableColumn = ['날짜', '하위목록', '성공여부'];
-    _chartData = getGraphData(_charTitleName, widget.test);
+    _chartData = getDateGraphData(_charTitleName, widget.test);
 
     _fileName = null;
     valueText = null;
 
-    _tooltipBehavior = TooltipBehavior(enable: true);
     _averageRate = _chartData[0].averageRate;
   }
 
   @override
   Widget build(BuildContext context) {
-    _childName =
-        context.read<ChildNotifier>().getChild(widget.test.childId)!.name;
+    _child = context.read<ChildNotifier>().getChild(widget.test.childId)!;
+    _childName = _child.name;
     _graphType = '날짜';
-    _charTitleName = widget.test.date.toString();
+    _charTitleName = DateFormat(graphDateFormat).format(widget.test.date);
     _tableColumn = ['날짜', '하위목록', '성공여부'];
-    _chartData = getGraphData(_charTitleName, widget.test);
+    _chartData = getDateGraphData(_charTitleName, widget.test);
+    exportData = ExportData(context.read<UserNotifier>().abaUser!.name,
+        _childName, _averageRate, '', '');
 
     return Scaffold(
       appBar: SearchAppBar(
@@ -87,59 +92,10 @@ class _DateGraphState extends State<DateGraph> {
           child: Column(
             children: [
               Container(
-                height: 430,
+                height: 460,
                 width: 400,
                 child: genChart(
                     _chartData, _cartesianKey, _charTitleName, _isDate),
-                // SfCartesianChart(
-                //   // enableAxisAnimation: true,
-                //   key: _cartesianKey,
-                //   title: ChartTitle(
-                //       text: _charTitleName,
-                //       textStyle: TextStyle(
-                //           fontFamily: 'KoreanGothic')), // testdata의 회차
-                //   legend:
-                //       Legend(isVisible: true, position: LegendPosition.bottom),
-                //   tooltipBehavior: _tooltipBehavior,
-                //   series: <ChartSeries>[
-                //     LineSeries<GraphData, String>(
-                //       name: '성공률',
-                //       dataSource: _chartData,
-                //       xValueMapper: (GraphData exp, _) {
-                //         if (_isDate) {
-                //           return exp.subItem;
-                //         } else {
-                //           return exp.testDate;
-                //         }
-                //       },
-                //       yValueMapper: (GraphData exp, _) => exp.successRate,
-                //       markerSettings: MarkerSettings(isVisible: true),
-                //     ),
-                //     LineSeries<GraphData, String>(
-                //         name: '평균 성공률',
-                //         dashArray: <double>[5, 5],
-                //         dataSource: _chartData,
-                //         xValueMapper: (GraphData exp, _) {
-                //           if (_isDate) {
-                //             return exp.subItem;
-                //           } else {
-                //             return exp.testDate;
-                //           }
-                //         },
-                //         yValueMapper: (GraphData exp, _) => exp.averageRate)
-                //   ],
-                //   primaryXAxis: CategoryAxis(
-                //       rangePadding: ChartRangePadding.auto,
-                //       labelIntersectAction: AxisLabelIntersectAction.rotate90,
-                //       labelStyle: TextStyle(fontFamily: 'KoreanGothic')),
-                //   primaryYAxis: NumericAxis(
-                //     labelStyle: TextStyle(fontFamily: 'KoreanGothic'),
-                //     labelFormat: '{value}%',
-                //     visibleMaximum: 100,
-                //     visibleMinimum: 0,
-                //     interval: 10,
-                //   ),
-                // ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -184,8 +140,8 @@ class _DateGraphState extends State<DateGraph> {
     // final excelImg = bytes!.buffer.asUint8List();
     final graphImage = bytes!.buffer.asUint8List();
 
-    final xio.Workbook graphWorkbook = genExcel(columns, excelChartData,
-        graphImage, _graphType, _charTitleName, _averageRate, _isDate);
+    final xio.Workbook graphWorkbook = genExcel(
+        columns, excelChartData, graphImage, _graphType, _isDate, exportData);
     final List<int> excelBytes = graphWorkbook.saveAsStream();
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
@@ -205,16 +161,10 @@ class _DateGraphState extends State<DateGraph> {
 
   List<List<String>> genTableData(List<GraphData> chartData) {
     List<List<String>> tableData = [];
-    if (_isDate) {
-      // 날짜그래프라면 날짜, 하위목록, 성공여부 순으로
-      for (GraphData d in chartData) {
-        tableData.add(<String>[d.testDate, d.subItem, d.result.toString()]);
-      }
-    } else {
-      // 아이템그래프라면 하위목록, 날짜, 성공여부 순으로
-      for (GraphData d in chartData) {
-        tableData.add(<String>[d.subItem, d.testDate, d.result.toString()]);
-      }
+
+    // 날짜그래프라면 날짜, 하위목록, 성공여부 순으로
+    for (GraphData d in chartData) {
+      tableData.add(<String>[d.testDate, d.subItem, d.result.toString()]);
     }
 
     print(tableData);
@@ -231,8 +181,8 @@ class _DateGraphState extends State<DateGraph> {
     );
     final ttf = await rootBundle.load('asset/font/korean.ttf');
 
-    pw.Document graphPDF =
-        genPDF(columns, tableData, graphImage, ttf, _graphType, _charTitleName);
+    pw.Document graphPDF = genPDF(columns, tableData, graphImage, ttf,
+        _graphType, _charTitleName, _isDate, exportData);
 
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
@@ -337,7 +287,7 @@ class _DateGraphState extends State<DateGraph> {
         });
   }
 
-  List<GraphData> getGraphData(String _noChange, Test test) {
+  List<GraphData> getDateGraphData(String _noChange, Test test) {
     // 통일된거
     List<GraphData> chartData = []; // 선택한 하위목록과 테스트한 날짜 리스트
     num average = test.average; // 선택한 하위목록의 전체 날짜 평균 성공률
@@ -351,20 +301,3 @@ class _DateGraphState extends State<DateGraph> {
     return chartData;
   }
 }
-
-// class GraphData {
-//   final String testDate; // 선택한 하위목록을 테스트한 날짜 또는 테스트한 회차
-//   final String subItem; // 하위목록 이름
-//   final String result; // 날짜 또는 회차에따른 +, -, P
-//   late num successRate; // +, -, P에 따른 성공률
-//   final num averageRate; // 평균 성공률
-
-//   // 통일된거
-//   GraphData(this.testDate, this.subItem, this.result, this.averageRate) {
-//     if (this.result == '+') {
-//       this.successRate = 100;
-//     } else if (this.result == '-' || this.result == 'p') {
-//       this.successRate = 0;
-//     }
-//   }
-// }

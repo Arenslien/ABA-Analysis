@@ -1,5 +1,7 @@
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/test_item.dart';
+import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/screens/graph_management/generateChart.dart';
 import 'package:aba_analysis/screens/graph_management/generateExcel.dart';
 import 'package:aba_analysis/screens/graph_management/generatePDF.dart';
@@ -8,10 +10,11 @@ import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'dart:ui' as dart_ui;
-
+import 'package:provider/provider.dart';
 import 'dart:io';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:open_file/open_file.dart';
@@ -33,18 +36,13 @@ class ItemGraphScreen extends StatefulWidget {
 class _ItemGraphScreenState extends State<ItemGraphScreen> {
   final bool _isDate = false;
   late var selectedArgs;
-  // String _subfield // 넘겨받은 subField이름.
-  // 이 값을 통해서 testId 리스트를 받아오고 testId 리스트를 통해서 date값을 받아온다.
-  // List<String> testId
-  // List<String> test_date
-  // List<String> item_result
-  // double averageRate //
-  // 전역변수들
+
+  late ExportData exportData;
 
   late List<GraphData> _chartData;
   late List<String> _tableColumn;
-  late String _graphType;
-  late String _charTitleName; // test_date 이거나 subItem
+  late String _graphType; // 날짜별
+  late String _charTitleName; // 하위목록 이름(subItem)
   late num _averageRate;
   final GlobalKey<SfCartesianChartState> _cartesianKey = GlobalKey();
   String? _fileName;
@@ -62,7 +60,7 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
     _charTitleName = '인형 안아주기';
     _tableColumn = ['하위목록', '날짜', '성공여부'];
 
-    _chartData = getGraphData(_charTitleName, widget.subItemList);
+    _chartData = getItemGraphData(_charTitleName, widget.subItemList);
 
     _fileName = null;
     valueText = null;
@@ -72,12 +70,17 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //widget.isDate = true;
-
     _graphType = '하위목록';
     _charTitleName = widget.subItemList[0].testItem.subItem;
     _tableColumn = ['하위목록', '날짜', '성공여부'];
-    _chartData = getGraphData(_charTitleName, widget.subItemList);
+    _chartData = getItemGraphData(_charTitleName, widget.subItemList);
+
+    exportData = ExportData(
+        context.watch<UserNotifier>().abaUser!.name,
+        widget.child.name,
+        _averageRate,
+        widget.subItemList[0].testItem.programField,
+        widget.subItemList[0].testItem.subField);
 
     return Scaffold(
       appBar: SearchAppBar(
@@ -87,7 +90,7 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
           child: Column(
             children: [
               Container(
-                  height: 430,
+                  height: 460,
                   width: 400,
                   child: genChart(
                       _chartData, _cartesianKey, _charTitleName, _isDate)),
@@ -133,9 +136,8 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
     final bytes = await imgData.toByteData(format: dart_ui.ImageByteFormat.png);
     // final excelImg = bytes!.buffer.asUint8List();
     final graphImage = bytes!.buffer.asUint8List();
-
-    final xio.Workbook graphWorkbook = genExcel(columns, excelChartData,
-        graphImage, _graphType, _charTitleName, _averageRate, false);
+    final xio.Workbook graphWorkbook = genExcel(
+        columns, excelChartData, graphImage, _graphType, _isDate, exportData);
     final List<int> excelBytes = graphWorkbook.saveAsStream();
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
@@ -175,8 +177,8 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
     );
     final ttf = await rootBundle.load('asset/font/korean.ttf');
 
-    pw.Document graphPDF =
-        genPDF(columns, tableData, graphImage, ttf, _graphType, _charTitleName);
+    pw.Document graphPDF = genPDF(columns, tableData, graphImage, ttf,
+        _graphType, _charTitleName, _isDate, exportData);
 
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
@@ -281,10 +283,9 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
         });
   }
 
-  List<GraphData> getGraphData(
+  List<GraphData> getItemGraphData(
       String _noChange, List<SubItemAndDate> subItemList) {
-    // 통일된거
-    List<GraphData> chartData = []; // 선택한 하위목록과 테스트한 날짜 리스트
+    List<GraphData> chartData = [];
     int cnt = 0;
 
     for (SubItemAndDate subItemAndDate in subItemList) {
@@ -295,7 +296,7 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
 
     for (SubItemAndDate subItemAndDate in subItemList) {
       chartData.add(GraphData(
-          subItemAndDate.date.toString(),
+          DateFormat(graphDateFormat).format(subItemAndDate.date),
           _noChange,
           subItemAndDate.testItem.result!,
           (cnt / subItemList.length * 100).toInt()));
@@ -304,23 +305,6 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
     return chartData;
   }
 }
-
-// class GraphData {
-//   final String testDate; // 선택한 하위목록을 테스트한 날짜 또는 테스트한 회차
-//   final String subItem; // 하위목록 이름
-//   final String result; // 날짜 또는 회차에따른 +, -, P
-//   late num successRate; // +, -, P에 따른 성공률
-//   final num averageRate; // 평균 성공률
-
-//   // 통일된거
-//   GraphData(this.testDate, this.subItem, this.result, this.averageRate) {
-//     if (this.result == '+') {
-//       this.successRate = 100;
-//     } else if (this.result == '-' || this.result == 'p') {
-//       this.successRate = 0;
-//     }
-//   }
-// }
 
 class SubItemAndDate {
   final TestItem testItem;

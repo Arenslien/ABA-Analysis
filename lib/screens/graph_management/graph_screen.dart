@@ -18,7 +18,6 @@ class GraphScreen extends StatefulWidget {
 }
 
 class _GraphScreenState extends State<GraphScreen> {
-  bool? _isDate;
   void initState() {
     super.initState();
   }
