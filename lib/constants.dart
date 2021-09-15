@@ -20,16 +20,9 @@ const programFieldList = [
 ];
 
 // ENUM 타입
-enum AutoID {
-  child, test, testItem
-}
+enum AutoID { child, test, testItem }
 
-enum Result {
-  plus, minus, p
-}
-
-
-
+enum Result { plus, minus, p }
 
 // // 그라데이션 컬러 -> box decoration에서 gradient같은 곳에 사용됨
 // const kPrimaryGradientColor = LinearGradient(
@@ -77,3 +70,5 @@ const String kShortPassError = "비밀번호를 8자리 이상 입력해 주세�
 const String kMatchPassError = "비밀번호가 일치하지 않습니다";
 const String kNameNullError = "이름을 입력해 주세요";
 const String kPhoneNumberNullError = "전화 번호를 입력해 주세요";
+
+const String graphDateFormat = "yyyy년MM월dd일H시";
