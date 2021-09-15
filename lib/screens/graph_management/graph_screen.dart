@@ -2,7 +2,6 @@ import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/test.dart';
 import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:aba_analysis/provider/test_notifier.dart';
-import 'package:aba_analysis/screens/graph_management/arguments.dart';
 import 'package:aba_analysis/screens/graph_management/select_date_graph_screen.dart';
 import 'package:aba_analysis/screens/graph_management/select_program_screen.dart';
 import 'package:flutter/material.dart';
@@ -29,14 +28,15 @@ class _GraphScreenState extends State<GraphScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: searchBar(), 
+        appBar: searchBar(),
         body: context.watch<ChildNotifier>().children.length == 0
             ? noChildData()
             : ListView.builder(
                 padding: const EdgeInsets.all(16),
                 itemCount: context.watch<ChildNotifier>().children.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return dataTile(context.watch<ChildNotifier>().children[index]);
+                  return dataTile(
+                      context.watch<ChildNotifier>().children[index]);
                 },
               ),
       ),
@@ -75,14 +75,22 @@ class _GraphScreenState extends State<GraphScreen> {
           text: ['Date Graph', 'Item Graph'],
           onPressed: (index) async {
             if (index == 0) {
-              List<Test> testList = await context.read<TestNotifier>().getAllTestListOf(child.childId);
-              Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                SelectDateScreen(child: child, isDate: true, testList: testList)
-              ));
+              // Date Graph 클릭시
+              List<Test> testList = await context
+                  .read<TestNotifier>()
+                  .getAllTestListOf(child.childId);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SelectDateScreen(
+                          child: child, isDate: true, testList: testList)));
             } else if (index == 1) {
-               Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                SelectProgramScreen(child: child, isDate: true)
-              ));
+              // Item Graph 클릭시
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          SelectProgramScreen(child: child, isDate: true)));
             }
           },
         ));
