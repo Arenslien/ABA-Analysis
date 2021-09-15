@@ -1,6 +1,7 @@
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/program_field.dart';
 import 'package:aba_analysis/provider/program_field_notifier.dart';
+import 'package:aba_analysis/screens/graph_management/select_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/screens/graph_management/select_area_screen.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,9 @@ import 'package:aba_analysis/components/build_list_tile.dart';
 class SelectProgramScreen extends StatefulWidget {
   final bool isDate;
   final Child child;
-  const SelectProgramScreen({Key? key, required this.isDate, required this.child}) : super(key: key);
+  const SelectProgramScreen(
+      {Key? key, required this.isDate, required this.child})
+      : super(key: key);
   static String routeName = '/select_program';
 
   @override
@@ -27,22 +30,14 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('${widget.child.name}의 프로그램 영역 선택',
-            style: TextStyle(fontFamily: 'korean')),
-        backgroundColor: Colors.grey,
-        centerTitle: true,
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back)),
-      ), // 검색 필요X
+      appBar: SearchAppBar(context, (widget.child.name + "의 프로그램 영역 선택")),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: context.read<ProgramFieldNotifier>().programFieldList.length,
         itemBuilder: (BuildContext context, int index) {
-          return dataTile(context.read<ProgramFieldNotifier>().programFieldList[index], index);
+          return dataTile(
+              context.read<ProgramFieldNotifier>().programFieldList[index],
+              index);
         },
       ),
     );
@@ -76,12 +71,14 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
       titleText: programField.title,
 //      subtitleText: "평균성공률: $average%",
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => SelectAreaScreen(
-          isDate: false,
-          child: widget.child,
-          programField: programField,
-        ) 
-        )); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => SelectAreaScreen(
+                      isDate: false,
+                      child: widget.child,
+                      programField: programField,
+                    ))); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
       },
       trailing: Icon(Icons.keyboard_arrow_right),
     );
