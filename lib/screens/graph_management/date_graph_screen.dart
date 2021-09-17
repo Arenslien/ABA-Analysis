@@ -6,7 +6,7 @@ import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/screens/graph_management/generateExcel.dart';
 import 'package:aba_analysis/screens/graph_management/generatePDF.dart';
-import 'package:aba_analysis/screens/graph_management/select_appbar.dart';
+import 'package:aba_analysis/components/select_appbar.dart';
 import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -83,10 +83,22 @@ class _DateGraphState extends State<DateGraph> {
     _chartData = getDateGraphData(_charTitleName, widget.test);
     exportData = ExportData(context.read<UserNotifier>().abaUser!.name,
         _childName, _averageRate, '', '');
-
+    IconButton searchButton = IconButton(
+      // 검색버튼
+      icon: Icon(Icons.search),
+      onPressed: () async {
+        // final finalResult =
+        //     await showSearch(context: context, delegate: Search(childrenName));
+        // setState(() {
+        //   selectedText = finalResult;
+        //   selectedChild =
+        //       context.read<ChildNotifier>().getChildByName(selectedText)!;
+        // });
+      },
+    );
     return Scaffold(
-      appBar: SearchAppBar(
-          context, "< " + _childName + "의 " + _graphType + "별 그래프 >"),
+      appBar: SelectAppBar(context,
+          "< " + _childName + "의 " + _graphType + "별 그래프 >", searchButton),
       body: Center(
         child: SingleChildScrollView(
           child: Column(

@@ -71,4 +71,5 @@ const String kMatchPassError = "비밀번호가 일치하지 않습니다";
 const String kNameNullError = "이름을 입력해 주세요";
 const String kPhoneNumberNullError = "전화 번호를 입력해 주세요";
 
+// 그래프 관련
 const String graphDateFormat = "yyyy년MM월dd일H시";
