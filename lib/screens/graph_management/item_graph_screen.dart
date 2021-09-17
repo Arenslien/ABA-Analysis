@@ -5,7 +5,7 @@ import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/screens/graph_management/generateChart.dart';
 import 'package:aba_analysis/screens/graph_management/generateExcel.dart';
 import 'package:aba_analysis/screens/graph_management/generatePDF.dart';
-import 'package:aba_analysis/screens/graph_management/select_appbar.dart';
+import 'package:aba_analysis/components/select_appbar.dart';
 import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -81,10 +81,24 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
         _averageRate,
         widget.subItemList[0].testItem.programField,
         widget.subItemList[0].testItem.subField);
-
+    IconButton searchButton = IconButton(
+      // 검색버튼
+      icon: Icon(Icons.search),
+      onPressed: () async {
+        // final finalResult =
+        //     await showSearch(context: context, delegate: Search(childrenName));
+        // setState(() {
+        //   selectedText = finalResult;
+        //   selectedChild =
+        //       context.read<ChildNotifier>().getChildByName(selectedText)!;
+        // });
+      },
+    );
     return Scaffold(
-      appBar: SearchAppBar(
-          context, "< " + widget.child.name + "의 " + _graphType + "별 그래프 >"),
+      appBar: SelectAppBar(
+          context,
+          "< " + widget.child.name + "의 " + _graphType + "별 그래프 >",
+          searchButton),
       body: Center(
         child: SingleChildScrollView(
           child: Column(

@@ -1,7 +1,8 @@
 import 'package:aba_analysis/constants.dart';
 import 'package:flutter/material.dart';
 
-AppBar SearchAppBar(BuildContext context, String title) {
+AppBar SelectAppBar(
+    BuildContext context, String title, IconButton searchButton) {
   return AppBar(
     title: Text(
       title,
@@ -14,5 +15,6 @@ AppBar SearchAppBar(BuildContext context, String title) {
           Navigator.pop(context);
         },
         icon: Icon(Icons.arrow_back)),
+    actions: <Widget>[searchButton],
   );
 }

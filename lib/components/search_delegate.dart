@@ -1,11 +1,18 @@
+import 'package:aba_analysis/constants.dart';
+import 'package:aba_analysis/models/child.dart';
+import 'package:aba_analysis/models/program_field.dart';
+import 'package:aba_analysis/models/sub_field.dart';
+import 'package:aba_analysis/models/test.dart';
+import 'package:aba_analysis/screens/graph_management/item_graph_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Search extends SearchDelegate {
   final List<String> toSearchList;
-
+  // List<String> toSearchStringList = [];
+  late final List<String> resultList;
   Search(this.toSearchList);
-
-  List<String> recentList = ["텍스트 4", "텍스트 3"]; // 최근 검색목록.
+  List<String> recentList = []; // 시간 되면 최근 검색목록 구현.
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -34,12 +41,9 @@ class Search extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     // 입력 후(키보드 자판에서 검색버튼을 눌렀을 때)에 빌드되는 리스트
-    List<String> resultList = [];
-
-    resultList = (toSearchList.where(
-      (inputText) => inputText.contains(query),
-    )).toList();
-
+    resultList = (toSearchList.where((inputText) {
+      return inputText.contains(query);
+    })).toList();
     return ListView.builder(
       itemCount: resultList.length,
       itemBuilder: (context, index) {
@@ -60,26 +64,28 @@ class Search extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     // 입력 중에 빌드되는 추천리스트
-    List<String> suggestionList = [];
+    List<String> suggestionStringList = [];
 
-    query.isEmpty
-        ? suggestionList = recentList //In the true case. 최근 검색목록을 가져옴.
-        : suggestionList = (toSearchList.where(
-            // In the false case
+    // query.isEmpty
+    //     ? suggestionStringList = recentList //In the true case. 최근 검색목록을 가져옴.
+    // 시간 가능하면 최근 검색목록 구현.
 
-            (inputText) => inputText.contains(query),
-          )).toList();
+    suggestionStringList = (toSearchList.where(
+      // In the false case
+
+      (inputText) => inputText.contains(query),
+    )).toList();
 
     return ListView.builder(
-      itemCount: suggestionList.length,
+      itemCount: suggestionStringList.length,
       itemBuilder: (context, index) {
         return ListTile(
           title: Text(
-            suggestionList[index],
+            suggestionStringList[index],
           ),
           leading: query.isEmpty ? Icon(Icons.access_time) : SizedBox(),
           onTap: () {
-            query = suggestionList[index];
+            query = suggestionStringList[index];
             close(context, query);
           },
         );
