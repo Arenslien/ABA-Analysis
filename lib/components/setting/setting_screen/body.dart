@@ -112,43 +112,7 @@ class _BodyState extends State<Body> {
                           // }
                           
 
-                          TestItem testItem1 = TestItem(
-                                testItemId: await _store.updateId(AutoID.testItem), 
-                                testId: 3, 
-                                programField: '프로그램 영역 12', 
-                                subField: '하위 영역 12', 
-                                subItem: '하위 목록 52'
-                              );
-                          testItem1.setResult(Result.plus);
-
-                          TestItem testItem2 = TestItem(
-                                testItemId: await _store.updateId(AutoID.testItem), 
-                                testId: 3, 
-                                programField: '프로그램 영역 12', 
-                                subField: '하위 영역 12', 
-                                subItem: '하위 목록 52'
-                              );
-                          testItem2.setResult(Result.plus);
-
-                          TestItem testItem3 = TestItem(
-                                testItemId: await _store.updateId(AutoID.testItem), 
-                                testId: 3, 
-                                programField: '프로그램 영역 123', 
-                                subField: '하위 영역 11', 
-                                subItem: '하위 목록 524'
-                              );
-                          testItem3.setResult(Result.minus);
-
-                          Test test = Test(
-                            testId: await _store.updateId(AutoID.test),
-                            childId: 1,
-                            date: DateTime.now(),
-                            title: '테스트 제목3',
-                            testItemList: [
-                              testItem1, testItem2, testItem3
-                            ],
-                          );
-                          await _store.createTest(test);
+                          
 
                           await _store.readAllTest();
                           print('완료');
