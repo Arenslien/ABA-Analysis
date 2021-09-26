@@ -2,11 +2,14 @@ import 'package:aba_analysis/components/search_delegate.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/test.dart';
+import 'package:aba_analysis/models/test_item.dart';
 import 'package:aba_analysis/screens/graph_management/date_graph_screen.dart';
 import 'package:aba_analysis/components/select_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:intl/intl.dart';
+
+import 'no_test_data_screen.dart';
 
 class SelectDateScreen extends StatefulWidget {
   final Child child;
@@ -62,8 +65,8 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     return GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-          appBar: SelectAppBar(
-              context, (widget.child.name + "의 테스트 날짜 선택"), searchButton),
+          appBar: SelectAppBar(context, (widget.child.name + "의 테스트 날짜 선택"),
+              searchButton: searchButton),
           body: widget.testList.length == 0
               ? noTestData()
               : selectedDate == ""
@@ -123,13 +126,23 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
         setState(() {
           selectedDate = "";
         });
-
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => DateGraph(
-                      test: test,
-                    ))); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
+        bool notNull = true;
+        for (TestItem ti in test.testItemList) {
+          if (ti.result == null) {
+            notNull = false;
+          }
+        }
+        if (notNull) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DateGraph(
+                        test: test,
+                      )));
+        } else {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => NoTestData()));
+        }
       },
       trailing: Icon(Icons.keyboard_arrow_right),
     );
