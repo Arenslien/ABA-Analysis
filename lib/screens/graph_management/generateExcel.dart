@@ -2,9 +2,9 @@ import 'dart:typed_data';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xio;
 
 xio.Workbook genExcel(
-    List<String> chartColumn,
-    List<List<String>> excelChartData,
-    Uint8List graphImage,
+    List<String> excelTableColumns,
+    List<List<String>> excelTableData,
+    Uint8List chartImgBytes,
     String graphType,
     bool isDate,
     ExportData exportData) {
@@ -42,10 +42,10 @@ xio.Workbook genExcel(
   // 필요한 스타일 추가
 
   sheet.getRangeByName('B1').columnWidth = 17;
-  if (chartColumn[0] == '하위목록') {
+  if (excelTableColumns[0] == '하위목록') {
     sheet.getRangeByName('I1').columnWidth = 22.5;
     sheet.getRangeByName('J1').columnWidth = 17;
-  } else if (chartColumn[0] == '날짜') {
+  } else if (excelTableColumns[0] == '날짜') {
     sheet.getRangeByName('I1').columnWidth = 17;
     sheet.getRangeByName('J1').columnWidth = 22.5;
   }
@@ -61,36 +61,36 @@ xio.Workbook genExcel(
   titleRange.merge();
   // 제목 설정
 
-  final xio.Picture picture = sheet.pictures.addStream(7, 2, graphImage);
-  picture.lastRow = 21;
-  picture.lastColumn = 7;
-  final xio.Range chartRange =
-      sheet.getRangeByIndex(7, 2, picture.lastRow, picture.lastColumn);
-  chartRange.merge();
+  final xio.Picture chartImg = sheet.pictures.addStream(7, 2, chartImgBytes);
+  chartImg.lastRow = 21;
+  chartImg.lastColumn = 7;
+  final xio.Range chartImgRange =
+      sheet.getRangeByIndex(7, 2, chartImg.lastRow, chartImg.lastColumn);
+  chartImgRange.merge();
   // 차트 삽입
 
   sheet.getRangeByName('I7:K7').cellStyle = columnNameStyle;
   sheet.getRangeByName('I7:K7').cellStyle.hAlign = xio.HAlignType.center;
 
-  sheet.getRangeByName('I7').setText(chartColumn[0]);
-  sheet.getRangeByName('J7').setText(chartColumn[1]);
-  sheet.getRangeByName('K7').setText(chartColumn[2]);
+  sheet.getRangeByName('I7').setText(excelTableColumns[0]);
+  sheet.getRangeByName('J7').setText(excelTableColumns[1]);
+  sheet.getRangeByName('K7').setText(excelTableColumns[2]);
 
   // 컬럼이름 삽입. 하위목록, 날짜, 성공여부
 
   var ilist =
-      List<int>.generate(excelChartData.length, (i) => i + 1); // 1 ~ 로우개수
+      List<int>.generate(excelTableData.length, (i) => i + 1); // 1 ~ 로우개수
   var jlist =
-      List<int>.generate(excelChartData[0].length, (i) => i + 1); // 1 ~ 컬럼개수
+      List<int>.generate(excelTableData[0].length, (i) => i + 1); // 1 ~ 컬럼개수
   for (int i in ilist) {
     for (int j in jlist) {
-      sheet.getRangeByIndex(7 + i, 8 + j).setText(excelChartData[i - 1][j - 1]);
+      sheet.getRangeByIndex(7 + i, 8 + j).setText(excelTableData[i - 1][j - 1]);
       sheet.getRangeByIndex(7 + i, 8 + j).cellStyle.fontSize = 12; //
     }
   }
-  final xio.Range chartDataRange =
-      sheet.getRangeByIndex(8, 9, 7 + excelChartData.length, 12);
-  chartDataRange.cellStyle = dataStyle;
+  final xio.Range tableDataRange =
+      sheet.getRangeByIndex(8, 9, 7 + excelTableData.length, 12);
+  tableDataRange.cellStyle = dataStyle;
   // 차트데이터 스타일 지정 ( 일단 폰트사이즈 9 )
 
   List<String> extraColumns = ['담당 선생님', '아동', '평균 성공률'];

@@ -8,7 +8,6 @@ import 'package:aba_analysis/screens/graph_management/select_area_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 
-// select_date 복붙한거라 select_item버전으로 다시 코딩 필요
 class SelectProgramScreen extends StatefulWidget {
   final Child child;
   const SelectProgramScreen({Key? key, required this.child}) : super(key: key);
@@ -53,30 +52,33 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
               // 메인 화면의 디자인은 좀 달라야할텐데 고민.
               context,
               (widget.child.name + "의 프로그램 영역 선택"),
-              searchButton),
-          body: selectedProgramField == ""
-              ? ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: context
-                      .read<ProgramFieldNotifier>()
-                      .programFieldList
-                      .length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return dataTile(
-                        context
-                            .read<ProgramFieldNotifier>()
-                            .programFieldList[index],
-                        index);
-                  },
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: 1,
-                  itemBuilder: (BuildContext context, int index) {
-                    return dataTile(
-                        programFieldAndTitleMap[selectedProgramField]!, index);
-                  },
-                )),
+              searchButton: searchButton),
+          body: programFieldAndTitleMap.isEmpty
+              ? noTestData()
+              : selectedProgramField == ""
+                  ? ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: context
+                          .read<ProgramFieldNotifier>()
+                          .programFieldList
+                          .length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return dataTile(
+                            context
+                                .read<ProgramFieldNotifier>()
+                                .programFieldList[index],
+                            index);
+                      },
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        return dataTile(
+                            programFieldAndTitleMap[selectedProgramField]!,
+                            index);
+                      },
+                    )),
     );
   }
 
