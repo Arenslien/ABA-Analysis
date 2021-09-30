@@ -3,6 +3,7 @@ import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/test.dart';
 import 'package:aba_analysis/models/test_item.dart';
 import 'package:aba_analysis/provider/child_notifier.dart';
+import 'package:aba_analysis/provider/test_item_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/screens/graph_management/generateExcel.dart';
 import 'package:aba_analysis/screens/graph_management/generatePDF.dart';
@@ -58,7 +59,7 @@ class _DateGraphState extends State<DateGraph> {
     _graphType = '날짜';
     _charTitleName = DateFormat(graphDateFormat).format(widget.test.date);
     _tableColumn = ['날짜', '하위목록', '성공여부'];
-    _chartData = getDateGraphData(_charTitleName, widget.test);
+    _chartData = getDateGraphData(_charTitleName, widget.test, context);
 
     _fileName = null;
     valueText = null;
@@ -73,7 +74,7 @@ class _DateGraphState extends State<DateGraph> {
     _graphType = '날짜';
     _charTitleName = DateFormat(graphDateFormat).format(widget.test.date);
     _tableColumn = ['날짜', '하위목록', '성공여부'];
-    _chartData = getDateGraphData(_charTitleName, widget.test);
+    _chartData = getDateGraphData(_charTitleName, widget.test, context);
     exportData = ExportData(context.read<UserNotifier>().abaUser!.name,
         _childName, _averageRate, '', '');
     return Scaffold(
@@ -279,12 +280,16 @@ class _DateGraphState extends State<DateGraph> {
         });
   }
 
-  List<GraphData> getDateGraphData(String _noChange, Test test) {
+  List<GraphData> getDateGraphData(String _noChange, Test test, BuildContext context) {
     // 통일된거
     List<GraphData> chartData = []; // 선택한 하위목록과 테스트한 날짜 리스트
-    num average = test.average; // 선택한 하위목록의 전체 날짜 평균 성공률
+    // get testItemList
+    List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(test.testId);
 
-    for (TestItem testItem in test.testItemList) {
+    num average = context.read<TestItemNotifier>().getAverage(test.testId); // 선택한 하위목록의 전체 날짜 평균 성공률
+
+
+    for (TestItem testItem in testItemList) {
       print(testItem.toString());
       chartData.add(
           GraphData(_noChange, testItem.subItem, testItem.result!, average));

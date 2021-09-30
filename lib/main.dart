@@ -1,5 +1,6 @@
 import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:aba_analysis/provider/program_field_notifier.dart';
+import 'package:aba_analysis/provider/test_item_notifier.dart';
 import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
@@ -20,6 +21,7 @@ void main() async {
       ChangeNotifierProvider(create: (_) => ChildNotifier()),
       ChangeNotifierProvider(create: (_) => ProgramFieldNotifier()),
       ChangeNotifierProvider(create: (_) => TestNotifier()),
+      ChangeNotifierProvider(create: (_) => TestItemNotifier()),
     ],
     child: MyApp()
   ));
@@ -39,7 +41,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     // 로그인 유지일 경우 사용자 정보를 DB에서 가져옴
@@ -48,6 +49,7 @@ class _MyAppState extends State<MyApp> {
       context.read<ChildNotifier>().updateChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
       context.read<ProgramFieldNotifier>().updateProgramFieldList(await _store.readProgramField());
       context.read<TestNotifier>().updateTest(await _store.readAllTest());
+      context.read<TestItemNotifier>().updateTestItem(await _store.readAllTestItem());
     });
   }
 
