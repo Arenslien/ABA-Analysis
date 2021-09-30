@@ -14,12 +14,12 @@ PdfColor lightGreen = PdfColor.fromInt(0x0Dedabab); //light background color
 
 pw.Document genPDF(
     // PDF page 추가 후
-    List<String> tableColumns,
-    List<List<String>> tableData,
-    pw.MemoryImage image,
+    List<String> pdfTableColumns,
+    List<List<String>> pdfTableData,
+    pw.MemoryImage chartImg,
     ByteData ttf,
-    String _graphType,
-    String _typeValue,
+    String graphType,
+    String graphTypeValue,
     bool isDate,
     ExportData exportData) {
   List<String> extraColumns = [];
@@ -46,7 +46,7 @@ pw.Document genPDF(
 
   pw.PageTheme pageTheme = _myPageTheme(PdfPageFormat.a4); // PDF theme 받아옴
   pw.Widget headerWidget = pdfHeader(
-      ttf, _graphType, _typeValue, exportData.childName); // PDF header 받아옴
+      ttf, graphType, graphTypeValue, exportData.childName); // PDF header 받아옴
   final pdf = pw.Document();
   pdf.addPage(pw.MultiPage(
       pageTheme: pageTheme,
@@ -56,7 +56,7 @@ pw.Document genPDF(
             child: headerWidget,
             level: 2,
           ),
-          pw.Image(image),
+          pw.Image(chartImg),
           pw.Table.fromTextArray(
             context: context,
             border: null,
@@ -128,17 +128,17 @@ pw.Document genPDF(
               ),
             ),
             headers: List<String>.generate(
-              tableColumns.length,
+              pdfTableColumns.length,
               (col) {
-                return tableColumns[col];
+                return pdfTableColumns[col];
               },
             ),
             data: List<List<String>>.generate(
-              tableData.length,
+              pdfTableData.length,
               (row) => List<String>.generate(
-                tableColumns.length,
+                pdfTableColumns.length,
                 (col) {
-                  return tableData[row][col];
+                  return pdfTableData[row][col];
                 },
               ),
             ),
@@ -205,7 +205,7 @@ pw.PageTheme _myPageTheme(PdfPageFormat format) {
 
 //pdf header body
 pw.Widget pdfHeader(
-    ByteData ttf, String _graphType, String _typeValue, String _childName) {
+    ByteData ttf, String graphType, String graphTypeValue, String _childName) {
   print(ttf);
   return pw.Container(
       decoration: pw.BoxDecoration(
@@ -219,7 +219,7 @@ pw.Widget pdfHeader(
           crossAxisAlignment: pw.CrossAxisAlignment.center,
           children: [
             pw.Text(
-              "< " + _childName + "의 " + _graphType + "별 그래프 >",
+              "< " + _childName + "의 " + graphType + "별 그래프 >",
               style: pw.TextStyle(
                 fontSize: 32,
                 color: _darkColor,

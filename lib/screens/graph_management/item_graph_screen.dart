@@ -45,11 +45,12 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
   late String _charTitleName; // 하위목록 이름(subItem)
   late num _averageRate;
   final GlobalKey<SfCartesianChartState> _cartesianKey = GlobalKey();
-  String? _fileName;
-  String? valueText; // Dialog에서 사용
+  String _fileName = "";
+  String valueText = ""; // Dialog에서 사용
   bool _isCancle = true;
 
-  TextEditingController _textFieldController = TextEditingController();
+  TextEditingController _textFieldController =
+      TextEditingController(); // dialog에서 파일이름 관련.
 
   @override
   void initState() {
@@ -57,23 +58,46 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
     // 아이템 그래프인지 날짜 그래프인지
 
     _graphType = '하위목록';
-    _charTitleName = '인형 안아주기';
+    _charTitleName = widget.subItemList[0].testItem.subItem;
     _tableColumn = ['하위목록', '날짜', '성공여부'];
 
     _chartData = getItemGraphData(_charTitleName, widget.subItemList);
 
-    _fileName = null;
-    valueText = null;
+    // _fileName = null;
+    // valueText = null;
 
     _averageRate = _chartData[0].averageRate;
   }
 
+  Widget noTestData() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.auto_graph,
+            color: Colors.grey,
+            size: 150,
+          ),
+          Text(
+            'No Test Data',
+            style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+                fontSize: 40,
+                fontFamily: 'korean'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    _graphType = '하위목록';
-    _charTitleName = widget.subItemList[0].testItem.subItem;
-    _tableColumn = ['하위목록', '날짜', '성공여부'];
-    _chartData = getItemGraphData(_charTitleName, widget.subItemList);
+    // _graphType = '하위목록';
+    // _charTitleName = widget.subItemList[0].testItem.subItem;
+    // _tableColumn = ['하위목록', '날짜', '성공여부'];
+    // _chartData = getItemGraphData(_charTitleName, widget.subItemList);
 
     exportData = ExportData(
         context.watch<UserNotifier>().abaUser!.name,
@@ -81,77 +105,67 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
         _averageRate,
         widget.subItemList[0].testItem.programField,
         widget.subItemList[0].testItem.subField);
-    IconButton searchButton = IconButton(
-      // 검색버튼
-      icon: Icon(Icons.search),
-      onPressed: () async {
-        // final finalResult =
-        //     await showSearch(context: context, delegate: Search(childrenName));
-        // setState(() {
-        //   selectedText = finalResult;
-        //   selectedChild =
-        //       context.read<ChildNotifier>().getChildByName(selectedText)!;
-        // });
-      },
-    );
+
     return Scaffold(
       appBar: SelectAppBar(
-          context,
-          "< " + widget.child.name + "의 " + _graphType + "별 그래프 >",
-          searchButton),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                  height: 460,
-                  width: 400,
-                  child: genChart(
-                      _chartData, _cartesianKey, _charTitleName, _isDate)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FloatingActionButton.extended(
-                    heroTag: 'export_excel', // 버튼 구별을 위한 태그
-                    onPressed: () {
-                      exportExcel(_tableColumn, genTableData(_chartData));
-                    }, // 누르면 엑셀 내보내기
-                    label: Text('엑셀 내보내기',
-                        style: TextStyle(fontFamily: 'KoreanGothic')),
-                    icon: Icon(LineIcons.excelFile),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  FloatingActionButton.extended(
-                    heroTag: 'export_pdf', // 버튼 구별을 위한 태그
-                    onPressed: () {
-                      exportPDF(_tableColumn, genTableData(_chartData));
-                    }, // 누르면 PDF 내보내기
-                    label: Text(
-                      'PDF 내보내기',
-                      style: TextStyle(fontFamily: 'KoreanGothic'),
-                    ),
-                    icon: Icon(LineIcons.pdfFile),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        context,
+        "< " + widget.child.name + "의 " + _graphType + "별 그래프 >",
       ),
+      body: widget.subItemList.isEmpty
+          ? noTestData()
+          : Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                        height: 460,
+                        width: 400,
+                        child: genChart(_chartData, _cartesianKey,
+                            _charTitleName, _isDate)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FloatingActionButton.extended(
+                          heroTag: 'export_excel', // 버튼 구별을 위한 태그
+                          onPressed: () {
+                            exportExcel(_tableColumn, genTableData(_chartData));
+                          }, // 누르면 엑셀 내보내기
+                          label: Text('엑셀 내보내기',
+                              style: TextStyle(fontFamily: 'KoreanGothic')),
+                          icon: Icon(LineIcons.excelFile),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        FloatingActionButton.extended(
+                          heroTag: 'export_pdf', // 버튼 구별을 위한 태그
+                          onPressed: () {
+                            exportPDF(_tableColumn, genTableData(_chartData));
+                          }, // 누르면 PDF 내보내기
+                          label: Text(
+                            'PDF 내보내기',
+                            style: TextStyle(fontFamily: 'KoreanGothic'),
+                          ),
+                          icon: Icon(LineIcons.pdfFile),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 
   Future<void> exportExcel(
-      List<String> columns, List<List<String>> excelChartData) async {
+      List<String> excelTableColumns, List<List<String>> excelTableData) async {
     dart_ui.Image imgData =
         await _cartesianKey.currentState!.toImage(pixelRatio: 3.0);
     final bytes = await imgData.toByteData(format: dart_ui.ImageByteFormat.png);
     // final excelImg = bytes!.buffer.asUint8List();
     final graphImage = bytes!.buffer.asUint8List();
-    final xio.Workbook graphWorkbook = genExcel(
-        columns, excelChartData, graphImage, _graphType, _isDate, exportData);
+    final xio.Workbook graphWorkbook = genExcel(excelTableColumns,
+        excelTableData, graphImage, _graphType, _isDate, exportData);
     final List<int> excelBytes = graphWorkbook.saveAsStream();
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
@@ -162,7 +176,7 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
     await _displayTextInputDialog(context, filePath, 'xlsx');
     if (_isCancle == false) {
       // 확인을 눌렀을 때
-      final File file = File(filePath + _fileName! + ".xlsx");
+      final File file = File(filePath + _fileName + ".xlsx");
       file.writeAsBytesSync(excelBytes);
       await OpenFile.open(file.path);
       graphWorkbook.dispose();
@@ -182,7 +196,7 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
   }
 
   Future<void> exportPDF(
-      List<String> columns, List<List<String>> tableData) async {
+      List<String> pdfTableColumns, List<List<String>> pdfTableData) async {
     dart_ui.Image imgData =
         await _cartesianKey.currentState!.toImage(pixelRatio: 3.0);
     final bytes = await imgData.toByteData(format: dart_ui.ImageByteFormat.png);
@@ -191,8 +205,8 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
     );
     final ttf = await rootBundle.load('asset/font/korean.ttf');
 
-    pw.Document graphPDF = genPDF(columns, tableData, graphImage, ttf,
-        _graphType, _charTitleName, _isDate, exportData);
+    pw.Document graphPDF = genPDF(pdfTableColumns, pdfTableData, graphImage,
+        ttf, _graphType, _charTitleName, _isDate, exportData);
 
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
@@ -203,7 +217,7 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
     await _displayTextInputDialog(context, filePath, "pdf");
     if (_isCancle == false) {
       // 확인을 눌렀을 때
-      final File file = File(filePath + _fileName! + ".pdf");
+      final File file = File(filePath + _fileName + ".pdf");
       file.writeAsBytesSync(List.from(await graphPDF.save()));
       await OpenFile.open(file.path);
     }
@@ -262,7 +276,7 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
                   backgroundColor: Colors.green,
                 ),
                 onPressed: () {
-                  if (valueText == null || valueText == '') {
+                  if (valueText == '') {
                     Fluttertoast.showToast(
                         msg: "파일 이름을 입력해주세요.",
                         toastLength: Toast.LENGTH_SHORT,
@@ -271,7 +285,7 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
                         backgroundColor: Colors.red,
                         textColor: Colors.white,
                         fontSize: 16.0);
-                  } else if (File(filePath + valueText! + "." + exportType)
+                  } else if (File(filePath + valueText + "." + exportType)
                           .existsSync() ==
                       true) {
                     Fluttertoast.showToast(

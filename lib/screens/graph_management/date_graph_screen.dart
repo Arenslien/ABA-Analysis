@@ -36,13 +36,6 @@ class DateGraph extends StatefulWidget {
 class _DateGraphState extends State<DateGraph> {
   final bool _isDate = true; // Date Graph인지 Item Graph인지
   late String _childName;
-  // String _subfield // 넘겨받은 subField이름.
-  // 이 값을 통해서 testId 리스트를 받아오고 testId 리스트를 통해서 date값을 받아온다.
-  // List<String> testId
-  // List<String> test_date
-  // List<String> item_result
-  // double averageRate //
-  // 전역변수들
   late ExportData exportData;
   late Child _child;
 
@@ -83,22 +76,9 @@ class _DateGraphState extends State<DateGraph> {
     _chartData = getDateGraphData(_charTitleName, widget.test);
     exportData = ExportData(context.read<UserNotifier>().abaUser!.name,
         _childName, _averageRate, '', '');
-    IconButton searchButton = IconButton(
-      // 검색버튼
-      icon: Icon(Icons.search),
-      onPressed: () async {
-        // final finalResult =
-        //     await showSearch(context: context, delegate: Search(childrenName));
-        // setState(() {
-        //   selectedText = finalResult;
-        //   selectedChild =
-        //       context.read<ChildNotifier>().getChildByName(selectedText)!;
-        // });
-      },
-    );
     return Scaffold(
-      appBar: SelectAppBar(context,
-          "< " + _childName + "의 " + _graphType + "별 그래프 >", searchButton),
+      appBar: SelectAppBar(
+          context, "< " + _childName + "의 " + _graphType + "별 그래프 >"),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -145,15 +125,15 @@ class _DateGraphState extends State<DateGraph> {
   }
 
   Future<void> exportExcel(
-      List<String> columns, List<List<String>> excelChartData) async {
+      List<String> excelTableColumns, List<List<String>> excelTableData) async {
     dart_ui.Image imgData =
         await _cartesianKey.currentState!.toImage(pixelRatio: 3.0);
     final bytes = await imgData.toByteData(format: dart_ui.ImageByteFormat.png);
     // final excelImg = bytes!.buffer.asUint8List();
-    final graphImage = bytes!.buffer.asUint8List();
+    final graphImageBytes = bytes!.buffer.asUint8List();
 
-    final xio.Workbook graphWorkbook = genExcel(
-        columns, excelChartData, graphImage, _graphType, _isDate, exportData);
+    final xio.Workbook graphWorkbook = genExcel(excelTableColumns,
+        excelTableData, graphImageBytes, _graphType, _isDate, exportData);
     final List<int> excelBytes = graphWorkbook.saveAsStream();
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
@@ -184,17 +164,17 @@ class _DateGraphState extends State<DateGraph> {
   }
 
   Future<void> exportPDF(
-      List<String> columns, List<List<String>> tableData) async {
+      List<String> pdfTableColumns, List<List<String>> pdfTableData) async {
     dart_ui.Image imgData =
         await _cartesianKey.currentState!.toImage(pixelRatio: 3.0);
     final bytes = await imgData.toByteData(format: dart_ui.ImageByteFormat.png);
-    final graphImage = pw.MemoryImage(
+    final graphImageBytes = pw.MemoryImage(
       bytes!.buffer.asUint8List(),
     );
     final ttf = await rootBundle.load('asset/font/korean.ttf');
 
-    pw.Document graphPDF = genPDF(columns, tableData, graphImage, ttf,
-        _graphType, _charTitleName, _isDate, exportData);
+    pw.Document graphPDF = genPDF(pdfTableColumns, pdfTableData,
+        graphImageBytes, ttf, _graphType, _charTitleName, _isDate, exportData);
 
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
