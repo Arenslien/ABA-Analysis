@@ -144,13 +144,15 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
                 onPressed: () async {
                   if (formkey.currentState!.validate()) {
                     Navigator.pop(
-                        context,
-                        Test(
-                          await _store.updateId(AutoID.test),
-                          0,
-                          date,
-                          title,
-                        ));
+                      context,
+                      Test(
+                        testId: await _store.updateId(AutoID.test),
+                        childId: 0,
+                        date: date,
+                        title: title,
+                        testItemList: [],
+                      ),
+                    );
                   }
                 },
               ),
@@ -171,11 +173,11 @@ class _ChapterInputScreenState extends State<ChapterInputScreen> {
   buildItemListTile() async {
     int testItemId = await _store.updateId(AutoID.testItem);
     widget.test.testItemList.add(TestItem(
-      testItemId,
-      widget.test.testId,
-      '_programField',
-      '_subField',
-      '_subItem',
+      testItemId: testItemId,
+      testId: widget.test.testId,
+      programField: '_programField',
+      subField: '_subField',
+      subItem: '_subItem',
     ));
     TextEditingController textEditingController = TextEditingController();
 

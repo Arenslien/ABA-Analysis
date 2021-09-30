@@ -49,121 +49,7 @@ class _BodyState extends State<Body> {
                       getProportionateScreenWidth(35),
                       getProportionateScreenWidth(35),
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SettingDefaultButton(text: '내정보 수정', onTap: () {
-                          // 내정보 수정 페이지로 이동
-                          Navigator.pushNamed(context, '/edit_info');
-                        }),
-                        SettingDefaultButton(text: '비밀번호 변경', onTap: () {
-                          // 비밀번호 변경 로직
-                        }),
-                        SettingDefaultButton(text: '로그아웃', onTap: () {
-                          // 로그아웃을 위한 AuthService 인스턴스 생성
-                          AuthService _auth = AuthService();
-
-                          // Firebase Authentication 로그아웃
-                          _auth.signOut();
-
-                          context.read<UserNotifier>().updateUser(null);
-                        }),
-                        SettingDefaultButton(text: '회원 탈퇴', onTap: () {
-                          // 1. 어드민 계정으로 알림이 감
-                          
-                          // 1. 어드민 계정에서 허락할 시 회원 탈퇴
-
-                          // 방안 2. 그냥 일반 삭제
-
-
-                          // Alert Dialog
-                          // AlertDialog(
-                          //   title: Text('정말 회원 탈퇴를 하시겠습니까?'),
-                            
-                          // );
-                        }),
-                        SettingDefaultButton(text: '테스트용', onTap: () async {
-                          FireStoreService _store = FireStoreService();
-                          // Child child = Child(
-                          //   childId: await _store.updateId(AutoID.child), 
-                          //   teacherEmail: context.read<UserNotifier>().abaUser!.email, 
-                          //   name: '하성렬', 
-                          //   birthday: DateTime(2000, 5, 6), 
-                          //   gender: '남자', 
-                          // );
-                          // _store.createChild(child);
-
-                          // List<ProgramField> programFieldList = context.read<ProgramFieldNotifier>().programFieldList;
-
-                          // for (ProgramField programField in programFieldList) {
-                          //   print(programField.title);
-                            
-                          //   List<SubField> subFieldList = programField.subFieldList;
-                          //   for (SubField subField in subFieldList) {
-                          //     print(subField.subFieldName);
-                          //     print(subField.subItemList);
-                          //   }
-
-                          // }
-
-                          // List<Test> testList = await _store.readTestList(1);
-                          // for (Test test in testList) {
-                          //   print(test.toString());
-                          // }
-                          
-
-                          TestItem testItem1 = TestItem(
-                                testItemId: await _store.updateId(AutoID.testItem), 
-                                testId: 3, 
-                                programField: '프로그램 영역 12', 
-                                subField: '하위 영역 12', 
-                                subItem: '하위 목록 52'
-                              );
-                          testItem1.setResult(Result.plus);
-
-                          TestItem testItem2 = TestItem(
-                                testItemId: await _store.updateId(AutoID.testItem), 
-                                testId: 3, 
-                                programField: '프로그램 영역 12', 
-                                subField: '하위 영역 12', 
-                                subItem: '하위 목록 52'
-                              );
-                          testItem2.setResult(Result.plus);
-
-                          TestItem testItem3 = TestItem(
-                                testItemId: await _store.updateId(AutoID.testItem), 
-                                testId: 3, 
-                                programField: '프로그램 영역 123', 
-                                subField: '하위 영역 11', 
-                                subItem: '하위 목록 524'
-                              );
-                          testItem3.setResult(Result.minus);
-
-                          Test test = Test(
-                            testId: await _store.updateId(AutoID.test),
-                            childId: 1,
-                            date: DateTime.now(),
-                            title: '테스트 제목3',
-                            testItemList: [
-                              testItem1, testItem2, testItem3
-                            ],
-                          );
-                          await _store.createTest(test);
-
-                          await _store.readAllTest();
-                          print('완료');
-                          // List<Child> children = await _store.readAllChild(context.read<UserNotifier>().abaUser!.email);
-                          // for (int i=0; i<children.length; i++) {
-                          //   print(children[i].name);
-                          // }
-                          // List<Child> children2 = await _store.readAllChild('hippo9851@gmail.com');
-                          // for (int i=0; i<children2.length; i++) {
-                          //   print(children2[i].name);
-                          // }
-                          // _store.createTest(child, test);
-                        }),
-                      ],
-                    ),
+                    child: SettingListView(),
                   ),
                 ),
                 Container(
@@ -237,6 +123,95 @@ class _BodyState extends State<Body> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class SettingListView extends StatelessWidget {
+  const SettingListView({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        SettingDefaultButton(text: '내정보 수정', onTap: () {
+          // 내정보 수정 페이지로 이동
+          Navigator.pushNamed(context, '/edit_info');
+        }),
+        SettingDefaultButton(text: '비밀번호 변경', onTap: () {
+          // 비밀번호 변경 로직
+        }),
+        SettingDefaultButton(text: '로그아웃', onTap: () {
+          // 로그아웃을 위한 AuthService 인스턴스 생성
+          AuthService _auth = AuthService();
+
+          // Firebase Authentication 로그아웃
+          _auth.signOut();
+
+          context.read<UserNotifier>().updateUser(null);
+        }),
+        SettingDefaultButton(text: '회원 탈퇴', onTap: () {
+          // 1. 어드민 계정으로 알림이 감
+          
+          // 1. 어드민 계정에서 허락할 시 회원 탈퇴
+
+          // 방안 2. 그냥 일반 삭제
+
+
+          // Alert Dialog
+          // AlertDialog(
+          //   title: Text('정말 회원 탈퇴를 하시겠습니까?'),
+            
+          // );
+        }),
+        SettingDefaultButton(text: '테스트용', onTap: () async {
+          FireStoreService _store = FireStoreService();
+          // Child child = Child(
+          //   childId: await _store.updateId(AutoID.child), 
+          //   teacherEmail: context.read<UserNotifier>().abaUser!.email, 
+          //   name: '하성렬', 
+          //   birthday: DateTime(2000, 5, 6), 
+          //   gender: '남자', 
+          // );
+          // _store.createChild(child);
+
+          // List<ProgramField> programFieldList = context.read<ProgramFieldNotifier>().programFieldList;
+
+          // for (ProgramField programField in programFieldList) {
+          //   print(programField.title);
+            
+          //   List<SubField> subFieldList = programField.subFieldList;
+          //   for (SubField subField in subFieldList) {
+          //     print(subField.subFieldName);
+          //     print(subField.subItemList);
+          //   }
+
+          // }
+
+          // List<Test> testList = await _store.readTestList(1);
+          // for (Test test in testList) {
+          //   print(test.toString());
+          // }
+          
+
+          
+
+          await _store.readAllTest();
+          print('완료');
+          // List<Child> children = await _store.readAllChild(context.read<UserNotifier>().abaUser!.email);
+          // for (int i=0; i<children.length; i++) {
+          //   print(children[i].name);
+          // }
+          // List<Child> children2 = await _store.readAllChild('hippo9851@gmail.com');
+          // for (int i=0; i<children2.length; i++) {
+          //   print(children2[i].name);
+          // }
+          // _store.createTest(child, test);
+        }),
+      ],
     );
   }
 }

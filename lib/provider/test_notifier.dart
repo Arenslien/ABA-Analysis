@@ -25,9 +25,15 @@ class TestNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Test>> getAllTestListOf(int childId) async {
-    FireStoreService store = FireStoreService();
-    List<Test> testListOfChild = await store.readTestList(childId);
+  List<Test> getAllTestListOf(int childId) {
+    List<Test> testListOfChild = [];
+
+    _testList.forEach((test) {
+      if(test.childId == childId) {
+        testListOfChild.add(test);
+      }
+    });
+    
     return testListOfChild;
   }
 

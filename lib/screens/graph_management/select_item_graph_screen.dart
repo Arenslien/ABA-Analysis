@@ -7,6 +7,7 @@ import 'package:aba_analysis/models/test_item.dart';
 import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:aba_analysis/screens/graph_management/item_graph_screen.dart';
 import 'package:aba_analysis/components/select_appbar.dart';
+import 'package:aba_analysis/screens/graph_management/no_test_data_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
@@ -28,7 +29,8 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
   // 전역변수
   late Map<String, TestItem> testItemAndsubItemNameMap = {};
   String selectedSubItem = "";
-
+  bool isNoTestData = false;
+  late List<Test> allTest;
   @override
   void initState() {
     super.initState();
@@ -36,6 +38,18 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
 
   @override
   Widget build(BuildContext context) {
+    allTest =
+        context.read<TestNotifier>().getAllTestListOf(widget.child.childId);
+
+    // for (Test test in allTest) {      // result가 null이라면
+    //   for (TestItem testItem in test.testItemList) {
+    //     if (testItem.result == null) {
+    //       isNoTestData = true;
+    //       break;
+    //     }
+    //   }
+    // }
+
     IconButton searchButton = IconButton(
       // 검색버튼
       icon: Icon(Icons.search),
@@ -47,25 +61,28 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
         });
       },
     );
+
     return Scaffold(
-        appBar: SelectAppBar(
-            context, (widget.child.name + "의 하위목록 선택"), searchButton),
-        body: selectedSubItem == ""
-            ? ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: widget.subField.subItemList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return dataTile(
-                      widget.subField.subItemList[index], index, context);
-                },
-              )
-            : ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: 1,
-                itemBuilder: (BuildContext context, int index) {
-                  return dataTile(selectedSubItem, index, context);
-                },
-              ));
+        appBar: SelectAppBar(context, (widget.child.name + "의 하위목록 선택"),
+            searchButton: searchButton),
+        body: isNoTestData
+            ? noTestData()
+            : selectedSubItem == ""
+                ? ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: widget.subField.subItemList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return dataTile(
+                          widget.subField.subItemList[index], index, context);
+                    },
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: 1,
+                    itemBuilder: (BuildContext context, int index) {
+                      return dataTile(selectedSubItem, index, context);
+                    },
+                  ));
   }
 
   Widget dataTile(String subItem, int index, BuildContext context) {
@@ -73,16 +90,16 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
       titleSize: 20,
       titleText: subItem,
       // subtitleText: "평균성공률: $average%",
-      onTap: () async {
+      onTap: () {
         List<SubItemAndDate> subItemList = [];
         // SubItemList 만들기
-        List<Test> allTest = await context
-            .read<TestNotifier>()
-            .getAllTestListOf(widget.child.childId);
+        // List<Test> allTest = context
+        //     .read<TestNotifier>()
+        //     .getAllTestListOf(widget.child.childId);
 
         for (Test test in allTest) {
           for (TestItem testItem in test.testItemList) {
-            if (testItem.subItem == subItem) {
+            if (testItem.subItem == subItem && testItem.result != null) {
               subItemList
                   .add(SubItemAndDate(testItem: testItem, date: test.date));
               break;
@@ -92,16 +109,43 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
         setState(() {
           selectedSubItem = "";
         });
-
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ItemGraphScreen(
-                      subItemList: subItemList,
-                      child: widget.child,
-                    ))); // 클릭시 realgraph로 이동한다. subItem을 넘겨줘야 한다. 필요하다면 subField나 programField까지 넘겨준다.
+        if (subItemList.isEmpty) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => NoTestData()));
+        } else {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ItemGraphScreen(
+                        subItemList: subItemList,
+                        child: widget.child,
+                      )));
+        }
       },
       trailing: Icon(Icons.keyboard_arrow_right),
+    );
+  }
+
+  Widget noTestData() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.auto_graph,
+            color: Colors.grey,
+            size: 150,
+          ),
+          Text(
+            'No Program Data',
+            style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+                fontSize: 40,
+                fontFamily: 'korean'),
+          ),
+        ],
+      ),
     );
   }
 }

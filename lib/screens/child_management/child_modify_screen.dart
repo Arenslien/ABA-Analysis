@@ -1,7 +1,10 @@
-import 'package:aba_analysis/models/child.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
+import 'package:aba_analysis/services/firestore.dart';
+import 'package:aba_analysis/provider/user_notifier.dart';
+import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:aba_analysis/components/show_dialog_delete.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
@@ -20,6 +23,8 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
   late String gender;
   List<bool> genderselected = [false, false];
   final formkey = GlobalKey<FormState>();
+
+  FireStoreService store = FireStoreService();
 
   @override
   void initState() {
@@ -68,17 +73,28 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                   Icons.check_rounded,
                   color: Colors.black,
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (formkey.currentState!.validate()) {
-                    Navigator.pop(
-                        context,
-                        Child(
-                          childId: widget.child.childId,
-                          teacherEmail: widget.child.teacherEmail,
-                          name: name,
-                          birthday: birthday,
-                          gender: gender,
-                        ));
+                    // 기존의 child 제거
+                    context.read<ChildNotifier>().removeChild(widget.child);
+
+                    // child 생성
+                    Child updatedChild = Child(
+                      childId: widget.child.childId, 
+                      teacherEmail: context.read<UserNotifier>().abaUser!.email,
+                      name: name, 
+                      birthday: birthday,
+                      gender: gender
+                    );
+
+                    // ChildNotifier 수정
+                    context.read<ChildNotifier>().addChild(updatedChild);
+
+                    // DB 수정
+                    await store.updateChild(widget.child.childId, name, birthday, gender);
+
+                    // 화면 전환
+                    Navigator.pop(context);
                   }
                 },
               ),
