@@ -81,11 +81,12 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                       return buildListTile(
                         titleText: context.watch<TestNotifier>().getAllTestListOf(widget.child.childId)[index].title,
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ChildTestItemScreen(child: widget.child, test: context.read<TestNotifier>().getAllTestListOf(widget.child.childId)[index])),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+
+                          //       builder: (context) => ChildTestItemScreen(child: widget.child, test: context.read<TestNotifier>().getAllTestListOf(widget.child.childId)[index])),
+                          // );
                         },
                         trailing: buildToggleButtons(
                           text: ['복사', '수정'],
@@ -101,7 +102,6 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                                   childId: widget.child.childId,
                                   title: test.title,
                                   date: DateTime.now(),
-                                  testItemList: test.testItemList,
                                 );
 
                                 // TestNotifer에 추가

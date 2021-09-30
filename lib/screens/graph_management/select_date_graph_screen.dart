@@ -3,11 +3,13 @@ import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/test.dart';
 import 'package:aba_analysis/models/test_item.dart';
+import 'package:aba_analysis/provider/test_item_notifier.dart';
 import 'package:aba_analysis/screens/graph_management/date_graph_screen.dart';
 import 'package:aba_analysis/components/select_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import 'no_test_data_screen.dart';
 
@@ -78,6 +80,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
                         return dataTile(
                           widget.testList[index],
                           index,
+                          context
                         );
                       },
                     )
@@ -89,6 +92,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
                         return dataTile(
                           testAndDateMap[selectedDate]!,
                           index,
+                          context
                         );
                       },
                     ),
@@ -118,16 +122,18 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     );
   }
 
-  Widget dataTile(Test test, int index) {
+  Widget dataTile(Test test, int index, BuildContext context) {
     return buildListTile(
       titleText: DateFormat(graphDateFormat).format(test.date),
-      subtitleText: "평균성공률: ${test.average}%",
+      subtitleText: "평균성공률: ${context.read<TestItemNotifier>().getAverage(test.testId)}%",
       onTap: () {
         setState(() {
           selectedDate = "";
         });
         bool notNull = true;
-        for (TestItem ti in test.testItemList) {
+
+        List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(test.testId);
+        for (TestItem ti in testItemList) {
           if (ti.result == null) {
             notNull = false;
           }
