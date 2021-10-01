@@ -6,9 +6,6 @@ class TestItem {
   final String programField;
   final String subField;
   final String subItem;
-  int plusCount = 0;
-  int minusCount = 0;
-  int pCount = 0;
   Result? _result;
 
   TestItem({ required this.testItemId, required this.testId, required this.programField, required this.subField, required this.subItem});
@@ -20,27 +17,11 @@ class TestItem {
       'program-field': programField,
       'sub-field': subField,
       'sub-item': subItem,
-      'plus-count': plusCount,
-      'minus-count': minusCount,
-      'p-count': pCount,
       'result': result,
     };
   }
 
   void setResult(Result? result) {
-    switch(result) {
-      case Result.plus:
-        plusCount = 1;
-        break;
-      case Result.minus:
-        minusCount = 1;
-        break;
-      case Result.p:
-        pCount = 1;
-        break;
-      default:
-        break;
-    }
     this._result = result;
   }
 
