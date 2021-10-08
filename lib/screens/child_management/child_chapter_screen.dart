@@ -1,3 +1,4 @@
+import 'package:aba_analysis/screens/chapter_management/test_input_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
@@ -35,7 +36,8 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
     super.initState();
 
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
-      testList = context.read<TestNotifier>().getAllTestListOf(widget.child.childId);
+      testList =
+          context.read<TestNotifier>().getAllTestListOf(widget.child.childId);
     });
 
     testCardList = convertChildToListTile(testList);
@@ -63,28 +65,27 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
           ),
           backgroundColor: mainGreenColor,
         ),
-        // body: widget.child.testList.length == 0
-        //     ? noListData(Icons.library_add_outlined, '테스트 추가')
-        //     : searchTextEditingController.text.isEmpty
-        //         ? ListView(children: testCardList)
-        //         : ListView(children: searchTestCardList),
+        body: testList.length == 0
+            ? noListData(Icons.library_add_outlined, '테스트 추가')
+            : searchTextEditingController.text.isEmpty
+                ? ListView(children: testCardList)
+                : ListView(children: searchTestCardList),
         floatingActionButton: FloatingActionButton(
           child: Icon(
             Icons.add_rounded,
             size: 40,
           ),
           onPressed: () async {
-            // final Test? newTest = await Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) =>
-            //         ChapterInputScreen(test: widget.child.testList),
-            //   ),
-            // );
-            // if (newTest != null)
-            //   setState(() {
-            //     widget.child.testList.add(newTest);
-            //   });
+            final Test? newTest = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TestInputScreen(child: widget.child),
+              ),
+            );
+            if (newTest != null)
+              setState(() {
+                // widget.child.testList.add(newTest);
+              });
           },
           backgroundColor: Colors.black,
         ),

@@ -1,4 +1,6 @@
+import 'package:aba_analysis/components/show_date_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
@@ -17,7 +19,8 @@ class ChildInputScreen extends StatefulWidget {
 class _ChildInputScreenState extends State<ChildInputScreen> {
   _ChildInputScreenState();
   late String name;
-  late int age;
+  late DateTime birth;
+  TextEditingController dateTextEditingController = TextEditingController();
   late String gender;
   final List<bool> genderSelected = [false, false];
   bool? isGenderSelected;
@@ -95,9 +98,12 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
               ),
               buildTextFormField(
                 text: '생년월일',
-                onChanged: (val) {
-                  setState(() {
-                    //age = val;
+                controller: dateTextEditingController,
+                onTap: () {
+                  setState(() async {
+                    birth = await getDate(context);
+                    dateTextEditingController.text =
+                        DateFormat('yyyyMMdd').format(birth);
                   });
                 },
                 validator: (val) {
