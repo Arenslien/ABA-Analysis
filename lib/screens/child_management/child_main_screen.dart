@@ -18,38 +18,7 @@ class ChildMainScreen extends StatefulWidget {
 }
 
 class _ChildMainScreenState extends State<ChildMainScreen> {
-  List<Child> childList = [
-    Child(
-        childId: 1,
-        teacherEmail: 'teacherEmail',
-        name: '짱구',
-        birthday: DateTime.now(),
-        gender: '남자'),
-        Child(
-        childId: 2,
-        teacherEmail: 'teacherEmail',
-        name: '철수',
-        birthday: DateTime.now(),
-        gender: '남자'),
-        Child(
-        childId: 3,
-        teacherEmail: 'teacherEmail',
-        name: '맹구',
-        birthday: DateTime.now(),
-        gender: '남자'),
-        Child(
-        childId: 4,
-        teacherEmail: 'teacherEmail',
-        name: '유리',
-        birthday: DateTime.now(),
-        gender: '남자'),
-        Child(
-        childId: 5,
-        teacherEmail: 'teacherEmail',
-        name: '훈발놈',
-        birthday: DateTime.now(),
-        gender: '남자'),
-  ];
+  List<Child> childList = [];
   List<Child> searchResult = [];
   List<Widget> childCardList = [];
   List<Widget> searchChildCardList = [];
@@ -58,14 +27,14 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
   @override
   void initState() {
     super.initState();
-    /*
-    // childList 초기화
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
-      childList = context.read<ChildNotifier>().children;
-    });*/
-    // childList를 ListTile로 변환
-    childCardList = convertChildToListTile(childList);
-    
+
+    //childList 초기화
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      setState(() {
+        childList = context.read<ChildNotifier>().children;
+      });
+    });
+    //childList를 ListTile로 변환
   }
 
   @override
@@ -86,7 +55,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                     searchResult.add(childList[i]);
                   }
                 }
-                searchChildCardList = convertChildToListTile(searchResult);
+                // searchChildCardList = convertChildToListTile(searchResult);
               });
             },
             onPressed: () {
@@ -97,25 +66,27 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
         body: childList.length == 0
             ? noListData(Icons.group, '아동 추가')
             : searchTextEditingController.text.isEmpty
-                ? ListView(children: childCardList)
+                ? ListView.separated(
+                    itemCount: context.watch<ChildNotifier>().children.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return test(
+                          context.watch<ChildNotifier>().children[index]);
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider();
+                    },
+                  )
                 : ListView(children: searchChildCardList),
         floatingActionButton: FloatingActionButton(
           child: Icon(
             Icons.add_rounded,
             size: 40,
           ),
-          onPressed: () async {
-            final Child? newChildData = await Navigator.push(
+          onPressed: () {
+            Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => ChildInputScreen(),
-              ),
+              MaterialPageRoute(builder: (context) => ChildInputScreen()),
             );
-            if (newChildData != null) {
-              setState(() {
-                childList.add(newChildData);
-              });
-            }
           },
           backgroundColor: Colors.black,
         ),
@@ -123,48 +94,41 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
     );
   }
 
-  List<Widget> convertChildToListTile(List<Child> childList) {
-    List<Widget> list = [];
+  // List<Widget> convertChildToListTile(List<Child> childList) {
+  //   List<Widget> list = [];
 
-    if (childList.length != 0) {
-      childList.forEach((Child child) {
-        // 리스트 타일 생성
-        Widget listTile = buildListTile(
-          titleText: child.name,
-          onTap: () {
+  //   if (childList.length != 0) {
+  //     childList.forEach((Child child) {
+  //       // 리스트 타일 생성
+  //       Widget listTile =  newMethod(child, childList);
+  //       list.add(listTile);
+  //     });
+  //   }
+  //   return list;
+  // }
+
+  Widget test(Child child) {
+    return buildListTile(
+      titleText: child.name,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ChildChapterScreen(child: child)),
+        );
+      },
+      trailing: buildToggleButtons(
+        text: ['그래프', '설정'],
+        onPressed: (idx) {
+          if (idx == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ChildChapterScreen(child: child)),
+                  builder: (context) => ChildModifyScreen(child: child)),
             );
-          },
-          trailing: buildToggleButtons(
-            text: ['그래프', '설정'],
-            onPressed: (idx) async {
-              if (idx == 1) {
-                final Child? editChild = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ChildModifyScreen(child: child)),
-                );
-                setState(() {
-                  if (editChild!.name == '') {
-                    childList.removeAt(childList.indexWhere(
-                        (element) => element.childId == child.childId));
-                  } else {
-                    childList[childList.indexWhere(
-                            (element) => element.childId == child.childId)] =
-                        editChild;
-                  }
-                  searchTextEditingController.text = '';
-                });
-              }
-            },
-          ),
-        );
-        list.add(listTile);
-      });
-    }
-    return list;
+          }
+        },
+      ),
+    );
   }
 }

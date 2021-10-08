@@ -1,4 +1,5 @@
 import 'package:aba_analysis/components/show_date_picker.dart';
+import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +33,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Form(
+        key: formkey,
         child: Scaffold(
           appBar: AppBar(
             title: Text(
@@ -60,20 +62,21 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                       isGenderSelected = false;
                     });
                   if (formkey.currentState!.validate() && isGenderSelected!) {
-                    // Firestore에 아동 추가
-
-                    // Provider ChildNotifier 수정
-                    Navigator.pop(
-                      context,
-                      Child(
+                    Child child = Child(
                         childId: await _store.updateId(AutoID.child),
                         teacherEmail:
                             context.read<UserNotifier>().abaUser!.email,
                         name: name,
-                        birthday: DateTime.now(),
-                        gender: gender,
-                      ),
-                    );
+                        birthday: birth,
+                        gender: gender);
+
+                    // Firestore에 아동 추가
+                    await _store.createChild(child);
+
+                    // Provider ChildNotifier 수정
+                    context.read<ChildNotifier>().addChild(child);
+
+                    Navigator.pop(context);
                   }
                 },
               ),
@@ -99,9 +102,9 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
               buildTextFormField(
                 text: '생년월일',
                 controller: dateTextEditingController,
-                onTap: () {
-                  setState(() async {
-                    birth = await getDate(context);
+                onTap: () async {
+                  birth = await getDate(context);
+                  setState(() {
                     dateTextEditingController.text =
                         DateFormat('yyyyMMdd').format(birth);
                   });

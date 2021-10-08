@@ -1,9 +1,9 @@
-import 'package:aba_analysis/components/show_date_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/services/firestore.dart';
+import 'package:aba_analysis/components/show_date_picker.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class TestInputScreen extends StatefulWidget {
@@ -27,11 +27,6 @@ class _TestInputScreenState extends State<TestInputScreen> {
   FireStoreService store = FireStoreService();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -40,7 +35,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              '챕터 추가',
+              '테스트 추가',
               style: TextStyle(color: Colors.black),
             ),
             centerTitle: true,
@@ -93,9 +88,9 @@ class _TestInputScreenState extends State<TestInputScreen> {
                 buildTextFormField(
                   controller: dateTextEditingController,
                   text: '날짜',
-                  onTap: () {
+                  onTap: () async {
+                    date = await getDate(context);
                     setState(() {
-                      date = getDate(context);
                       dateTextEditingController.text =
                           DateFormat('yyyyMMdd').format(date);
                     });
@@ -109,7 +104,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                   inputType: 'number',
                 ),
                 buildTextFormField(
-                  text: '챕터 이름',
+                  text: '테스트 이름',
                   onChanged: (val) {
                     setState(() {
                       title = val;
@@ -127,7 +122,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('콘텐츠 목록'),
+                      Text('테스트 아이템 목록'),
                       IconButton(
                         icon: Icon(Icons.add_rounded),
                         onPressed: () {
@@ -160,15 +155,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
   }
 
   buildItemListTile() async {
-    int tileId = 1;
-    // int testItemId = await _store.updateId(AutoID.testItem);
-    // widget.test.testItemList.add(TestItem(
-    //   testItemId,
-    //   widget.test.testId,
-    //   '_programField',
-    //   '_subField',
-    //   '_subItem',
-    // ));
+    int testItemId = await _store.updateId(AutoID.testItem);
     TextEditingController textEditingController = TextEditingController();
 
     //int len = widget.test.testItemList.length;
@@ -188,7 +175,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
     // }
     itemCardList.add(
       ContentListTile(
-        tileId: 1,
+        tileId: testItemId,
         tileWidget: Row(
           children: [
             Flexible(
@@ -216,7 +203,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                 onPressed: () {
                   setState(() {
                     itemCardList
-                        .removeWhere((element) => element.tileId == tileId);
+                        .removeWhere((element) => element.tileId == testItemId);
                   });
                 },
               ),
