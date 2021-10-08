@@ -1,9 +1,8 @@
-import 'package:aba_analysis/models/child.dart';
+import 'package:aba_analysis/components/show_date_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/constants.dart';
-import 'package:aba_analysis/models/test.dart';
-import 'package:aba_analysis/models/test_item.dart';
+import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
@@ -18,11 +17,11 @@ class TestInputScreen extends StatefulWidget {
 class _TestInputScreenState extends State<TestInputScreen> {
   _TestInputScreenState();
   late DateTime date;
+  TextEditingController dateTextEditingController = TextEditingController(
+      text: DateFormat('yyyyMMdd').format(DateTime.now()));
   late String title;
   List<ContentListTile> itemCardList = [];
   FireStoreService _store = FireStoreService();
-  TextEditingController dateTextEditingController = TextEditingController(
-      text: DateFormat('yyyyMMdd').format(DateTime.now()));
   final formkey = GlobalKey<FormState>();
 
   FireStoreService store = FireStoreService();
@@ -90,94 +89,70 @@ class _TestInputScreenState extends State<TestInputScreen> {
           ),
           body: SafeArea(
             child: Column(
-                children: [
-                  buildTextFormField(
-                    controller: dateTextEditingController,
-                    text: '날짜',
-                    onChanged: (val) {
-                      setState(() {
-                        date = DateFormat('yyyyMMdd').parse(val);
-                      });
-                    },
-                    onTap: () {
-                      setState(() async {
-                        DateTime? selectedDate = await showDatePicker(
-                          context: context,
-                          cancelText: '취소',
-                          confirmText: '확인',
-                          fieldLabelText: '날짜 설정',
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2018),
-                          lastDate: DateTime(2030),
-                          builder: (context, child) {
-                            return Theme(
-                              data: ThemeData.dark(),
-                              child: child!,
-                            );
-                          },
-                        );
-                        dateTextEditingController.text =
-                            DateFormat('yyyyMMdd').format(selectedDate!);
-                      });
-                    },
-                    validator: (val) {
-                      if (val!.length != 8) {
-                        return 'YYYYMMDD';
-                      }
-                      return null;
-                    },
-                    inputType: 'number',
-                  ),
-                  buildTextFormField(
-                    text: '챕터 이름',
-                    onChanged: (val) {
-                      setState(() {
-                        title = val;
-                      });
-                    },
-                    validator: (val) {
-                      if (val!.length < 1) {
-                        return '이름은 필수사항입니다.';
-                      }
-                      return null;
-                    },
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('콘텐츠 목록'),
-                        IconButton(
-                          icon: Icon(Icons.add_rounded),
-                          onPressed: () async {
-                            // 프로그램 영역 & 하위 영역 & 하위 목록 선택하는 드롭박스 형태 위젯
+              children: [
+                buildTextFormField(
+                  controller: dateTextEditingController,
+                  text: '날짜',
+                  onTap: () {
+                    setState(() {
+                      date = getDate(context);
+                      dateTextEditingController.text =
+                          DateFormat('yyyyMMdd').format(date);
+                    });
+                  },
+                  validator: (val) {
+                    if (val!.length != 8) {
+                      return 'YYYYMMDD';
+                    }
+                    return null;
+                  },
+                  inputType: 'number',
+                ),
+                buildTextFormField(
+                  text: '챕터 이름',
+                  onChanged: (val) {
+                    setState(() {
+                      title = val;
+                    });
+                  },
+                  validator: (val) {
+                    if (val!.length < 1) {
+                      return '이름은 필수사항입니다.';
+                    }
+                    return null;
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('콘텐츠 목록'),
+                      IconButton(
+                        icon: Icon(Icons.add_rounded),
+                        onPressed: () {
+                          // 프로그램 영역 & 하위 영역 & 하위 목록 선택하는 드롭박스 형태 위젯
 
+                          // 리스트에 테스트 아이템 담기
 
-
-                            // 리스트에 테스트 아이템 담기 
-                            
-                            
-                            
-                            
-                            setState(() {
-                              buildItemListTile();
-                            });
-                          },
-                        ),
-                      ],
-                    ),
+                          setState(() {
+                            buildItemListTile();
+                          });
+                        },
+                      ),
+                    ],
                   ),
-                  Flexible(
-                    child: ListView.builder(
-                      itemCount: itemCardList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return itemCardList[index].tileWidget!;
-                      },
-                    ),
+                ),
+                Flexible(
+                  child: ListView.builder(
+                    itemCount: itemCardList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return itemCardList[index].tileWidget!;
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -185,7 +160,8 @@ class _TestInputScreenState extends State<TestInputScreen> {
   }
 
   buildItemListTile() async {
-    int testItemId = await _store.updateId(AutoID.testItem);
+    int tileId = 1;
+    // int testItemId = await _store.updateId(AutoID.testItem);
     // widget.test.testItemList.add(TestItem(
     //   testItemId,
     //   widget.test.testId,
@@ -212,7 +188,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
     // }
     itemCardList.add(
       ContentListTile(
-        tileId: testItemId,
+        tileId: 1,
         tileWidget: Row(
           children: [
             Flexible(
@@ -236,7 +212,14 @@ class _TestInputScreenState extends State<TestInputScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
               child: IconButton(
-                  icon: Icon(Icons.remove_rounded), onPressed: () {}),
+                icon: Icon(Icons.remove_rounded),
+                onPressed: () {
+                  setState(() {
+                    itemCardList
+                        .removeWhere((element) => element.tileId == tileId);
+                  });
+                },
+              ),
             ),
           ],
         ),

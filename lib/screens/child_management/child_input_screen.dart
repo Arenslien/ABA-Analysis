@@ -1,5 +1,6 @@
-import 'package:aba_analysis/provider/child_notifier.dart';
+import 'package:aba_analysis/components/show_date_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
@@ -18,8 +19,8 @@ class ChildInputScreen extends StatefulWidget {
 class _ChildInputScreenState extends State<ChildInputScreen> {
   _ChildInputScreenState();
   late String name;
-  late int age;
-  late DateTime birthday = DateTime.now();
+  late DateTime birth;
+  TextEditingController dateTextEditingController = TextEditingController();
   late String gender;
   final List<bool> genderSelected = [false, false];
   bool? isGenderSelected;
@@ -31,7 +32,6 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Form(
-        key: formkey,
         child: Scaffold(
           appBar: AppBar(
             title: Text(
@@ -60,22 +60,20 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                       isGenderSelected = false;
                     });
                   if (formkey.currentState!.validate() && isGenderSelected!) {
-                    // 아동 생성
-                    Child child = Child(
-                      childId: await _store.updateId(AutoID.child),
-                      teacherEmail: context.read<UserNotifier>().abaUser!.email,
-                      name: name,
-                      birthday: birthday,
-                      gender: gender,
-                    );
                     // Firestore에 아동 추가
-                    await _store.createChild(child);
 
                     // Provider ChildNotifier 수정
-                    context.read<ChildNotifier>().addChild(child);
-
-                    // Screen 전환
-                    Navigator.pop(context);
+                    Navigator.pop(
+                      context,
+                      Child(
+                        childId: await _store.updateId(AutoID.child),
+                        teacherEmail:
+                            context.read<UserNotifier>().abaUser!.email,
+                        name: name,
+                        birthday: DateTime.now(),
+                        gender: gender,
+                      ),
+                    );
                   }
                 },
               ),
@@ -100,9 +98,12 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
               ),
               buildTextFormField(
                 text: '생년월일',
-                onChanged: (val) {
-                  setState(() {
-                    //age = val;
+                controller: dateTextEditingController,
+                onTap: () {
+                  setState(() async {
+                    birth = await getDate(context);
+                    dateTextEditingController.text =
+                        DateFormat('yyyyMMdd').format(birth);
                   });
                 },
                 validator: (val) {

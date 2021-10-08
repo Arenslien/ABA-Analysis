@@ -1,11 +1,12 @@
-import 'package:aba_analysis/models/child.dart';
-import 'package:aba_analysis/provider/child_notifier.dart';
-import 'package:aba_analysis/provider/user_notifier.dart';
-import 'package:aba_analysis/services/firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
-import 'package:provider/provider.dart';
+import 'package:aba_analysis/services/firestore.dart';
+import 'package:aba_analysis/provider/user_notifier.dart';
+import 'package:aba_analysis/provider/child_notifier.dart';
+import 'package:aba_analysis/components/show_date_picker.dart';
 import 'package:aba_analysis/components/show_dialog_delete.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
@@ -20,7 +21,8 @@ class ChildModifyScreen extends StatefulWidget {
 class _ChildModifyScreenState extends State<ChildModifyScreen> {
   _ChildModifyScreenState();
   late String name;
-  late DateTime birthday;
+  late DateTime birth;
+  TextEditingController dateTextEditingController = TextEditingController();
   late String gender;
   List<bool> genderselected = [false, false];
   final formkey = GlobalKey<FormState>();
@@ -30,11 +32,11 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
   @override
   void initState() {
     super.initState();
-    //widget.child.childId,
-    //widget.child.teacherUid,
     name = widget.child.name;
-    birthday = widget.child.birthday;
+    birth = widget.child.birthday;
     gender = widget.child.gender;
+    dateTextEditingController.text =
+        DateFormat('yyyyMMdd').format(widget.child.birthday);
   }
 
   @override
@@ -81,18 +83,19 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
 
                     // child 생성
                     Child updatedChild = Child(
-                      childId: widget.child.childId, 
-                      teacherEmail: context.read<UserNotifier>().abaUser!.email,
-                      name: name, 
-                      birthday: birthday,
-                      gender: gender
-                    );
+                        childId: widget.child.childId,
+                        teacherEmail:
+                            context.read<UserNotifier>().abaUser!.email,
+                        name: name,
+                        birthday: birth,
+                        gender: gender);
 
                     // ChildNotifier 수정
                     context.read<ChildNotifier>().addChild(updatedChild);
 
                     // DB 수정
-                    await store.updateChild(widget.child.childId, name, birthday, gender);
+                    await store.updateChild(
+                        widget.child.childId, name, birth, gender);
 
                     // 화면 전환
                     Navigator.pop(context);
@@ -121,10 +124,12 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
               ),
               buildTextFormField(
                 text: '생년월일',
-                initialValue: widget.child.birthday.toString(),
-                onChanged: (val) {
-                  setState(() {
-                    //age = val;
+                controller: dateTextEditingController,
+                onTap: () {
+                  setState(() async {
+                    birth = await getDate(context);
+                    dateTextEditingController.text =
+                        DateFormat('yyyyMMdd').format(birth);
                   });
                 },
                 validator: (val) {

@@ -31,6 +31,6 @@ class _WrapperState extends State<Wrapper> {
     User? user = context.watch<User?>();
 
     // return 홈스크린 or 인증스크린
-    return user == null? SignInScreen() : HomeScreen();
+    return HomeScreen();
   }
 }

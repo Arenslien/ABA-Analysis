@@ -1,5 +1,5 @@
-import 'package:aba_analysis/models/child.dart';
 import 'package:flutter/foundation.dart';
+import 'package:aba_analysis/models/child.dart';
 
 class ChildNotifier extends ChangeNotifier {
   // 교사가 맡고 있는 아이들을 관리하는 리스트
