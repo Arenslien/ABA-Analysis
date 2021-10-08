@@ -2,6 +2,10 @@ import 'dart:collection';
 
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/aba_user.dart';
+import 'package:aba_analysis/provider/child_notifier.dart';
+import 'package:aba_analysis/provider/program_field_notifier.dart';
+import 'package:aba_analysis/provider/test_item_notifier.dart';
+import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
@@ -93,19 +97,22 @@ class _SignInFormState extends State<SignInForm> {
             AuthDefaultButton(
               text: '로그인',
               onPress: () async {
-                if (checkEmailForm() && checkPasswordForm()) {
-                  // UserNotifier 업데이트
+                if (checkEmailForm() && checkPasswordForm() && await checkEmailAndPasswordForm()) {
+                  // Provider 업데이트
                   context.read<UserNotifier>().updateUser(await _store.readUser(email));
-
+                  context.read<ChildNotifier>().updateChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
+                  context.read<ProgramFieldNotifier>().updateProgramFieldList(await _store.readProgramField());
+                  context.read<TestNotifier>().updateTest(await _store.readAllTest());
+                  context.read<TestItemNotifier>().updateTestItem(await _store.readAllTestItem());
                   // 로그인
-                  ABAUser? abaUser = await _auth.signInWithUserInformation(email, password);
-
-                  // final snackBar = SnackBar(
-                  //   content: Text('로그인 실패!'),
-                  //   backgroundColor: Colors.red,
-                  //   duration: Duration(milliseconds: 800),
-                  // );
-                  // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  await _auth.signIn(email, password);
+                } else {
+                  final snackBar = SnackBar(
+                    content: Text('로그인 실패!'),
+                    backgroundColor: Colors.red,
+                    duration: Duration(milliseconds: 800),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
               },
             ),
@@ -129,7 +136,7 @@ class _SignInFormState extends State<SignInForm> {
     else if (!emailValidatorRegExp.hasMatch(email)) {
       setState(() => errors.add(kInvalidEmailError));
       result = false;
-    }  
+    } 
     return result;
   }
 
@@ -142,10 +149,16 @@ class _SignInFormState extends State<SignInForm> {
     else if(password.length < 8) {
       setState(() => errors.add(kShortPassError));
       result = false;
-    }
-
-    // else if(password == e);
-    
+    }    
     return result;
+  }
+
+  Future<bool> checkEmailAndPasswordForm() async {
+    ABAUser? abaUser = await _store.readUser(email);
+    if (abaUser != null && abaUser.password == password) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

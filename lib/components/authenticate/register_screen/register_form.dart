@@ -27,8 +27,8 @@ class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
 
   // auth instance
-  AuthService _auth = AuthService();
-  FireStoreService _fireStore = FireStoreService();
+  AuthService auth = AuthService();
+  FireStoreService fireStore = FireStoreService();
 
   // 이메일 & 패스워드 & 이름 휴대 전화 번호
   String email = '';
@@ -138,16 +138,19 @@ class _RegisterFormState extends State<RegisterForm> {
               onPress: () async {
                 if (await checkEmailForm() && checkPasswordAndConfirmPasswordForm() && 
                     checkNameForm() && checkPhoneNumberForm()) {
-                  // 회원가입
-                  ABAUser? abaUser = await _auth.registerWithUserInformation(email, password, name, phone);
-
-                  WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
-                    context.read<UserNotifier>().updateUser(abaUser);
-                  });
+                  // 회원가입 승인 요청
+                  await fireStore.createUser(ABAUser(
+                    email: email,
+                    password: password,
+                    name: name, 
+                    phone: phone, 
+                    duty: '치료자', 
+                    approvalStatus: false
+                  ));                  
 
                   // 토스트 메시지
                   Fluttertoast.showToast(
-                    msg: '회원가입이 완료되었습니다',
+                    msg: '회원가입 승인 요청이 되었습니다.',
                     toastLength: Toast.LENGTH_SHORT,
                     backgroundColor: Colors.greenAccent,
                     fontSize: 16.0
@@ -173,11 +176,11 @@ class _RegisterFormState extends State<RegisterForm> {
       setState(() => errors.add(kInvalidEmailError));
       result = false;
     }
-    else if ((await _fireStore.checkUserWithEmail(email))) {
+    else if ((await fireStore.checkUserWithEmail(email))) {
       setState(() => errors.add(kExistedEmailError));
       result = false;
     }
-    else if (!(await _fireStore.checkUserWithEmail(email))) {
+    else if (!(await fireStore.checkUserWithEmail(email))) {
       setState(() => errors.remove(kExistedEmailError));
     }
     

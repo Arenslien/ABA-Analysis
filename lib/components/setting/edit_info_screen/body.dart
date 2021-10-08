@@ -32,6 +32,7 @@ class _BodyState extends State<Body> {
               children: [
                 // 백그라운드 배경
                 Container(
+                  width: double.infinity,
                   margin: EdgeInsets.only(top: getProportionateScreenHeight(120)),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -82,12 +83,12 @@ class _BodyState extends State<Body> {
                           onPress: () async {
                             ABAUser abaUser = context.read<UserNotifier>().abaUser!;
                             // 해당 Form 내용으로 사용자 정보 수정
-                            store.updateUser(abaUser.email, name, phone, duty);
+                            store.updateUser(abaUser.email, name, phone, duty, true);
 
                             // 수정 완료 메시지
 
                             // 서버로부터 ABAUser 정보 받기
-                            ABAUser updatedAbaUser = await store.readUser(abaUser.email);
+                            ABAUser? updatedAbaUser = await store.readUser(abaUser.email);
 
                             // abaUser 수정
                             context.read<UserNotifier>().updateUser(updatedAbaUser);
