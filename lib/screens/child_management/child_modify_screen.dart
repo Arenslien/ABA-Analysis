@@ -68,7 +68,19 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                   color: Colors.black,
                 ),
                 onPressed: () {
-                  showDialogDelete('아동', context);
+                  showDialogYesOrNo(
+                    context: context,
+                    title: '아동 삭제',
+                    text: '해당 아동에 데이터를 삭제 하시겠습니까?',
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      // 기존의 child 제거
+                      context.read<ChildNotifier>().removeChild(widget.child);
+                      // DB 수정
+                      await store.deleteChild(widget.child.childId);
+                    },
+                  );
                 },
               ),
               IconButton(

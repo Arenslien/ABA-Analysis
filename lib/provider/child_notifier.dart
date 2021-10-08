@@ -20,6 +20,7 @@ class ChildNotifier extends ChangeNotifier {
   // 아이 삭제
   void removeChild(Child child) {
     _children.remove(child);
+    notifyListeners();
   }
 
   Child? getChild(int childId) {

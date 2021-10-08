@@ -1,4 +1,3 @@
-import 'package:aba_analysis/screens/chapter_management/test_input_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
@@ -11,7 +10,8 @@ import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/build_no_list_widget.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
-import 'package:aba_analysis/screens/chapter_management/chapter_input_screen.dart';
+import 'package:aba_analysis/screens/test_management/test_input_screen.dart';
+import 'package:aba_analysis/screens/test_management/chapter_input_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_get_result_screen.dart';
 
 class ChildChapterScreen extends StatefulWidget {
@@ -35,9 +35,11 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
-      testList =
-          context.read<TestNotifier>().getAllTestListOf(widget.child.childId);
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      setState(() {
+        testList =
+            context.read<TestNotifier>().getAllTestListOf(widget.child.childId);
+      });
     });
 
     testCardList = convertChildToListTile(testList);
