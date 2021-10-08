@@ -44,11 +44,10 @@ class _MyAppState extends State<MyApp> {
     // 로그인 유지일 경우 사용자 정보를 DB에서 가져옴
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       context.read<UserNotifier>().updateUser(await _auth.abaUser);
-      context.read<ChildNotifier>().updateChildren(await _store
-          .readAllChild(context.read<UserNotifier>().abaUser!.email));
-      context
-          .read<ProgramFieldNotifier>()
-          .updateProgramFieldList(await _store.readProgramField());
+      if(context.read<UserNotifier>().abaUser != null) {
+        context.read<ChildNotifier>().updateChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
+      }
+      context.read<ProgramFieldNotifier>().updateProgramFieldList(await _store.readProgramField());
       context.read<TestNotifier>().updateTest(await _store.readAllTest());
       context
           .read<TestItemNotifier>()

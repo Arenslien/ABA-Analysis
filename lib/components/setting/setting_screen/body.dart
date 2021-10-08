@@ -1,11 +1,4 @@
 import 'package:aba_analysis/components/setting/setting_default_button.dart';
-import 'package:aba_analysis/constants.dart';
-import 'package:aba_analysis/models/child.dart';
-import 'package:aba_analysis/models/program_field.dart';
-import 'package:aba_analysis/models/sub_field.dart';
-import 'package:aba_analysis/models/test.dart';
-import 'package:aba_analysis/models/test_item.dart';
-import 'package:aba_analysis/provider/program_field_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
@@ -21,7 +14,7 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  // 
+  AuthService auth = AuthService();
   FireStoreService store = FireStoreService();
 
   @override
@@ -34,6 +27,7 @@ class _BodyState extends State<Body> {
               children: [
                 // 백그라운드 배경
                 Container(
+                  width: double.infinity,
                   margin: EdgeInsets.only(top: getProportionateScreenHeight(120)),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -49,75 +43,48 @@ class _BodyState extends State<Body> {
                       getProportionateScreenWidth(35),
                       getProportionateScreenWidth(35),
                     ),
-                    child: SettingListView(),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(
-                    horizontal: getProportionateScreenWidth(15),
-                    vertical: getProportionateScreenHeight(15),
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10.0),
-                    boxShadow: [
-                      BoxShadow(
-                        offset: Offset(0, 15),
-                        blurRadius: 23,
-                        color: Colors.black26,
-                      )
-                    ]
-                  ),
-                  height: getProportionateScreenHeight(230),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20.0,
-                      vertical: 20.0
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(minRadius:50.0),
-                            SizedBox(width: 30.0),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  context.watch<UserNotifier>().abaUser!.name, 
-                                  style: TextStyle(
-                                    fontSize: 30.0,
-                                    fontWeight: FontWeight.bold
-                                  ),
-                                ),
-                                Text(
-                                  context.watch<UserNotifier>().abaUser!.email, 
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        Text(
-                          context.watch<UserNotifier>().abaUser!.phone, 
-                          style: TextStyle(
-                            fontSize: 18.0,
-                          ),
-                        ),
-                        Text(
-                          context.watch<UserNotifier>().abaUser!.duty, 
-                          style: TextStyle(
-                            fontSize: 18.0,
-                          ),
+                    child: SettingButtonListView(
+                      settingButtons: [
+                        SettingDefaultButton(text: '내정보 수정', onTap: () {
+                          // 내정보 수정 페이지로 이동
+                          Navigator.pushNamed(context, '/edit_info');
+                        }),
+                        SettingDefaultButton(text: '비밀번호 변경', onTap: () {
+                          // 비밀번호 변경 로직
+                          print('비밀번호 변경을 위한 메일이 전송되었습니다.');
+                          auth.resetPassword(context.read<UserNotifier>().abaUser!.email);
+                        }),
+                        SettingDefaultButton(text: '로그아웃', onTap: () {
+                          // Firebase Authentication 로그아웃
+                          auth.signOut();
+
+                          context.read<UserNotifier>().updateUser(null);
+                        }),
+                        SettingDefaultButton(text: '회원 탈퇴', onTap: () {
+                          if (context.read<UserNotifier>().abaUser!.duty == '관리자') {
+                            print('관리자는 회원 탈퇴할 수 없습니다.');
+                          } else {
+                            // Alert Dialog
+                          // AlertDialog(
+                          //   title: Text('정말 회원 탈퇴를 하시겠습니까?'),
+
+                          // );
+                            store.deleteUser(context.read<UserNotifier>().abaUser!.email);
+                            auth.deleteAuthUser();
+                          }
+                        }),
+                        Visibility(
+                          visible: context.watch<UserNotifier>().abaUser!.duty == '관리자'? true:false,
+                          child: SettingDefaultButton(text: '회원가입 승인', onTap: () async {
+                            context.read<UserNotifier>().updateUnapprovedUser(await store.readUnapprovedUser());
+                            Navigator.pushNamed(context, '/approve_registration');                            
+                          }),
                         ),
                       ],
                     ),
                   ),
                 ),
+                UserInfoCard(),
               ],
             ),
           ),
@@ -127,91 +94,91 @@ class _BodyState extends State<Body> {
   }
 }
 
-class SettingListView extends StatelessWidget {
-  const SettingListView({
+class UserInfoCard extends StatelessWidget {
+  const UserInfoCard({
     Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: getProportionateScreenWidth(15),
+        vertical: getProportionateScreenHeight(15),
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.0),
+        boxShadow: [
+          BoxShadow(
+            offset: Offset(0, 15),
+            blurRadius: 23,
+            color: Colors.black26,
+          )
+        ]
+      ),
+      height: getProportionateScreenHeight(230),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: 20.0,
+          vertical: 20.0
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      context.watch<UserNotifier>().abaUser!.name, 
+                      style: TextStyle(
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    Text(
+                      context.watch<UserNotifier>().abaUser!.email, 
+                      style: TextStyle(
+                        fontSize: 18.0,
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+            Text(
+              context.watch<UserNotifier>().abaUser!.phone, 
+              style: TextStyle(
+                fontSize: 18.0,
+              ),
+            ),
+            Text(
+              context.watch<UserNotifier>().abaUser!.duty, 
+              style: TextStyle(
+                fontSize: 18.0,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SettingButtonListView extends StatelessWidget {
+  final List<Widget> settingButtons;
+  const SettingButtonListView({
+    Key? key, required this.settingButtons,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        SettingDefaultButton(text: '내정보 수정', onTap: () {
-          // 내정보 수정 페이지로 이동
-          Navigator.pushNamed(context, '/edit_info');
-        }),
-        SettingDefaultButton(text: '비밀번호 변경', onTap: () {
-          // 비밀번호 변경 로직
-        }),
-        SettingDefaultButton(text: '로그아웃', onTap: () {
-          // 로그아웃을 위한 AuthService 인스턴스 생성
-          AuthService _auth = AuthService();
-
-          // Firebase Authentication 로그아웃
-          _auth.signOut();
-
-          context.read<UserNotifier>().updateUser(null);
-        }),
-        SettingDefaultButton(text: '회원 탈퇴', onTap: () {
-          // 1. 어드민 계정으로 알림이 감
-          
-          // 1. 어드민 계정에서 허락할 시 회원 탈퇴
-
-          // 방안 2. 그냥 일반 삭제
-
-
-          // Alert Dialog
-          // AlertDialog(
-          //   title: Text('정말 회원 탈퇴를 하시겠습니까?'),
-            
-          // );
-        }),
-        SettingDefaultButton(text: '테스트용', onTap: () async {
-          FireStoreService _store = FireStoreService();
-          // Child child = Child(
-          //   childId: await _store.updateId(AutoID.child), 
-          //   teacherEmail: context.read<UserNotifier>().abaUser!.email, 
-          //   name: '하성렬', 
-          //   birthday: DateTime(2000, 5, 6), 
-          //   gender: '남자', 
-          // );
-          // _store.createChild(child);
-
-          // List<ProgramField> programFieldList = context.read<ProgramFieldNotifier>().programFieldList;
-
-          // for (ProgramField programField in programFieldList) {
-          //   print(programField.title);
-            
-          //   List<SubField> subFieldList = programField.subFieldList;
-          //   for (SubField subField in subFieldList) {
-          //     print(subField.subFieldName);
-          //     print(subField.subItemList);
-          //   }
-
-          // }
-
-          // List<Test> testList = await _store.readTestList(1);
-          // for (Test test in testList) {
-          //   print(test.toString());
-          // }
-          
-
-          
-
-          await _store.readAllTest();
-          print('완료');
-          // List<Child> children = await _store.readAllChild(context.read<UserNotifier>().abaUser!.email);
-          // for (int i=0; i<children.length; i++) {
-          //   print(children[i].name);
-          // }
-          // List<Child> children2 = await _store.readAllChild('hippo9851@gmail.com');
-          // for (int i=0; i<children2.length; i++) {
-          //   print(children2[i].name);
-          // }
-          // _store.createTest(child, test);
-        }),
-      ],
+      children: settingButtons,
     );
   }
 }

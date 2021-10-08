@@ -104,6 +104,4 @@ class _HomeScreenState extends State<HomeScreen> {
       this._page = page;
     });
   }
-
-  AuthService() {}
 }

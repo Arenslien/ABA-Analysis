@@ -3,6 +3,7 @@ import 'package:aba_analysis/screens/authenticate/find_email_screen.dart';
 import 'package:aba_analysis/screens/authenticate/find_password_screen.dart';
 import 'package:aba_analysis/screens/authenticate/register_screen.dart';
 import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
+import 'package:aba_analysis/screens/setting/approve_registration_screen.dart';
 import 'package:aba_analysis/screens/setting/edit_info_screen.dart';
 import 'package:aba_analysis/wrapper.dart';
 import 'package:flutter/widgets.dart';
@@ -15,4 +16,5 @@ final Map<String, WidgetBuilder> routes = {
   FindPasswordScreen.routeName: (context) => FindPasswordScreen(),
   FindEmailScreen.routeName: (context) => FindEmailScreen(),
   EditInfoScreen.routeName: (context) => EditInfoScreen(),
+  ApproveRegistrationScreen.routeName: (context) => ApproveRegistrationScreen(),
 };

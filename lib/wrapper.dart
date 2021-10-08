@@ -1,6 +1,7 @@
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:aba_analysis/provider/program_field_notifier.dart';
+import 'package:aba_analysis/provider/test_item_notifier.dart';
 import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
@@ -21,23 +22,6 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
-  @override
-  void initState() {
-    super.initState();
-
-    // 인스턴스 초기화 
-    AuthService _auth = AuthService();
-    FireStoreService _store = FireStoreService();
-
-    // 로그인 유지일 경우 사용자 정보를 DB에서 가져옴
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
-      context.read<UserNotifier>().updateUser(await _auth.abaUser);
-      context.read<ChildNotifier>().updateChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
-      context.read<ProgramFieldNotifier>().updateProgramFieldList(await _store.readProgramField());
-      context.read<TestNotifier>().updateTest(await _store.readAllTest());
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     //SizeConfig를 사용하기 위해서 초기화
