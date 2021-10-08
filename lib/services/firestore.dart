@@ -32,33 +32,61 @@ class FireStoreService {
   }
 
   // 사용자 읽기
-  Future<ABAUser> readUser(String email) async {
+  Future<ABAUser?> readUser(String email) async {
     // 해당 이메일에 대한 User 정보 가져오기
     dynamic data = await _user
         .doc(email)
         .get()
         .then((DocumentSnapshot snapshot) => snapshot.data());
-    
+    if(data == null) return null;
+
     // User 정보를 기반으로 ABAUser 인스턴스 생성
     ABAUser abaUser = ABAUser(
-      email: data['email'], 
+      email: data['email'],
+      password: data['password'],
       name: data['name'], 
       phone: data['phone'],
-      duty: data['duty']
+      duty: data['duty'],
+      approvalStatus: data['approval-status']
     );
     
     // ABAUser 반환
     return abaUser;
   }
 
+  // 미승인 사용자 읽기
+  Future<List<ABAUser>> readUnapprovedUser() async {
+    List<ABAUser> unapprovedUserList = [];
+
+    // 모든 아이들 데이터 가져오기
+    await _user
+        .where('approval-status', isEqualTo: false)
+        .get()
+        .then((QuerySnapshot snapshot) => snapshot.docs.forEach((document) {
+          dynamic data = document.data();
+          ABAUser abaUser = ABAUser(
+            email: data['email'],
+            password: data['password'],
+            name: data['name'], 
+            phone: data['phone'],
+            duty: data['duty'],
+            approvalStatus: data['approval-status']
+          );
+          unapprovedUserList.add(abaUser);
+        }));
+
+    return unapprovedUserList;
+  }
+
   // 사용자 수정
-  Future updateUser(String email, String name, String phone, String duty) async {
+  Future updateUser(String email, String name, String phone, String duty, bool approvalStatus) async {
     return _user
         .doc(email)
         .update({
           'name': name,
           'phone': phone,
-          'duty': duty
+          'duty': duty,
+          'approval-status': approvalStatus
         })
         .then((value) => print('[사용자: $email] - 수정 완료'))
         .catchError((error) => print('[사용자: $email] - 수정 실패\n에러 내용: $error'));
@@ -127,13 +155,14 @@ class FireStoreService {
     return children;
   }
 
-  Future<Child> readChild(int childId) async {
+  Future<Child?> readChild(int childId) async {
     // 해당 이메일에 대한 Child 정보 가져오기
     dynamic data = await _child
         .doc(childId.toString())
         .get()
         .then((DocumentSnapshot snapshot) => snapshot.data());
-    
+    if(data == null) return null;
+
     Timestamp date = data['birthday'];
 
     // Child 정보를 기반으로 Child 인스턴스 생성
@@ -274,12 +303,14 @@ class FireStoreService {
   }
 
   // Test 열람
-  Future<Test> readTest(int testId) async {
+  Future<Test?> readTest(int testId) async {
     // 해당 testId에 대한 Document 정보 가져오기
     dynamic data = await _test
         .doc(testId.toString())
         .get()
         .then((DocumentSnapshot snapshot) => snapshot.data());
+    if(data == null) return null;
+    
 
     // Document data 기반 Test 객체 생성
     Test test = Test(
@@ -413,12 +444,14 @@ class FireStoreService {
   }
 
   // Test 열람
-  Future<TestItem> readTestItem(int testId) async {
+  Future<TestItem?> readTestItem(int testId) async {
     // 해당 testId에 대한 Document 정보 가져오기
     dynamic data = await _testItem
         .doc(testId.toString())
         .get()
         .then((DocumentSnapshot snapshot) => snapshot.data());
+    if(data == null) return null;
+    
 
     // Document data 기반 TestItem 객체 생성
     TestItem testItem = TestItem(

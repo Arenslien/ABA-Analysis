@@ -59,7 +59,7 @@ class _FindPasswordFormState extends State<FindPasswordForm> {
                 }
                 else {
                   // 비밀번호 재설정 이메일 보내기
-                  await _auth.sendEmailForResetPassword(email);
+                  await _auth.resetPassword(email);
 
                   // Navigator
                   final snackBar = SnackBar(
