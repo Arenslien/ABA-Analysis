@@ -10,7 +10,6 @@ import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:aba_analysis/provider/test_item_notifier.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:aba_analysis/provider/program_field_notifier.dart';
 
 void main() async {
