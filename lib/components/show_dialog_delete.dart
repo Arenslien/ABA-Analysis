@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 
-showDialogDelete(String name, BuildContext context) {
+showDialogYesOrNo({
+  required BuildContext context,
+  required String title,
+  required String text,
+  void Function()? onPressed,
+}) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("삭제"),
-        content: Text("$name를 삭제합니다."),
+        title: Text(title),
+        content: Text(
+          text,
+          style: TextStyle(fontSize: 15),
+        ),
         actions: [
           TextButton(
             child: Text(
@@ -22,10 +30,7 @@ showDialogDelete(String name, BuildContext context) {
               "예",
               style: TextStyle(color: Colors.red),
             ),
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context, null);
-            },
+            onPressed: onPressed,
           ),
         ],
       );
