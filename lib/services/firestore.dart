@@ -288,7 +288,7 @@ class FireStoreService {
   }
 
   // Test 복사
-  Future copyTest(Test test) async {
+  Future<Test> copyTest(Test test) async {
     Test copiedTest = Test(
       testId: await updateId(AutoID.test), 
       childId: test.childId, 
@@ -300,6 +300,7 @@ class FireStoreService {
         .set(copiedTest.toMap())
         .then((value) => print(' 테스트가 성공적으로 복사되었습니다.'))
         .catchError((error) => print('테스트를 복사하지 못했습니다.\n에러 내용: $error'));
+    return copiedTest;
   }
 
   // Test 열람
@@ -324,7 +325,7 @@ class FireStoreService {
     return test;
   }
 
-  Future readAllTest() async {
+  Future<List<Test>> readAllTest() async {
     List<Test> allTestList = [];
 
     List<QueryDocumentSnapshot> docs = await _test
@@ -333,22 +334,7 @@ class FireStoreService {
 
     for (QueryDocumentSnapshot doc in docs) {
       dynamic data = doc.data();
-      List<TestItem> testItemList = [];
       Timestamp date = data['date'];
-      // testItemList 테스트 아이템 추가
-      for(dynamic item in data['test-item-list']) {        
-        // 테스트 아이템 생성 & 추가
-        TestItem testItem = TestItem(
-          testItemId: item['test-item-id'],
-          testId: item['test-id'],
-          programField: item['program-field'],
-          subField: item['sub-field'],
-          subItem: item['sub-item'],
-        );
-
-        testItem.setResult(TestItem.convertResult(item['result']));
-        testItemList.add(testItem);
-      }
 
       // 테스트 생성 & 추가
       Test test = Test(
@@ -359,7 +345,6 @@ class FireStoreService {
       );
       allTestList.add(test);
     }
-    
 
     return allTestList;
   }
@@ -434,7 +419,7 @@ class FireStoreService {
   //=======================================================================================
 
   // Test 추가
-  Future createItem(TestItem testItem) async {
+  Future createTestItem(TestItem testItem) async {
     // 데이터베이스에 Test 문서 추가
     return await _testItem
         .doc(testItem.testItemId.toString())

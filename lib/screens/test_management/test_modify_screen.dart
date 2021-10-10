@@ -1,250 +1,209 @@
-// import 'package:intl/intl.dart';
-// import 'package:flutter/material.dart';
-// import 'package:aba_analysis/constants.dart';
-// import 'package:aba_analysis/models/test.dart';
-// import 'package:aba_analysis/components/show_dialog_delete.dart';
-// import 'package:aba_analysis/components/build_text_form_field.dart';
+import 'package:aba_analysis/models/test.dart';
+import 'package:aba_analysis/models/test_item.dart';
+import 'package:aba_analysis/provider/test_item_notifier.dart';
+import 'package:aba_analysis/provider/test_notifier.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
+import 'package:aba_analysis/constants.dart';
+import 'package:aba_analysis/models/child.dart';
+import 'package:aba_analysis/services/firestore.dart';
+import 'package:aba_analysis/components/show_date_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:aba_analysis/components/build_text_form_field.dart';
 
-// class ChapterModifyScreen extends StatefulWidget {
-//   const ChapterModifyScreen({required this.test, Key? key}) : super(key: key);
-//   final Test test;
-//   @override
-//   _ChapterModifyScreenState createState() => _ChapterModifyScreenState();
-// }
+class TestModifyScreen extends StatefulWidget {
+  const TestModifyScreen({required this.test, Key? key}) : super(key: key);
+  final Test test;
 
-// class _ChapterModifyScreenState extends State<ChapterModifyScreen> {
-//   _ChapterModifyScreenState();
-//   late DateTime date;
-//   late String title;
-//   TextEditingController dateTextEditingController = TextEditingController(
-//       text: DateFormat('yyyyMMdd').format(DateTime.now()));
-//   final formkey = GlobalKey<FormState>();
-//   List<ContentListTile> contentListTile = [];
+  @override
+  _TestInputScreenState createState() => _TestInputScreenState();
+}
 
-//   @override
-//   void initState() {
-//     super.initState();
+class _TestInputScreenState extends State<TestModifyScreen> {
+  _TestInputScreenState();
+  late DateTime date;
+  TextEditingController dateTextEditingController = TextEditingController();
+  late String title;
+  final formkey = GlobalKey<FormState>();
+  List<TestItem> testItemList = [];
+  List<TestItemInfo> testItemInfoList = [];
+  FireStoreService store = FireStoreService();
 
-//     contentListTile.add(
-//       ContentListTile(
-//         tileWidget: buildTextFormField(
-//           controller: dateTextEditingController,
-//           text: '날짜',
-//           onChanged: (val) {
-//             setState(() {
-//               date = DateFormat('yyyyMMdd').parse(val);
-//             });
-//           },
-//           onTap: () {
-//             setState(() async {
-//               DateTime? selectedDate = await showDatePicker(
-//                 context: context,
-//                 cancelText: '취소',
-//                 confirmText: '확인',
-//                 fieldLabelText: '날짜 설정',
-//                 initialDate: DateTime.now(),
-//                 firstDate: DateTime(2018),
-//                 lastDate: DateTime(2030),
-//                 builder: (context, child) {
-//                   return Theme(
-//                     data: ThemeData.dark(),
-//                     child: child!,
-//                   );
-//                 },
-//               );
-//               dateTextEditingController.text =
-//                   DateFormat('yyyyMMdd').format(selectedDate!);
-//             });
-//           },
-//           validator: (val) {
-//             if (val!.length != 8) {
-//               return 'YYYYMMDD';
-//             }
-//             return null;
-//           },
-//           inputType: 'number',
-//         ),
-//       ),
-//     );
-//     ContentListTile(
-//       tileWidget: buildTextFormField(
-//         text: '챕터 이름',
-//         controller: TextEditingController(text: widget.test.title),
-//         onChanged: (val) {
-//           setState(() {
-//             title = val;
-//           });
-//         },
-//         validator: (val) {
-//           if (val!.length < 1) {
-//             return '이름은 필수사항입니다.';
-//           }
-//           return null;
-//         },
-//       ),
-//     );
-//     contentListTile.add(
-//       ContentListTile(
-//         tileWidget: Padding(
-//           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-//           child: Row(
-//             children: [
-//               Text('콘텐츠 목록'),
-//               IconButton(
-//                 icon: Icon(Icons.add_rounded),
-//                 onPressed: () {
-//                   setState(() {
-//                     //buildItemListTile(newChapter.contentList.length);
-//                   });
-//                 },
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//     // for (int i = 0; i < chapter.contentList.length; i++) {
-//     //   newChapter.contentList.add(Content());
-//     //   newChapter.contentList[i].name = chapter.contentList[i].name;
-//     //   newChapter.contentList[i].result = chapter.contentList[i].result;
-//     //   newChapter.contentList[i].contentId = chapter.contentList[i].contentId;
-//     //   buildItemListTile(i);
-//     // }
-//   }
+  void initState() {
+    super.initState();
+    
+    setState(() {
+      date = widget.test.date;
+      dateTextEditingController.text = DateFormat('yyyyMMdd').format(widget.test.date);
+      title = widget.test.title;
+      testItemList = context.read<TestItemNotifier>().getTestItemList(widget.test.testId);
+    });
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//       onTap: () => FocusScope.of(context).unfocus(),
-//       child: Form(
-//         key: formkey,
-//         child: Scaffold(
-//           appBar: AppBar(
-//             title: Text(
-//               '챕터 설정',
-//               style: TextStyle(color: Colors.black),
-//             ),
-//             centerTitle: true,
-//             leading: IconButton(
-//               icon: Icon(
-//                 Icons.arrow_back_rounded,
-//                 color: Colors.black,
-//               ),
-//               onPressed: () {
-//                 Navigator.pop(context);
-//               },
-//             ),
-//             actions: [
-//               IconButton(
-//                 icon: Icon(
-//                   Icons.delete,
-//                   color: Colors.black,
-//                 ),
-//                 onPressed: () {
-//                   showDialogDelete('챕터', context);
-//                 },
-//               ),
-//               IconButton(
-//                 icon: Icon(
-//                   Icons.check_rounded,
-//                   color: Colors.black,
-//                 ),
-//                 onPressed: () {
-//                   if (formkey.currentState!.validate()) {
-//                     Navigator.pop(
-//                         context,
-//                         Test(widget.test.testId, widget.test.childId, date,
-//                             title));
-//                   }
-//                 },
-//               ),
-//             ],
-//             backgroundColor: mainGreenColor,
-//           ),
-//           body: ListView.builder(
-//             itemCount: contentListTile.length,
-//             itemBuilder: (BuildContext context, int index) {
-//               return contentListTile[index].tileWidget!;
-//             },
-//           ),
-//         ),
-//       ),
-//     );
-//   }
 
-//   buildItemListTile(int index) {
-//     if (index >= newChapter.contentList.length)
-//       newChapter.contentList.add(Content());
-//     TextEditingController textEditingController =
-//         TextEditingController(text: newChapter.contentList[index].name);
 
-//     int? tileId = newChapter.contentList[index].contentId;
-//     if (tileId == null) {
-//       for (int i = 0; i < 100; i++) {
-//         bool flag = false;
-//         for (int j = 0; j < newChapter.contentList.length; j++) {
-//           if (newChapter.contentList[j].contentId == null) {
-//             break;
-//           }
-//           if (newChapter.contentList[j].contentId == i) {
-//             flag = true;
-//             break;
-//           }
-//         }
-//         if (!flag) {
-//           newChapter.contentList[index].contentId = i;
-//           tileId = i;
-//           break;
-//         }
-//       }
-//     }
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Form(
+        key: formkey,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              '테스트 수정',
+              style: TextStyle(color: Colors.black),
+            ),
+            centerTitle: true,
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_rounded,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.check_rounded,
+                  color: Colors.black,
+                ),
+                onPressed: () async {
+                  // 완료 버튼 누르면 실행
+                  if (formkey.currentState!.validate()) {
+                    Test test = Test(
+                      testId: await store.updateId(AutoID.test),
+                      childId: widget.test.childId,
+                      title: title,
+                      date: date,
+                    );
+                    // DB에 테스트 추가
+                    await store.createTest(test);
 
-//     contentListTile.add(
-//       ContentListTile(
-//         tileId: tileId,
-//         tileWidget: Row(
-//           children: [
-//             Flexible(
-//               child: buildTextFormField(
-//                 text: textEditingController.text,
-//                 hintText: '콘텐츠 이름을 입력하세요.',
-//                 controller: textEditingController,
-//                 onChanged: (val) {
-//                   int idx = 0;
-//                   for (int i = 0; i < newChapter.contentList.length; i++)
-//                     if (newChapter.contentList[i].contentId == tileId) {
-//                       idx = i;
-//                       break;
-//                     }
-//                   setState(() {
-//                     newChapter.contentList[idx].name = val;
-//                   });
-//                 },
-//                 validator: (val) {
-//                   if (val!.length < 1) {
-//                     return '이름은 필수사항입니다.';
-//                   }
-//                   return null;
-//                 },
-//               ),
-//             ),
-//             Padding(
-//               padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
-//               child: IconButton(
-//                   icon: Icon(Icons.remove_rounded),
-//                   onPressed: () {
-//                     if (newChapter.contentList.length != 1)
-//                       setState(() {
-//                         newChapter.contentList.removeWhere(
-//                             (element) => element.contentId == tileId);
-//                         contentListTile
-//                             .removeWhere((element) => element.tileId == tileId);
-//                       });
-//                   }),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+                    // Test Notifier에 추가
+                    context.read<TestNotifier>().addTest(test);
+
+                    // DB에 테스트 아이템 추가 & TestItem Notifier에 테스트 아이템 추가
+                    for (TestItemInfo testItemInfo in testItemInfoList) {
+                      TestItem testItem = TestItem(
+                        testItemId: await store.updateId(AutoID.testItem),
+                        testId: test.testId,
+                        programField: testItemInfo.programField,
+                        subField: testItemInfo.subField,
+                        subItem: testItemInfo.subItem,
+                      );
+
+                      await store.createTestItem(testItem);
+
+                      context.read<TestItemNotifier>().addTestItem(testItem);
+
+                      Navigator.pop(context);
+                    }
+                  }
+                },
+              ),
+            ],
+            backgroundColor: mainGreenColor,
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                buildTextFormField(
+                  controller: dateTextEditingController,
+                  text: '날짜',
+                  onTap: () async {
+                    date = await getDate(context);
+                    setState(() {
+                      dateTextEditingController.text =
+                          DateFormat('yyyyMMdd').format(date);
+                    });
+                  },
+                  validator: (val) {
+                    if (val!.length != 8) {
+                      return 'YYYYMMDD';
+                    }
+                    return null;
+                  },
+                  inputType: 'number',
+                ),
+                buildTextFormField(
+                  text: '테스트 이름',
+                  initialValue: title,
+                  onChanged: (val) {
+                    setState(() {
+                      title = val;
+                    });
+                  },
+                  validator: (val) {
+                    if (val!.length < 1) {
+                      return '이름은 필수사항입니다.';
+                    }
+                    return null;
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('테스트 아이템 목록'),
+                      IconButton(
+                        icon: Icon(Icons.add_rounded),
+                        onPressed: () {
+                          // 프로그램 영역 & 하위 영역 & 하위 목록 선택하는 드롭박스 형태 위젯
+
+                          // 리스트에 테스트 아이템 담기
+                          TestItemInfo testItemInfo = TestItemInfo(
+                            programField: 'test',
+                            subField: 'test1',
+                            subItem: '하와홍',
+                          );
+
+                          // 리스트에 추가
+                          setState(() {
+                            testItemInfoList.add(testItemInfo);
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Flexible(
+                  child: ListView.builder(
+                    itemCount: testItemInfoList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        title: Text(testItemInfoList[index].subItem),
+                        trailing: IconButton(
+                          icon: Icon(Icons.remove),
+                          onPressed: () {
+                            setState(() {
+                              testItemInfoList.removeAt(index);
+                            });
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class TestItemInfo {
+  final String programField;
+  final String subField;
+  final String subItem;
+
+  TestItemInfo(
+      {required this.programField,
+      required this.subField,
+      required this.subItem});
+}

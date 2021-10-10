@@ -1,3 +1,4 @@
+import 'package:aba_analysis/screens/child_management/child_test_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/models/child.dart';
@@ -94,19 +95,6 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
     );
   }
 
-  // List<Widget> convertChildToListTile(List<Child> childList) {
-  //   List<Widget> list = [];
-
-  //   if (childList.length != 0) {
-  //     childList.forEach((Child child) {
-  //       // 리스트 타일 생성
-  //       Widget listTile =  newMethod(child, childList);
-  //       list.add(listTile);
-  //     });
-  //   }
-  //   return list;
-  // }
-
   Widget test(Child child) {
     return buildListTile(
       titleText: child.name,
@@ -114,7 +102,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ChildChapterScreen(child: child)),
+              builder: (context) => ChildTestScreen(child: child)),
         );
       },
       trailing: buildToggleButtons(
