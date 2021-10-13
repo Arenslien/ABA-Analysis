@@ -80,6 +80,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                         programField: testItemInfo.programField,
                         subField: testItemInfo.subField,
                         subItem: testItemInfo.subItem,
+                        result: null
                       );
 
                       await store.createTestItem(testItem);

@@ -361,22 +361,6 @@ class FireStoreService {
     for (QueryDocumentSnapshot doc in docs) {
       dynamic data = doc.data();
       Timestamp date = data['date'];
-      List<TestItem> testItemList = [];
-
-      // testItemList 테스트 아이템 추가
-      for(dynamic item in data['test-item-list']) {        
-        // 테스트 아이템 생성 & 추가
-        TestItem testItem = TestItem(
-          testItemId: item['test-item-id'],
-          testId: item['test-id'],
-          programField: item['program-field'],
-          subField: item['sub-field'],
-          subItem: item['sub-item'],
-        );
-
-        testItem.setResult(TestItem.convertResult(item['result']));
-        testItemList.add(testItem);
-      }
 
       // Test 생성 & 추가
       Test test = Test(
@@ -392,14 +376,13 @@ class FireStoreService {
   }
 
   // Test 수정
-  Future updateTest(int testId, DateTime date, String title, List<TestItem> testItemList) async {
-    // 해당 Test의 Document 업데이트 -> 사전에 변경될 date, title, testItemList 값이 필수로 꼭 필요! 변경이 없다면 기존의 값을 그대로 넣어야 함
+  Future updateTest(int testId, DateTime date, String title) async {
+    // 해당 Test의 Document 업데이트 -> 사전에 변경될 date, title 값이 필수로 꼭 필요! 변경이 없다면 기존의 값을 그대로 넣어야 함
     await _test
         .doc(testId.toString())
         .update({
           'date': date,
           'title': title,
-          'test-item-list': testItemList,
         })
         .then((value) => print("[ID: $testId]의 테스트가 업데이트 되었습니다."))
         .catchError((error) => print("[ID: $testId]의 테스트 정보 업데이트를 실패했습니다. : $error"));
@@ -445,6 +428,7 @@ class FireStoreService {
       programField: data['program-field'],
       subField: data['sub-field'],
       subItem: data['sub-item'],
+      result: data['result'],
     );
 
     // Test 반환
@@ -469,9 +453,8 @@ class FireStoreService {
         programField: data['program-field'],
         subField: data['sub-field'],
         subItem: data['sub-item'],
+        result: data['result']
       );
-      // TestItem 값 설정
-      testItem.setResult(data['result']);
 
       // TestItemList에 TestItem 객체 추가
       testItemList.add(testItem);
