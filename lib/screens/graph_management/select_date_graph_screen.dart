@@ -132,7 +132,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
         });
         bool notNull = true;
 
-        List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(test.testId);
+        List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(test.testId, false);
         for (TestItem ti in testItemList) {
           if (ti.result == null) {
             notNull = false;

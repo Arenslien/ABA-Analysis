@@ -1,5 +1,3 @@
-import 'package:aba_analysis/constants.dart';
-
 class TestItem {
   final int testItemId; // PK
   final int testId; // FK
@@ -21,12 +19,7 @@ class TestItem {
     };
   }
 
-  void setResult(String? result) {
-    this.result = result;
-  }
-
   String toString() {
     return '[TestItem ID: $testItemId & Test ID: $testId] - $programField/$subField$subItem/ - $result';
   }
-
 }

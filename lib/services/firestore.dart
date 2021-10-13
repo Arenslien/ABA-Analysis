@@ -294,6 +294,7 @@ class FireStoreService {
       childId: test.childId, 
       date: test.date, 
       title: test.title, 
+      isInput: test.isInput
     );
     await _test
         .doc(copiedTest.testId.toString())
@@ -319,6 +320,7 @@ class FireStoreService {
       childId: data['child-id'], 
       date: data['date'], 
       title: data['title'], 
+      isInput: data['is-input']
     );
 
     // Test 반환
@@ -342,6 +344,7 @@ class FireStoreService {
         childId: data['child-id'],
         date: date.toDate(),
         title: data['title'],
+        isInput: data['is-input']
       );
       allTestList.add(test);
     }
@@ -368,6 +371,7 @@ class FireStoreService {
         childId: data['child-id'],
         date: date.toDate(),
         title: data['title'],
+        isInput: data['is-input']
       );
       testList.add(test);
     }

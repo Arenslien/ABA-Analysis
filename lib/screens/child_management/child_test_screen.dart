@@ -37,7 +37,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       setState(() {
         testList =
-            context.read<TestNotifier>().getAllTestListOf(widget.child.childId);
+            context.read<TestNotifier>().getAllTestListOf(widget.child.childId, true);
       });
     });
   }
@@ -72,11 +72,11 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                     padding: const EdgeInsets.all(16),
                     itemCount: context
                         .watch<TestNotifier>()
-                        .getAllTestListOf(widget.child.childId)
+                        .getAllTestListOf(widget.child.childId, true)
                         .length,
                     itemBuilder: (BuildContext context, int index) {
                       return buildListTile(
-                        titleText: context.watch<TestNotifier>().getAllTestListOf(widget.child.childId)[index].title,
+                        titleText: context.watch<TestNotifier>().getAllTestListOf(widget.child.childId, true)[index].title,
                         onTap: () {
                           // Navigator.push(
                           //   context,
@@ -91,7 +91,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                             if (idx == 0) {
                               setState(() async {
                                 // 기존 테스트 가져오고
-                                Test test = context.read<TestNotifier>().getAllTestListOf(widget.child.childId)[index];
+                                Test test = context.read<TestNotifier>().getAllTestListOf(widget.child.childId, true)[index];
                                 
                                 // DB에 Test 추가
                                 Test copiedTest = await store.copyTest(test);
@@ -106,7 +106,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      TestModifyScreen(test: context.watch<TestNotifier>().getAllTestListOf(widget.child.childId)[index]),
+                                      TestModifyScreen(test: context.watch<TestNotifier>().getAllTestListOf(widget.child.childId, true)[index]),
                                 ),
                               );
                             }

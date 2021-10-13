@@ -284,7 +284,7 @@ class _DateGraphState extends State<DateGraph> {
     // 통일된거
     List<GraphData> chartData = []; // 선택한 하위목록과 테스트한 날짜 리스트
     // get testItemList
-    List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(test.testId);
+    List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(test.testId, false);
 
     num average = context.read<TestItemNotifier>().getAverage(test.testId); // 선택한 하위목록의 전체 날짜 평균 성공률
 
