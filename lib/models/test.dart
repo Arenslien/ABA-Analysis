@@ -1,12 +1,11 @@
-import 'package:aba_analysis/models/test_item.dart';
-
 class Test {
   final int testId;
   final int childId; 
   final DateTime date;
   final String title;
+  bool isInput;
 
-  Test({ required this.testId, required this.childId, required this.date, required this.title});
+  Test({ required this.testId, required this.childId, required this.date, required this.title, required this.isInput});
 
   Map<String, dynamic> toMap() {
     return {
@@ -14,6 +13,7 @@ class Test {
       'child-id': childId,
       'date': date,
       'title': title,
+      'is-input': isInput,
     };
   }
 

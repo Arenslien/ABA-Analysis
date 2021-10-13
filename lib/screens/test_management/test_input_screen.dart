@@ -1,5 +1,6 @@
 import 'package:aba_analysis/models/test.dart';
 import 'package:aba_analysis/models/test_item.dart';
+import 'package:aba_analysis/provider/program_field_notifier.dart';
 import 'package:aba_analysis/provider/test_item_notifier.dart';
 import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:intl/intl.dart';
@@ -65,6 +66,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                       childId: widget.child.childId,
                       title: title,
                       date: date,
+                      isInput: false
                     );
                     // DB에 테스트 추가
                     await store.createTest(test);
@@ -143,9 +145,9 @@ class _TestInputScreenState extends State<TestInputScreen> {
 
                           // 리스트에 테스트 아이템 담기
                           TestItemInfo testItemInfo = TestItemInfo(
-                            programField: 'test',
-                            subField: 'test1',
-                            subItem: '하와홍',
+                            programField: context.read<ProgramFieldNotifier>().programFieldList[1].title,
+                            subField: context.read<ProgramFieldNotifier>().programFieldList[1].subFieldList[0].subFieldName,
+                            subItem: context.read<ProgramFieldNotifier>().programFieldList[1].subFieldList[0].subItemList[1],
                           );
 
                           // 리스트에 추가

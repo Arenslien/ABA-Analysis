@@ -24,20 +24,28 @@ class TestItemNotifier extends ChangeNotifier {
   }
   
   // TestItem 불러오기
-  List<TestItem> getTestItemList(int testId) {
+  List<TestItem> getTestItemList(int testId, bool nullValue) {
     List<TestItem> testItemList = [];
 
-    testItemList.forEach((TestItem testItem) {
-      if(testItem.testId == testId) {
-        testItemList.add(testItem);
-      }
-    });
+    if (nullValue) {
+      _testItemList.forEach((TestItem testItem) {
+        if(testItem.testId == testId) {
+          testItemList.add(testItem);
+        }
+      });
+    } else {
+      _testItemList.forEach((TestItem testItem) {
+        if(testItem.testId == testId && testItem.result != null) {
+          testItemList.add(testItem);
+        }
+      });
+    }
 
     return testItemList;
   }
 
   int getAverage(int testId) {
-    List<TestItem> testItemList = getTestItemList(testId);
+    List<TestItem> testItemList = getTestItemList(testId, false);
 
     int cnt = 0;
     for (TestItem testItem in testItemList) {

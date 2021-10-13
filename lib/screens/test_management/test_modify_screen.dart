@@ -36,7 +36,7 @@ class _TestInputScreenState extends State<TestModifyScreen> {
       date = widget.test.date;
       dateTextEditingController.text = DateFormat('yyyyMMdd').format(widget.test.date);
       title = widget.test.title;
-      testItemList = context.read<TestItemNotifier>().getTestItemList(widget.test.testId);
+      testItemList = context.read<TestItemNotifier>().getTestItemList(widget.test.testId, true);
     });
   }
 
@@ -73,11 +73,16 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                 onPressed: () async {
                   // 완료 버튼 누르면 실행
                   if (formkey.currentState!.validate()) {
+                    // 수정되는 테스트의 테스트 아이템들의 값이 모두 null이 아닐 경우 -> true
+                    // bool isInput = true;
+                    bool isInput = false;
+
                     Test test = Test(
                       testId: await store.updateId(AutoID.test),
                       childId: widget.test.childId,
                       title: title,
                       date: date,
+                      isInput: isInput
                     );
                     // DB에 테스트 추가
                     await store.createTest(test);

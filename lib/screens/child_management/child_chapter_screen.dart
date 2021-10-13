@@ -38,7 +38,7 @@ class _ChildChapterScreenState extends State<ChildChapterScreen> {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       setState(() {
         testList =
-            context.read<TestNotifier>().getAllTestListOf(widget.child.childId);
+            context.read<TestNotifier>().getAllTestListOf(widget.child.childId, true);
       });
     });
 
