@@ -6,9 +6,9 @@ class TestItem {
   final String programField;
   final String subField;
   final String subItem;
-  Result? _result;
+  String? result;
 
-  TestItem({ required this.testItemId, required this.testId, required this.programField, required this.subField, required this.subItem});
+  TestItem({ required this.testItemId, required this.testId, required this.programField, required this.subField, required this.subItem, required this.result});
 
   Map<String, dynamic> toMap() {
     return {
@@ -21,34 +21,8 @@ class TestItem {
     };
   }
 
-  void setResult(Result? result) {
-    this._result = result;
-  }
-
-  String? get result {
-    switch(this._result) {
-      case Result.plus:
-        return '+';
-      case Result.minus:
-        return '-';
-      case Result.p:
-        return 'p';
-      default: 
-        return null;
-    }
-  }
-
-  static Result? convertResult(String? result) {
-    switch(result) {
-      case '+':
-        return Result.plus;
-      case '-':
-        return Result.minus;
-      case 'p':
-        return Result.p;
-      default:
-        return null;
-    }
+  void setResult(String? result) {
+    this.result = result;
   }
 
   String toString() {

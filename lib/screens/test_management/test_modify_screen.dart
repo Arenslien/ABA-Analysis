@@ -93,6 +93,7 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                         programField: testItemInfo.programField,
                         subField: testItemInfo.subField,
                         subItem: testItemInfo.subItem,
+                        result: null
                       );
 
                       await store.createTestItem(testItem);
