@@ -1,14 +1,14 @@
-import 'package:aba_analysis/models/test.dart';
-import 'package:aba_analysis/models/test_item.dart';
-import 'package:aba_analysis/provider/test_item_notifier.dart';
-import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:aba_analysis/constants.dart';
-import 'package:aba_analysis/models/child.dart';
-import 'package:aba_analysis/services/firestore.dart';
-import 'package:aba_analysis/components/show_date_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:aba_analysis/constants.dart';
+import 'package:aba_analysis/models/test.dart';
+import 'package:aba_analysis/models/test_item.dart';
+import 'package:aba_analysis/services/firestore.dart';
+import 'package:aba_analysis/provider/test_notifier.dart';
+import 'package:aba_analysis/provider/test_item_notifier.dart';
+import 'package:aba_analysis/components/show_date_picker.dart';
+import 'package:aba_analysis/components/show_dialog_delete.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class TestModifyScreen extends StatefulWidget {
@@ -31,16 +31,17 @@ class _TestInputScreenState extends State<TestModifyScreen> {
 
   void initState() {
     super.initState();
-    
+
     setState(() {
       date = widget.test.date;
-      dateTextEditingController.text = DateFormat('yyyyMMdd').format(widget.test.date);
+      dateTextEditingController.text =
+          DateFormat('yyyyMMdd').format(widget.test.date);
       title = widget.test.title;
-      testItemList = context.read<TestItemNotifier>().getTestItemList(widget.test.testId, true);
+      testItemList = context
+          .read<TestItemNotifier>()
+          .getTestItemList(widget.test.testId, true);
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +68,27 @@ class _TestInputScreenState extends State<TestModifyScreen> {
             actions: [
               IconButton(
                 icon: Icon(
+                  Icons.delete,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  showDialogYesOrNo(
+                    context: context,
+                    title: '테스트 삭제',
+                    text: '해당 테스트 데이터를 삭제 하시겠습니까?',
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      // 기존의 test 제거
+                      context.read<TestNotifier>().removeTest(widget.test);
+                      // DB 수정
+                      await store.deleteTest(widget.test.testId);
+                    },
+                  );
+                },
+              ),
+              IconButton(
+                icon: Icon(
                   Icons.check_rounded,
                   color: Colors.black,
                 ),
@@ -78,12 +100,11 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                     bool isInput = false;
 
                     Test test = Test(
-                      testId: await store.updateId(AutoID.test),
-                      childId: widget.test.childId,
-                      title: title,
-                      date: date,
-                      isInput: isInput
-                    );
+                        testId: await store.updateId(AutoID.test),
+                        childId: widget.test.childId,
+                        title: title,
+                        date: date,
+                        isInput: isInput);
                     // DB에 테스트 추가
                     await store.createTest(test);
 
@@ -93,13 +114,12 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                     // DB에 테스트 아이템 추가 & TestItem Notifier에 테스트 아이템 추가
                     for (TestItemInfo testItemInfo in testItemInfoList) {
                       TestItem testItem = TestItem(
-                        testItemId: await store.updateId(AutoID.testItem),
-                        testId: test.testId,
-                        programField: testItemInfo.programField,
-                        subField: testItemInfo.subField,
-                        subItem: testItemInfo.subItem,
-                        result: null
-                      );
+                          testItemId: await store.updateId(AutoID.testItem),
+                          testId: test.testId,
+                          programField: testItemInfo.programField,
+                          subField: testItemInfo.subField,
+                          subItem: testItemInfo.subItem,
+                          result: null);
 
                       await store.createTestItem(testItem);
 
