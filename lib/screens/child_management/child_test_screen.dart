@@ -1,7 +1,10 @@
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/test.dart';
+import 'package:aba_analysis/models/test_item.dart';
+import 'package:aba_analysis/provider/test_item_notifier.dart';
 import 'package:aba_analysis/provider/test_notifier.dart';
+import 'package:aba_analysis/screens/child_management/child_get_result_screen.dart';
 import 'package:aba_analysis/screens/test_management/test_input_screen.dart';
 import 'package:aba_analysis/screens/test_management/test_modify_screen.dart';
 import 'package:aba_analysis/services/firestore.dart';
@@ -64,7 +67,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
           ),
           backgroundColor: mainGreenColor,
         ),
-        body: testList.length == 0
+        body: context.watch<TestNotifier>().getAllTestListOf(widget.child.childId, true).length == 0
             ? noListData(Icons.library_add_outlined, '테스트 추가')
             : searchTextEditingController.text.isEmpty
                 ? ListView.builder(
@@ -78,35 +81,41 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                       return buildListTile(
                         titleText: context.watch<TestNotifier>().getAllTestListOf(widget.child.childId, true)[index].title,
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-
-                          //       builder: (context) => ChildTestItemScreen(child: widget.child, test: context.read<TestNotifier>().getAllTestListOf(widget.child.childId)[index])),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChildGetResultScreen(child: widget.child, test: context.read<TestNotifier>().testList[index])),
+                          );
                         },
                         trailing: buildToggleButtons(
                           text: ['복사', '수정'],
                           onPressed: (idx) async {
                             if (idx == 0) {
-                              setState(() async {
-                                // 기존 테스트 가져오고
-                                Test test = context.read<TestNotifier>().getAllTestListOf(widget.child.childId, true)[index];
-                                
-                                // DB에 Test 추가
-                                Test copiedTest = await store.copyTest(test);
-                                
-                                // TestNotifer에 추가
-                                context.read<TestNotifier>().addTest(copiedTest);
+                              // 기존 테스트 가져오고
+                              Test test = context.read<TestNotifier>().getAllTestListOf(widget.child.childId, true)[index];
+                              
+                              // DB에 Test 추가
+                              Test copiedTest = await store.copyTest(test);
+                              // TestNotifer에 추가
+                              context.read<TestNotifier>().addTest(copiedTest);
 
-                                searchTextEditingController.text = '';
-                              });
+                              List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(test.testId, true);
+                              print('for문 전');
+                              for (TestItem testItem in testItemList) {
+                                print('hi');
+                                // DB에 TestItem 추가
+                                TestItem copiedTestItem = await store.copyTestItem(testItem);
+                                // 복사된 테스트 아이템 TestItem Notifier에 추가
+                                context.read<TestItemNotifier>().addTestItem(copiedTestItem);
+                              }
+                              print('for문 끝');
+                              searchTextEditingController.text = '';
                             } else if (idx == 1) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      TestModifyScreen(test: context.watch<TestNotifier>().getAllTestListOf(widget.child.childId, true)[index]),
+                                      TestModifyScreen(test: context.read<TestNotifier>().getAllTestListOf(widget.child.childId, true)[index]),
                                 ),
                               );
                             }
@@ -121,7 +130,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
             Icons.add_rounded,
             size: 40,
           ),
-          onPressed: () async {
+          onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(

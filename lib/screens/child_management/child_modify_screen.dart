@@ -1,3 +1,7 @@
+import 'package:aba_analysis/models/test.dart';
+import 'package:aba_analysis/models/test_item.dart';
+import 'package:aba_analysis/provider/test_item_notifier.dart';
+import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -73,12 +77,32 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                     title: '아동 삭제',
                     text: '해당 아동에 데이터를 삭제 하시겠습니까?',
                     onPressed: () async {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      // 기존의 child 제거
-                      context.read<ChildNotifier>().removeChild(widget.child);
-                      // DB 수정
+                      // 아이에 대한 test
+                      List<Test> testList = context.read<TestNotifier>().getAllTestListOf(widget.child.childId, true);
+
+                      for (Test test in testList) {
+                        // Child의 TestItem 제거
+                        List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(test.testId, true);
+                        for (TestItem testItem in testItemList) {
+                          // DB에서 TestItem 제거
+                          await store.deleteTestItem(testItem.testItemId);
+                          // Provider에서 TestItem 제거
+                          context.read<TestItemNotifier>().removeTestItem(testItem);
+                        }
+
+                        // DB에서 TestItem 제거
+                        await store.deleteTest(test.testId);
+                        // Provider에서 테스트 제거
+                        context.read<TestNotifier>().removeTest(test);
+                      }
+
+                      // DB 에서 Child 제거
                       await store.deleteChild(widget.child.childId);
+                      // Provider에서 Child 제거
+                      context.read<ChildNotifier>().removeChild(widget.child);
+
+                      Navigator.pop(context);
+                      Navigator.pop(context);
                     },
                   );
                 },

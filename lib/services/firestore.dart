@@ -405,7 +405,7 @@ class FireStoreService {
   //                          Firebase 연동 - Test Item 관련 함수들
   //=======================================================================================
 
-  // Test 추가
+  // TestItem 추가
   Future createTestItem(TestItem testItem) async {
     // 데이터베이스에 Test 문서 추가
     return await _testItem
@@ -415,7 +415,24 @@ class FireStoreService {
         .catchError((error) => print('테스트를 추가하지 못했습니다.\n에러 내용: $error'));
   }
 
-  // Test 열람
+  Future<TestItem> copyTestItem(TestItem testItem) async {
+    TestItem copiedTestItem = TestItem(
+      testItemId: await updateId(AutoID.testItem),
+      testId: testItem.testId + 1, 
+      programField: testItem.programField,
+      subField: testItem.subField,
+      subItem: testItem.subItem,
+      result: null,
+    );
+    await _testItem
+        .doc(copiedTestItem.testItemId.toString())
+        .set(copiedTestItem.toMap())
+        .then((value) => print(' 테스트아이템이 성공적으로 복사되었습니다.'))
+        .catchError((error) => print('테스트아이템을 복사하지 못했습니다.\n에러 내용: $error'));
+    return copiedTestItem;
+  }
+
+  // TestItem 열람
   Future<TestItem?> readTestItem(int testId) async {
     // 해당 testId에 대한 Document 정보 가져오기
     dynamic data = await _testItem

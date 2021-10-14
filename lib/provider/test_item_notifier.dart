@@ -12,14 +12,14 @@ class TestItemNotifier extends ChangeNotifier {
   }
 
   // TestItem 추가
-  void addTestItem(TestItem test) {
-    _testItemList.add(test);
+  void addTestItem(TestItem testItem) {
+    _testItemList.add(testItem);
     notifyListeners();
   }
 
   // TestItem 삭제
-  void removeTest(TestItem test) {
-    _testItemList.remove(test);
+  void removeTestItem(TestItem testItem) {
+    _testItemList.remove(testItem);
     notifyListeners();
   }
   
@@ -29,6 +29,7 @@ class TestItemNotifier extends ChangeNotifier {
 
     if (nullValue) {
       _testItemList.forEach((TestItem testItem) {
+        print(testItem.testId);
         if(testItem.testId == testId) {
           testItemList.add(testItem);
         }
@@ -40,7 +41,7 @@ class TestItemNotifier extends ChangeNotifier {
         }
       });
     }
-
+    
     return testItemList;
   }
 

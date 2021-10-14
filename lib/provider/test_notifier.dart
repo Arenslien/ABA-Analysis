@@ -8,18 +8,28 @@ class TestNotifier extends ChangeNotifier {
   List<Test> _testList = [];
 
   // Test 리스트 초기화
-  void updateTest(List<Test> testList) {
+  void updateTestList(List<Test> testList) {
     _testList = testList;
     notifyListeners();
   }
 
-  // 아이 추가
+  // Test 추가
   void addTest(Test test) {
     _testList.add(test);
     notifyListeners();
   }
 
-  // 아이 삭제
+  void updateTest(int testId, String title, DateTime date) {
+    _testList.forEach((Test test) {
+      if (test.testId == testId) {
+        test.title = title;
+        test.date = date;
+      }
+    });
+    notifyListeners();
+  }
+
+  // Test 삭제
   void removeTest(Test test) {
     _testList.remove(test);
     notifyListeners();
