@@ -380,13 +380,14 @@ class FireStoreService {
   }
 
   // Test 수정
-  Future updateTest(int testId, DateTime date, String title) async {
+  Future updateTest(int testId, DateTime date, String title, bool isInput) async {
     // 해당 Test의 Document 업데이트 -> 사전에 변경될 date, title 값이 필수로 꼭 필요! 변경이 없다면 기존의 값을 그대로 넣어야 함
     await _test
         .doc(testId.toString())
         .update({
           'date': date,
           'title': title,
+          'is-input': isInput,
         })
         .then((value) => print("[ID: $testId]의 테스트가 업데이트 되었습니다."))
         .catchError((error) => print("[ID: $testId]의 테스트 정보 업데이트를 실패했습니다. : $error"));
