@@ -1,8 +1,8 @@
 class Test {
   final int testId;
   final int childId; 
-  final DateTime date;
-  final String title;
+  DateTime date;
+  String title;
   bool isInput;
 
   Test({ required this.testId, required this.childId, required this.date, required this.title, required this.isInput});

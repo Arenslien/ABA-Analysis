@@ -1,8 +1,12 @@
+import 'package:aba_analysis/models/child.dart';
+import 'package:aba_analysis/models/test.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/constants.dart';
 
 class ChildGetResultScreen extends StatefulWidget {
-  const ChildGetResultScreen({Key? key}) : super(key: key);
+  final Child child;
+  final Test test;
+  const ChildGetResultScreen({Key? key, required this.child, required this.test}) : super(key: key);
 
   @override
   _ChildGetResultScreenState createState() => _ChildGetResultScreenState();

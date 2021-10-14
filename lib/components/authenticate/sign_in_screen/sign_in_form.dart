@@ -102,7 +102,7 @@ class _SignInFormState extends State<SignInForm> {
                   context.read<UserNotifier>().updateUser(await _store.readUser(email));
                   context.read<ChildNotifier>().updateChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
                   context.read<ProgramFieldNotifier>().updateProgramFieldList(await _store.readProgramField());
-                  context.read<TestNotifier>().updateTest(await _store.readAllTest());
+                  context.read<TestNotifier>().updateTestList(await _store.readAllTest());
                   context.read<TestItemNotifier>().updateTestItem(await _store.readAllTestItem());
                   // 로그인
                   await _auth.signIn(email, password);

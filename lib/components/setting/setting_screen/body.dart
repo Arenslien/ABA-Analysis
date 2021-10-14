@@ -1,4 +1,7 @@
 import 'package:aba_analysis/components/setting/setting_default_button.dart';
+import 'package:aba_analysis/models/program_field.dart';
+import 'package:aba_analysis/models/sub_field.dart';
+import 'package:aba_analysis/provider/program_field_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
@@ -62,15 +65,26 @@ class _BodyState extends State<Body> {
                         }),
                         SettingDefaultButton(text: '회원 탈퇴', onTap: () {
                           if (context.read<UserNotifier>().abaUser!.duty == '관리자') {
+                            for (ProgramField pf in context.read<ProgramFieldNotifier>().programFieldList) {
+                              print("[프로그램 영역 ${pf.title}]");
+                              for (SubField sf in pf.subFieldList) {
+                                print("[하위 영역 ${sf.subFieldName}]");
+                                for (String item in sf.subItemList) {
+                                  print(item);
+                                }
+                              }
+                            }
                             print('관리자는 회원 탈퇴할 수 없습니다.');
                           } else {
-                            // Alert Dialog
-                          // AlertDialog(
-                          //   title: Text('정말 회원 탈퇴를 하시겠습니까?'),
+                            
 
-                          // );
-                            store.deleteUser(context.read<UserNotifier>().abaUser!.email);
-                            auth.deleteAuthUser();
+                            // Alert Dialog
+                            // AlertDialog(
+                            //   title: Text('정말 회원 탈퇴를 하시겠습니까?'),
+
+                            // );
+                            // store.deleteUser(context.read<UserNotifier>().abaUser!.email);
+                            // auth.deleteAuthUser();
                           }
                         }),
                         Visibility(
