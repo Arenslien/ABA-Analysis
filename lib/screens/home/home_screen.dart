@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:aba_analysis/screens/setting/setting_screen.dart';
 import 'package:aba_analysis/screens/graph_management/graph_main_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_main_screen.dart';
+import 'package:aba_analysis/screens/child_management/child_get_result_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -46,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Container(
             color: Colors.white,
-            // child: SubjectMainScreen(),
+            child: ChildGetResultScreen(),
           ),
           Container(
             color: Colors.white,

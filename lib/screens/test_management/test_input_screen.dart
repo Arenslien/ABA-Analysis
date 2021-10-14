@@ -9,6 +9,7 @@ import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:aba_analysis/components/show_date_picker.dart';
 import 'package:aba_analysis/provider/test_item_notifier.dart';
+import 'package:aba_analysis/provider/program_field_notifier.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class TestInputScreen extends StatefulWidget {
@@ -64,11 +65,11 @@ class _TestInputScreenState extends State<TestInputScreen> {
                   // 완료 버튼 누르면 실행
                   if (formkey.currentState!.validate()) {
                     Test test = Test(
-                      testId: await store.updateId(AutoID.test),
-                      childId: widget.child.childId,
-                      title: title,
-                      date: date,
-                    );
+                        testId: await store.updateId(AutoID.test),
+                        childId: widget.child.childId,
+                        title: title,
+                        date: date,
+                        isInput: false);
                     // DB에 테스트 추가
                     await store.createTest(test);
 
@@ -78,12 +79,12 @@ class _TestInputScreenState extends State<TestInputScreen> {
                     // DB에 테스트 아이템 추가 & TestItem Notifier에 테스트 아이템 추가
                     for (TestItemInfo testItemInfo in testItemInfoList) {
                       TestItem testItem = TestItem(
-                        testItemId: await store.updateId(AutoID.testItem),
-                        testId: test.testId,
-                        programField: testItemInfo.programField,
-                        subField: testItemInfo.subField,
-                        subItem: testItemInfo.subItem,
-                      );
+                          testItemId: await store.updateId(AutoID.testItem),
+                          testId: test.testId,
+                          programField: testItemInfo.programField,
+                          subField: testItemInfo.subField,
+                          subItem: testItemInfo.subItem,
+                          result: null);
 
                       await store.createTestItem(testItem);
 
@@ -141,75 +142,117 @@ class _TestInputScreenState extends State<TestInputScreen> {
                       IconButton(
                         icon: Icon(Icons.add_rounded),
                         onPressed: () {
-                          String selectedProgramField = 'a';
-                          String? selectedSubField = '선택';
-                          String? selectedSubItem = '선택';
+                          String? _selectedProgramField;
+                          String? _selectedSubField;
+                          String? _selectedSubItem;
 
                           // 프로그램 영역 & 하위 영역 & 하위 목록 선택하는 드롭박스 형태 위젯
                           showDialog(
                             barrierDismissible: false,
                             context: context,
                             builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text('테스트 아이템 선택'),
-                                content: Container(
-                                  height: 100,
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      DropdownButton(
-                                        hint: Text('selectedProgramField'),
-                                        value: selectedProgramField,
-                                        items: programFieldList.map((value) {
-                                          return DropdownMenuItem(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                        onChanged: (String? vaule) {
-                                          setState(() {
-                                            selectedProgramField = vaule!;
-                                          });
+                              return StatefulBuilder(
+                                builder: (context, setState) {
+                                  return AlertDialog(
+                                    title: Text('테스트 아이템 선택'),
+                                    content: Container(
+                                      height: 150,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          DropdownButton(
+                                            hint: Text('프로그램 영역 선택'),
+                                            value: _selectedProgramField,
+                                            items:
+                                                programFieldList.map((value) {
+                                              return DropdownMenuItem(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
+                                            onChanged: (String? vaule) {
+                                              setState(() {
+                                                _selectedProgramField = vaule!;
+                                              });
+                                            },
+                                          ),
+                                          DropdownButton(
+                                            hint: Text('프로그램 영역 선택'),
+                                            value: _selectedSubField,
+                                            items:
+                                                programFieldList.map((value) {
+                                              return DropdownMenuItem(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
+                                            onChanged: (String? vaule) {
+                                              setState(() {
+                                                _selectedSubField = vaule!;
+                                              });
+                                            },
+                                          ),
+                                          DropdownButton(
+                                            hint: Text('아이템 선택'),
+                                            value: _selectedSubItem,
+                                            items:
+                                                programFieldList.map((value) {
+                                              return DropdownMenuItem(
+                                                value: value,
+                                                child: Text(value),
+                                              );
+                                            }).toList(),
+                                            onChanged: (String? vaule) {
+                                              setState(() {
+                                                _selectedSubItem = vaule!;
+                                              });
+                                            },
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        child: Text(
+                                          "취소",
+                                          style: TextStyle(color: Colors.blue),
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pop(context);
                                         },
                                       ),
-                                      DropdownButton(
-                                        items: [],
+                                      TextButton(
+                                        child: Text(
+                                          "확인",
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                        onPressed: () {
+                                          // 저장
+                                        },
                                       ),
-                                      DropdownButton(
-                                        items: [],
-                                      )
                                     ],
-                                  ),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    child: Text(
-                                      "취소",
-                                      style: TextStyle(color: Colors.blue),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: Text(
-                                      "확인",
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                    onPressed: () {
-                                      // 저장
-                                    },
-                                  ),
-                                ],
+                                  );
+                                },
                               );
                             },
                           );
                           // 리스트에 테스트 아이템 담기
                           TestItemInfo testItemInfo = TestItemInfo(
-                            programField: 'test',
-                            subField: 'test1',
-                            subItem: '하와홍',
+                            programField: context
+                                .read<ProgramFieldNotifier>()
+                                .programFieldList[1]
+                                .title,
+                            subField: context
+                                .read<ProgramFieldNotifier>()
+                                .programFieldList[1]
+                                .subFieldList[0]
+                                .subFieldName,
+                            subItem: context
+                                .read<ProgramFieldNotifier>()
+                                .programFieldList[1]
+                                .subFieldList[0]
+                                .subItemList[1],
                           );
 
                           // 리스트에 추가
@@ -228,7 +271,8 @@ class _TestInputScreenState extends State<TestInputScreen> {
                       return ListTile(
                         title: Text(testItemInfoList[index].subItem),
                         trailing: IconButton(
-                          icon: Icon(Icons.remove),
+                          icon: Icon(Icons.remove_rounded),
+                          color: Colors.black,
                           onPressed: () {
                             setState(() {
                               testItemInfoList.removeAt(index);

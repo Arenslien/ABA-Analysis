@@ -105,7 +105,7 @@ class _GraphScreenState extends State<GraphScreen> {
               // Date Graph 클릭시
               List<Test> testList = await context
                   .read<TestNotifier>()
-                  .getAllTestListOf(child.childId);
+                  .getAllTestListOf(child.childId, false);
               Navigator.push(
                   context,
                   MaterialPageRoute(

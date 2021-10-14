@@ -22,8 +22,6 @@ const programFieldList = [
 // ENUM 타입
 enum AutoID { child, test, testItem }
 
-enum Result { plus, minus, p }
-
 // // 그라데이션 컬러 -> box decoration에서 gradient같은 곳에 사용됨
 // const kPrimaryGradientColor = LinearGradient(
 //   begin: Alignment.topLeft,
