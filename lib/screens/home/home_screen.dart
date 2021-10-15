@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Container(
             color: Colors.white,
-            child: ChildGetResultScreen(),
+            // child: ChildGetResultScreen(),
           ),
           Container(
             color: Colors.white,
