@@ -39,8 +39,9 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
 
   @override
   Widget build(BuildContext context) {
-    allTest =
-        context.read<TestNotifier>().getAllTestListOf(widget.child.childId, false);
+    allTest = context
+        .read<TestNotifier>()
+        .getAllTestListOf(widget.child.childId, true);
 
     // for (Test test in allTest) {      // result가 null이라면
     //   for (TestItem testItem in test.testItemList) {
@@ -99,7 +100,9 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
         //     .getAllTestListOf(widget.child.childId);
 
         for (Test test in allTest) {
-          List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(test.testId, false);
+          List<TestItem> testItemList = context
+              .read<TestItemNotifier>()
+              .getTestItemList(test.testId, false);
           for (TestItem testItem in testItemList) {
             if (testItem.subItem == subItem && testItem.result != null) {
               subItemList

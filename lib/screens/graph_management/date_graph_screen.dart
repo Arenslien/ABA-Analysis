@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,6 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xio;
 
 import 'generateChart.dart';
 
-// date_graph + item_graph
 class DateGraph extends StatefulWidget {
   final Test test;
   const DateGraph({Key? key, required this.test}) : super(key: key);
@@ -36,20 +36,21 @@ class DateGraph extends StatefulWidget {
 
 class _DateGraphState extends State<DateGraph> {
   final bool _isDate = true; // Date Graph인지 Item Graph인지
-  late String _childName;
-  late ExportData exportData;
-  late Child _child;
+  late String _childName; // 아이의 이름
+  late ExportData exportData; // Export할 데이터
+  late Child _child; // 아이 데이터
 
-  late List<GraphData> _chartData;
-  late List<String> _tableColumn;
-  late String _graphType;
+  late List<GraphData> _chartData; // chart를 그릴 때 쓰이는 데이터
+  late List<String> _tableColumn; // 내보내기할 때 테이블의 컬럼 이름들
+  late String _graphType; // 날짜 그래프인지 하위목록 그래프인지
   late String _charTitleName; // test_date 이거나 subItem
-  late num _averageRate;
+  late num _averageRate; // 그래프의 평균 성공률
   final GlobalKey<SfCartesianChartState> _cartesianKey = GlobalKey();
-  String? _fileName;
+  String? _fileName; // 저장할 파일의 이름
   String? valueText; // Dialog에서 사용
-  bool _isCancle = true;
+  bool _isCancle = true; // Dialog에서 취소버튼을 눌렀는지 아닌지(확인버튼인지)
 
+  // Dialog에서 사용
   TextEditingController _inputFileNameController = TextEditingController();
 
   @override
@@ -78,8 +79,7 @@ class _DateGraphState extends State<DateGraph> {
     exportData = ExportData(context.read<UserNotifier>().abaUser!.name,
         _childName, _averageRate, '', '');
     return Scaffold(
-      appBar: SelectAppBar(
-          context, "< " + _childName + "의 " + _graphType + "별 그래프 >"),
+      appBar: SelectAppBar(context, _childName + "의 " + _graphType + "별 그래프"),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -95,8 +95,20 @@ class _DateGraphState extends State<DateGraph> {
                 children: [
                   FloatingActionButton.extended(
                     heroTag: 'export_excel', // 버튼 구별을 위한 태그
-                    onPressed: () {
-                      exportExcel(_tableColumn, genTableData(_chartData));
+                    onPressed: () async {
+                      if (await Permission.storage.isGranted) {
+                        exportExcel(_tableColumn, genTableData(_chartData));
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "내보내기를 위해 직접 파일 접근 권한을 허락해주세요.",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                        openAppSettings();
+                      }
                     }, // 누르면 엑셀 내보내기
                     label: Text('엑셀 내보내기',
                         style: TextStyle(fontFamily: 'KoreanGothic')),
@@ -107,8 +119,20 @@ class _DateGraphState extends State<DateGraph> {
                   ),
                   FloatingActionButton.extended(
                     heroTag: 'export_pdf', // 버튼 구별을 위한 태그
-                    onPressed: () {
-                      exportPDF(_tableColumn, genTableData(_chartData));
+                    onPressed: () async {
+                      if (await Permission.storage.isGranted) {
+                        exportPDF(_tableColumn, genTableData(_chartData));
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "내보내기를 위해 직접 파일 접근 권한을 허락해주세요.",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                        openAppSettings();
+                      }
                     }, // 누르면 PDF 내보내기
                     label: Text(
                       'PDF 내보내기',
@@ -138,12 +162,12 @@ class _DateGraphState extends State<DateGraph> {
     final List<int> excelBytes = graphWorkbook.saveAsStream();
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
-    if (Directory(filePath).exists() != true) {
+    if (!(await Directory(filePath).exists())) {
       // 폴더가 없다
       new Directory(filePath).createSync(recursive: true);
     }
     await _displayTextInputDialog(context, filePath, 'xlsx');
-    if (_isCancle == false) {
+    if (!_isCancle) {
       // 확인을 눌렀을 때
       final File file = File(filePath + _fileName! + ".xlsx");
       file.writeAsBytesSync(excelBytes);
@@ -179,12 +203,12 @@ class _DateGraphState extends State<DateGraph> {
 
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
-    if (Directory(filePath).exists() != true) {
+    if (!(await Directory(filePath).exists())) {
       // 폴더가 없다
       new Directory(filePath).createSync(recursive: true);
     }
     await _displayTextInputDialog(context, filePath, "pdf");
-    if (_isCancle == false) {
+    if (!_isCancle) {
       // 확인을 눌렀을 때
       final File file = File(filePath + _fileName! + ".pdf");
       file.writeAsBytesSync(List.from(await graphPDF.save()));
@@ -280,14 +304,17 @@ class _DateGraphState extends State<DateGraph> {
         });
   }
 
-  List<GraphData> getDateGraphData(String _noChange, Test test, BuildContext context) {
+  List<GraphData> getDateGraphData(
+      String _noChange, Test test, BuildContext context) {
     // 통일된거
     List<GraphData> chartData = []; // 선택한 하위목록과 테스트한 날짜 리스트
     // get testItemList
-    List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(test.testId, false);
+    List<TestItem> testItemList =
+        context.read<TestItemNotifier>().getTestItemList(test.testId, false);
 
-    num average = context.read<TestItemNotifier>().getAverage(test.testId); // 선택한 하위목록의 전체 날짜 평균 성공률
-
+    num average = context
+        .read<TestItemNotifier>()
+        .getAverage(test.testId); // 선택한 하위목록의 전체 날짜 평균 성공률
 
     for (TestItem testItem in testItemList) {
       print(testItem.toString());

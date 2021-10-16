@@ -46,7 +46,8 @@ class _GraphScreenState extends State<GraphScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-          appBar: SelectAppBar(context, "아이 선택", searchButton: searchButton),
+          appBar: SelectAppBar(context, "아이 선택",
+              searchButton: searchButton, isMain: true),
           body: context.watch<ChildNotifier>().children.length == 0
               ? noChildData()
               : selectedChild == ""
@@ -105,7 +106,7 @@ class _GraphScreenState extends State<GraphScreen> {
               // Date Graph 클릭시
               List<Test> testList = await context
                   .read<TestNotifier>()
-                  .getAllTestListOf(child.childId, false);
+                  .getAllTestListOf(child.childId, true);
               Navigator.push(
                   context,
                   MaterialPageRoute(

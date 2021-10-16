@@ -22,7 +22,7 @@ class TestItemNotifier extends ChangeNotifier {
     _testItemList.remove(testItem);
     notifyListeners();
   }
-  
+
   // TestItem 불러오기
   List<TestItem> getTestItemList(int testId, bool nullValue) {
     List<TestItem> testItemList = [];
@@ -30,31 +30,33 @@ class TestItemNotifier extends ChangeNotifier {
     if (nullValue) {
       _testItemList.forEach((TestItem testItem) {
         print(testItem.testId);
-        if(testItem.testId == testId) {
+        if (testItem.testId == testId) {
           testItemList.add(testItem);
         }
       });
     } else {
       _testItemList.forEach((TestItem testItem) {
-        if(testItem.testId == testId && testItem.result != null) {
+        if (testItem.testId == testId && testItem.result != null) {
           testItemList.add(testItem);
         }
       });
     }
-    
+
     return testItemList;
   }
 
   int getAverage(int testId) {
     List<TestItem> testItemList = getTestItemList(testId, false);
-
+    if (testItemList.length == 0) {
+      return 0;
+    }
     int cnt = 0;
     for (TestItem testItem in testItemList) {
       if (testItem.result == '+') {
         cnt += 1;
       }
     }
-    return (cnt/testItemList.length * 100).toInt();
+    return (cnt / testItemList.length * 100).toInt();
   }
 
   // GETTER FUNCTION: TestItem List 제공
