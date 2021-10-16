@@ -123,8 +123,7 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                     // bool isInput = false;
 
                     // 테스트의 날짜와 테스트 제목 수정
-                    store.updateTest(
-                        widget.test.testId, date, title, true); // 일단 true넣어둠
+                    store.updateTest(widget.test.testId, date, title);
                     context
                         .read<TestNotifier>()
                         .updateTest(widget.test.testId, title, date);
