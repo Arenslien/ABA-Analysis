@@ -41,7 +41,7 @@ class _TestInputScreenState extends State<TestModifyScreen> {
       testItemList = context
           .read<TestItemNotifier>()
           .getTestItemList(widget.test.testId, true);
-      
+
       for (TestItem testItem in testItemList) {
         TestItemInfo testItemInfo = TestItemInfo(
           programField: testItem.programField,
@@ -50,7 +50,6 @@ class _TestInputScreenState extends State<TestModifyScreen> {
         );
         testItemInfoList.add(testItemInfo);
       }
-
     });
   }
 
@@ -88,13 +87,17 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                     title: '테스트 삭제',
                     text: '해당 테스트 데이터를 삭제 하시겠습니까?',
                     onPressed: () async {
-                      List<TestItem> testItemList1 = context.read<TestItemNotifier>().getTestItemList(widget.test.testId, true);
+                      List<TestItem> testItemList1 = context
+                          .read<TestItemNotifier>()
+                          .getTestItemList(widget.test.testId, true);
 
                       for (TestItem testItem in testItemList1) {
                         // DB 에서 TestItem 제거
                         await store.deleteTestItem(testItem.testItemId);
                         // Provider에서 testItem 제거
-                        context.read<TestItemNotifier>().removeTestItem(testItem);
+                        context
+                            .read<TestItemNotifier>()
+                            .removeTestItem(testItem);
                       }
                       // DB에서 Test 제거
                       await store.deleteTest(widget.test.testId);
@@ -120,11 +123,16 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                     // bool isInput = false;
 
                     // 테스트의 날짜와 테스트 제목 수정
-                    store.updateTest(widget.test.testId, date, title);
-                    context.read<TestNotifier>().updateTest(widget.test.testId, title, date);
+                    store.updateTest(
+                        widget.test.testId, date, title, true); // 일단 true넣어둠
+                    context
+                        .read<TestNotifier>()
+                        .updateTest(widget.test.testId, title, date);
 
                     // 기존의 테스트에 대한 테스트 아이템 모두 제거
-                    List<TestItem> testItemList1 = context.read<TestItemNotifier>().getTestItemList(widget.test.testId, true);
+                    List<TestItem> testItemList1 = context
+                        .read<TestItemNotifier>()
+                        .getTestItemList(widget.test.testId, true);
                     for (TestItem testItem in testItemList1) {
                       // DB 에서 TestItem 제거
                       await store.deleteTestItem(testItem.testItemId);
@@ -134,16 +142,14 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                     // 테스트 만들기
                     for (TestItemInfo testItemInfo in testItemInfoList) {
                       TestItem testItem = TestItem(
-                        testItemId: await store.updateId(AutoID.testItem),
-                        testId: widget.test.testId,
-                        programField: testItemInfo.programField,
-                        subField: testItemInfo.subField,
-                        subItem: testItemInfo.subItem,
-                        result: null
-                      );
+                          testItemId: await store.updateId(AutoID.testItem),
+                          testId: widget.test.testId,
+                          programField: testItemInfo.programField,
+                          subField: testItemInfo.subField,
+                          subItem: testItemInfo.subItem,
+                          result: null);
                       await store.createTestItem(testItem);
                       context.read<TestItemNotifier>().addTestItem(testItem);
-
                     }
 
                     Navigator.pop(context);
@@ -339,20 +345,26 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                                         onPressed: () {
                                           // 저장
                                           // 리스트에 테스트 아이템 담기
-                                          TestItemInfo testItemInfo = TestItemInfo(
+                                          TestItemInfo testItemInfo =
+                                              TestItemInfo(
                                             programField: context
                                                 .read<ProgramFieldNotifier>()
-                                                .programFieldList[selectedProgramFieldIndex]
+                                                .programFieldList[
+                                                    selectedProgramFieldIndex]
                                                 .title,
                                             subField: context
                                                 .read<ProgramFieldNotifier>()
-                                                .programFieldList[selectedProgramFieldIndex]
-                                                .subFieldList[selectedSubFieldIndex]
+                                                .programFieldList[
+                                                    selectedProgramFieldIndex]
+                                                .subFieldList[
+                                                    selectedSubFieldIndex]
                                                 .subFieldName,
                                             subItem: context
                                                 .read<ProgramFieldNotifier>()
-                                                .programFieldList[selectedProgramFieldIndex]
-                                                .subFieldList[selectedSubFieldIndex]
+                                                .programFieldList[
+                                                    selectedProgramFieldIndex]
+                                                .subFieldList[
+                                                    selectedSubFieldIndex]
                                                 .subItemList[selectedSubItemIndex],
                                           );
 

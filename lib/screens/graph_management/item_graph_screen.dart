@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:line_icons/line_icons.dart';
 import 'dart:ui' as dart_ui;
@@ -21,7 +22,6 @@ import 'package:open_file/open_file.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xio;
 import 'generateChart.dart';
 
-// date_graph + item_graph
 class ItemGraphScreen extends StatefulWidget {
   final List<SubItemAndDate> subItemList;
   final Child child;
@@ -34,37 +34,32 @@ class ItemGraphScreen extends StatefulWidget {
 }
 
 class _ItemGraphScreenState extends State<ItemGraphScreen> {
-  final bool _isDate = false;
-  late var selectedArgs;
+  final bool _isDate = false; // 날짜 그래프인지 아닌지
 
-  late ExportData exportData;
+  late ExportData exportData; // Export할 데이터
 
-  late List<GraphData> _chartData;
-  late List<String> _tableColumn;
-  late String _graphType; // 날짜별
-  late String _charTitleName; // 하위목록 이름(subItem)
-  late num _averageRate;
+  late List<GraphData> _chartData; // chart를 그릴 때 쓰이는 데이터
+  late List<String> _tableColumn; // 내보내기할 때 테이블의 컬럼 이름들
+  late String _graphType; // 날짜별 그래프인지 하위목록별 그래프인지
+  late String _charTitleName; // 차트의 제목
+  late num _averageRate; // 평균 성공률
   final GlobalKey<SfCartesianChartState> _cartesianKey = GlobalKey();
-  String _fileName = "";
+  String _fileName = ""; // 저장할 파일의 이름
   String valueText = ""; // Dialog에서 사용
-  bool _isCancle = true;
+  bool _isCancle = true; // Dialog에서 취소버튼을 눌렀는지 아닌지(확인버튼인지)
 
-  TextEditingController _textFieldController =
-      TextEditingController(); // dialog에서 파일이름 관련.
+  // Dialog에서 사용
+  TextEditingController _textFieldController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    // 아이템 그래프인지 날짜 그래프인지
 
     _graphType = '하위목록';
     _charTitleName = widget.subItemList[0].testItem.subItem;
     _tableColumn = ['하위목록', '날짜', '성공여부'];
 
     _chartData = getItemGraphData(_charTitleName, widget.subItemList);
-
-    // _fileName = null;
-    // valueText = null;
 
     _averageRate = _chartData[0].averageRate;
   }
@@ -109,7 +104,7 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
     return Scaffold(
       appBar: SelectAppBar(
         context,
-        "< " + widget.child.name + "의 " + _graphType + "별 그래프 >",
+        widget.child.name + "의 " + _graphType + "별 그래프",
       ),
       body: widget.subItemList.isEmpty
           ? noTestData()
@@ -127,8 +122,21 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
                       children: [
                         FloatingActionButton.extended(
                           heroTag: 'export_excel', // 버튼 구별을 위한 태그
-                          onPressed: () {
-                            exportExcel(_tableColumn, genTableData(_chartData));
+                          onPressed: () async {
+                            if (await Permission.storage.isGranted) {
+                              exportExcel(
+                                  _tableColumn, genTableData(_chartData));
+                            } else {
+                              Fluttertoast.showToast(
+                                  msg: "내보내기를 위해 직접 파일 접근 권한을 허락해주세요.",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.CENTER,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
+                              openAppSettings();
+                            }
                           }, // 누르면 엑셀 내보내기
                           label: Text('엑셀 내보내기',
                               style: TextStyle(fontFamily: 'KoreanGothic')),
@@ -139,8 +147,20 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
                         ),
                         FloatingActionButton.extended(
                           heroTag: 'export_pdf', // 버튼 구별을 위한 태그
-                          onPressed: () {
-                            exportPDF(_tableColumn, genTableData(_chartData));
+                          onPressed: () async {
+                            if (await Permission.storage.isGranted) {
+                              exportPDF(_tableColumn, genTableData(_chartData));
+                            } else {
+                              Fluttertoast.showToast(
+                                  msg: "내보내기를 위해 직접 파일 접근 권한을 허락해주세요.",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.CENTER,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                  fontSize: 16.0);
+                              openAppSettings();
+                            }
                           }, // 누르면 PDF 내보내기
                           label: Text(
                             'PDF 내보내기',
@@ -169,12 +189,12 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
     final List<int> excelBytes = graphWorkbook.saveAsStream();
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
-    if (Directory(filePath).exists() != true) {
+    if (!(await Directory(filePath).exists())) {
       // 폴더가 없다
       new Directory(filePath).createSync(recursive: true);
     }
     await _displayTextInputDialog(context, filePath, 'xlsx');
-    if (_isCancle == false) {
+    if (!_isCancle) {
       // 확인을 눌렀을 때
       final File file = File(filePath + _fileName + ".xlsx");
       file.writeAsBytesSync(excelBytes);
@@ -210,12 +230,12 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
 
     final dir = await DownloadsPathProvider.downloadsDirectory;
     String filePath = dir!.path + '/abaGraph/';
-    if (Directory(filePath).exists() != true) {
+    if (!(await Directory(filePath).exists())) {
       // 폴더가 없다
       new Directory(filePath).createSync(recursive: true);
     }
     await _displayTextInputDialog(context, filePath, "pdf");
-    if (_isCancle == false) {
+    if (!_isCancle) {
       // 확인을 눌렀을 때
       final File file = File(filePath + _fileName + ".pdf");
       file.writeAsBytesSync(List.from(await graphPDF.save()));
@@ -294,10 +314,18 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
                         gravity: ToastGravity.CENTER,
                         timeInSecForIosWeb: 1,
                         backgroundColor: Colors.red,
-                        textColor: Colors.white,
+                        textColor: Colors.black,
                         fontSize: 16.0);
                   } else {
                     setState(() {
+                      Fluttertoast.showToast(
+                          msg: "파일이 저장되었습니다.",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
                       _fileName = valueText;
                       _isCancle = false;
                       _textFieldController.clear();
