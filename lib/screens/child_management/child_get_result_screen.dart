@@ -81,14 +81,12 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
             trailing: buildToggleButtons(
               text: ['+', '-', 'P'],
               onPressed: (buttonIndex) {
-                // if (!resultSelected[index][buttonIndex])
                 if (buttonIndex == 0)
                   result[index] = '+';
                 else if (buttonIndex == 1)
                   result[index] = '-';
                 else if (buttonIndex == 2) result[index] = 'P';
                 setState(() {
-                  // isGenderSelected = true;
                   for (int i = 0; i < 3; i++) {
                     resultSelected[index][i] = false;
                     if (buttonIndex == i) {
