@@ -35,23 +35,23 @@ class TestNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Test> getAllTestListOf(int childId, bool nullValue) {
+  List<Test> getAllTestListOf(int childId, bool isInput) {
     List<Test> testListOfChild = [];
 
-    if (nullValue) {
+    if (isInput) {
       _testList.forEach((test) {
-        if(test.childId == childId) {
+        if (test.childId == childId && test.isInput) {
           testListOfChild.add(test);
         }
       });
     } else {
       _testList.forEach((test) {
-        if(test.childId == childId && test.isInput) {
+        if (test.childId == childId) {
           testListOfChild.add(test);
         }
       });
     }
-    
+
     return testListOfChild;
   }
 

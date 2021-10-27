@@ -4,6 +4,8 @@ import 'package:aba_analysis/screens/setting/setting_screen.dart';
 import 'package:aba_analysis/screens/graph_management/graph_main_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_main_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_get_result_screen.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _page = 0;
   bool firebaseInitialized = false;
   late PageController pageController;
-
+  bool storagePermissonGranted = false;
   @override
   void initState() {
     super.initState();
@@ -28,18 +30,44 @@ class _HomeScreenState extends State<HomeScreen> {
     //});
 
     pageController = PageController();
+
+    // 처음에 권한을 확인하기 위해 initState에서 실행
+    // initState에서는 Future클래스가 호출이 안되므로 권한 확인 함수를 아래 함수에 넣어줬다.
+    setPermission();
+  }
+
+  void setPermission() async {
+    // storage 접근 권한 확인
+    var status = await Permission.storage.status;
+
+    // 권한이 없을경우(status가 granted가 아닐 경우) request한다.
+    if (!status.isGranted) {
+      status = await Permission.storage.request();
+      // 권한이 permantlyDenied일 경우, 앱 세팅에 들어가서 사용자가 직접 permission을 허락해줘야 한다.
+      if (status.isPermanentlyDenied) {
+        // 사용자에게 알리기 위해 토스트 메세지 출력
+        Fluttertoast.showToast(
+            msg: "직접 파일 접근 권한을 허락해주세요.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        await openAppSettings();
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     if (!firebaseInitialized) return CircularProgressIndicator();
-
     return Scaffold(
       body: PageView(
         children: [
           Container(
             color: Colors.white,
-            child: GraphScreen(), //SelectDateScreen(), 테스트용
+            child: GraphScreen(),
           ),
           Container(
             color: Colors.white,

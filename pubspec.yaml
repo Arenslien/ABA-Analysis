@@ -45,7 +45,9 @@ dependencies:
   open_file: ^3.2.1
   syncfusion_flutter_xlsio: ^19.2.56-beta
   google_fonts: ^2.1.0
+  # 그래프excel,pdf export -> 파일 접근 권한 필요
   permission_handler: ^8.1.4+2
+  
   downloads_path_provider_28: ^0.1.2
   fluttertoast: ^8.0.8
   intl: ^0.17.0

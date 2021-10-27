@@ -2,7 +2,7 @@ import 'package:aba_analysis/constants.dart';
 import 'package:flutter/material.dart';
 
 AppBar SelectAppBar(BuildContext context, String title,
-    {IconButton? searchButton}) {
+    {IconButton? searchButton, bool? isMain}) {
   return AppBar(
       title: Text(
         title,
@@ -10,10 +10,12 @@ AppBar SelectAppBar(BuildContext context, String title,
       ),
       backgroundColor: mainGreenColor,
       centerTitle: true,
-      leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back)),
+      leading: isMain == true
+          ? null
+          : IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.arrow_back)),
       actions: searchButton == null ? [] : <Widget>[searchButton]);
 }
