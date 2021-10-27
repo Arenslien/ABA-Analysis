@@ -20,8 +20,7 @@ class ChildTestScreen extends StatefulWidget {
   const ChildTestScreen({Key? key, required this.child}) : super(key: key);
 
   @override
-  _ChildTestScreenState createState() =>
-      _ChildTestScreenState();
+  _ChildTestScreenState createState() => _ChildTestScreenState();
 }
 
 class _ChildTestScreenState extends State<ChildTestScreen> {
@@ -39,8 +38,9 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
 
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
       setState(() {
-        testList =
-            context.read<TestNotifier>().getAllTestListOf(widget.child.childId, true);
+        testList = context
+            .read<TestNotifier>()
+            .getAllTestListOf(widget.child.childId, true);
       });
     });
   }
@@ -67,7 +67,11 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
           ),
           backgroundColor: mainGreenColor,
         ),
-        body: context.watch<TestNotifier>().getAllTestListOf(widget.child.childId, true).length == 0
+        body: context
+                    .watch<TestNotifier>()
+                    .getAllTestListOf(widget.child.childId, true)
+                    .length ==
+                0
             ? noListData(Icons.library_add_outlined, '테스트 추가')
             : searchTextEditingController.text.isEmpty
                 ? ListView.builder(
@@ -79,12 +83,21 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                         .length,
                     itemBuilder: (BuildContext context, int index) {
                       return buildListTile(
-                        titleText: context.watch<TestNotifier>().getAllTestListOf(widget.child.childId, true)[index].title,
+                        titleText: context
+                            .watch<TestNotifier>()
+                            .getAllTestListOf(widget.child.childId, true)[index]
+                            .title,
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ChildGetResultScreen(child: widget.child, test: context.read<TestNotifier>().testList[index])),
+                              builder: (context) => ChildGetResultScreen(
+                                  child: widget.child,
+                                  test: context
+                                      .read<TestNotifier>()
+                                      .getAllTestListOf(
+                                          widget.child.childId, true)[index]),
+                            ),
                           );
                         },
                         trailing: buildToggleButtons(
@@ -92,21 +105,29 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                           onPressed: (idx) async {
                             if (idx == 0) {
                               // 기존 테스트 가져오고
-                              Test test = context.read<TestNotifier>().getAllTestListOf(widget.child.childId, true)[index];
-                              
+                              Test test = context
+                                  .read<TestNotifier>()
+                                  .getAllTestListOf(
+                                      widget.child.childId, true)[index];
+
                               // DB에 Test 추가
                               Test copiedTest = await store.copyTest(test);
                               // TestNotifer에 추가
                               context.read<TestNotifier>().addTest(copiedTest);
 
-                              List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(test.testId, true);
+                              List<TestItem> testItemList = context
+                                  .read<TestItemNotifier>()
+                                  .getTestItemList(test.testId, true);
                               print('for문 전');
                               for (TestItem testItem in testItemList) {
                                 print('hi');
                                 // DB에 TestItem 추가
-                                TestItem copiedTestItem = await store.copyTestItem(testItem);
+                                TestItem copiedTestItem =
+                                    await store.copyTestItem(testItem);
                                 // 복사된 테스트 아이템 TestItem Notifier에 추가
-                                context.read<TestItemNotifier>().addTestItem(copiedTestItem);
+                                context
+                                    .read<TestItemNotifier>()
+                                    .addTestItem(copiedTestItem);
                               }
                               print('for문 끝');
                               searchTextEditingController.text = '';
@@ -114,8 +135,12 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      TestModifyScreen(test: context.read<TestNotifier>().getAllTestListOf(widget.child.childId, true)[index]),
+                                  builder: (context) => TestModifyScreen(
+                                      test: context
+                                          .read<TestNotifier>()
+                                          .getAllTestListOf(
+                                              widget.child.childId,
+                                              true)[index]),
                                 ),
                               );
                             }
@@ -137,7 +162,6 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                 builder: (context) => TestInputScreen(child: widget.child),
               ),
             );
-
           },
           backgroundColor: Colors.black,
         ),
