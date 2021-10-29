@@ -41,6 +41,7 @@ class TestNotifier extends ChangeNotifier {
     if (isInput) {
       _testList.forEach((test) {
         if (test.childId == childId && test.isInput) {
+          print("테스트 ${test.title}의  isinput: ${test.isInput}");
           testListOfChild.add(test);
         }
       });

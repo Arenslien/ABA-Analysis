@@ -69,7 +69,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
         ),
         body: context
                     .watch<TestNotifier>()
-                    .getAllTestListOf(widget.child.childId, true)
+                    .getAllTestListOf(widget.child.childId, false)
                     .length ==
                 0
             ? noListData(Icons.library_add_outlined, '테스트 추가')
@@ -79,13 +79,14 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                     padding: const EdgeInsets.all(16),
                     itemCount: context
                         .watch<TestNotifier>()
-                        .getAllTestListOf(widget.child.childId, true)
+                        .getAllTestListOf(widget.child.childId, false)
                         .length,
                     itemBuilder: (BuildContext context, int index) {
                       return buildListTile(
                         titleText: context
                             .watch<TestNotifier>()
-                            .getAllTestListOf(widget.child.childId, true)[index]
+                            .getAllTestListOf(
+                                widget.child.childId, false)[index]
                             .title,
                         onTap: () {
                           Navigator.push(
@@ -96,7 +97,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                                   test: context
                                       .read<TestNotifier>()
                                       .getAllTestListOf(
-                                          widget.child.childId, true)[index]),
+                                          widget.child.childId, false)[index]),
                             ),
                           );
                         },
@@ -108,7 +109,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                               Test test = context
                                   .read<TestNotifier>()
                                   .getAllTestListOf(
-                                      widget.child.childId, true)[index];
+                                      widget.child.childId, false)[index];
 
                               // DB에 Test 추가
                               Test copiedTest = await store.copyTest(test);
@@ -140,7 +141,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                                           .read<TestNotifier>()
                                           .getAllTestListOf(
                                               widget.child.childId,
-                                              true)[index]),
+                                              false)[index]),
                                 ),
                               );
                             }
