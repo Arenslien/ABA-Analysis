@@ -4,8 +4,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     
    <application
-        android:label="aba_analysis"
-        android:icon="@mipmap/ic_launcher"
+        android:label="ABA Analysis"
+        android:icon="@mipmap/launcher_icon"
         android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
