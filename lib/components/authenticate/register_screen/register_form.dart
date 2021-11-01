@@ -145,7 +145,8 @@ class _RegisterFormState extends State<RegisterForm> {
                     name: name, 
                     phone: phone, 
                     duty: '치료자', 
-                    approvalStatus: false
+                    approvalStatus: false,
+                    deleteRequest: false,
                   ));                  
 
                   // 토스트 메시지

@@ -1,4 +1,5 @@
 import 'package:aba_analysis/components/setting/setting_default_button.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/program_field.dart';
 import 'package:aba_analysis/models/sub_field.dart';
 import 'package:aba_analysis/provider/program_field_notifier.dart';
@@ -60,9 +61,22 @@ class _BodyState extends State<Body> {
                         SettingDefaultButton(text: '로그아웃', onTap: () {
                           // Firebase Authentication 로그아웃
                           auth.signOut();
-
                           context.read<UserNotifier>().updateUser(null);
                         }),
+                        Visibility(
+                          visible: context.watch<UserNotifier>().abaUser!.duty == '관리자'? true:false,
+                          child: SettingDefaultButton(text: '사용자 관리', onTap: () async {
+                            context.read<UserNotifier>().updateApprovedUsers(await store.readApprovedUser());
+                            Navigator.pushNamed(context, '/user_management');
+                          }),
+                        ),
+                        Visibility(
+                          visible: context.watch<UserNotifier>().abaUser!.duty == '관리자'? true:false,
+                          child: SettingDefaultButton(text: '회원가입 승인', onTap: () async {
+                            context.read<UserNotifier>().updateUnapprovedUsers(await store.readUnapprovedUser());
+                            Navigator.pushNamed(context, '/approve_registration');                            
+                          }),
+                        ),
                         SettingDefaultButton(text: '회원 탈퇴', onTap: () {
                           if (context.read<UserNotifier>().abaUser!.duty == '관리자') {
                             for (ProgramField pf in context.read<ProgramFieldNotifier>().programFieldList) {
@@ -87,13 +101,7 @@ class _BodyState extends State<Body> {
                             // auth.deleteAuthUser();
                           }
                         }),
-                        Visibility(
-                          visible: context.watch<UserNotifier>().abaUser!.duty == '관리자'? true:false,
-                          child: SettingDefaultButton(text: '회원가입 승인', onTap: () async {
-                            context.read<UserNotifier>().updateUnapprovedUser(await store.readUnapprovedUser());
-                            Navigator.pushNamed(context, '/approve_registration');                            
-                          }),
-                        ),
+                        
                       ],
                     ),
                   ),
@@ -164,7 +172,7 @@ class UserInfoCard extends StatelessWidget {
               ],
             ),
             Text(
-              context.watch<UserNotifier>().abaUser!.phone, 
+              convertPhoneNumber(context.watch<UserNotifier>().abaUser!.phone), 
               style: TextStyle(
                 fontSize: 18.0,
               ),

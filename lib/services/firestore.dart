@@ -47,7 +47,8 @@ class FireStoreService {
       name: data['name'], 
       phone: data['phone'],
       duty: data['duty'],
-      approvalStatus: data['approval-status']
+      approvalStatus: data['approval-status'],
+      deleteRequest: data['delete-request'],
     );
     
     // ABAUser 반환
@@ -70,7 +71,8 @@ class FireStoreService {
             name: data['name'], 
             phone: data['phone'],
             duty: data['duty'],
-            approvalStatus: data['approval-status']
+            approvalStatus: data['approval-status'],
+            deleteRequest: data['delete-request'],
           );
           unapprovedUserList.add(abaUser);
         }));
@@ -78,15 +80,41 @@ class FireStoreService {
     return unapprovedUserList;
   }
 
+  // 승인된 사용자 읽기
+  Future<List<ABAUser>> readApprovedUser() async {
+    List<ABAUser> approvedUserList = [];
+
+    // 모든 아이들 데이터 가져오기
+    await _user
+        .where('approval-status', isEqualTo: true)
+        .get()
+        .then((QuerySnapshot snapshot) => snapshot.docs.forEach((document) {
+          dynamic data = document.data();
+          ABAUser abaUser = ABAUser(
+            email: data['email'],
+            password: data['password'],
+            name: data['name'], 
+            phone: data['phone'],
+            duty: data['duty'],
+            approvalStatus: data['approval-status'],
+            deleteRequest: data['delete-request'],
+          );
+          approvedUserList.add(abaUser);
+        }));
+
+    return approvedUserList;
+  }
+
   // 사용자 수정
-  Future updateUser(String email, String name, String phone, String duty, bool approvalStatus) async {
+  Future updateUser(String email, String name, String phone, String duty, bool approvalStatus, bool deleteRequest) async {
     return _user
         .doc(email)
         .update({
           'name': name,
           'phone': phone,
           'duty': duty,
-          'approval-status': approvalStatus
+          'approval-status': approvalStatus,
+          'delete-request': deleteRequest,
         })
         .then((value) => print('[사용자: $email] - 수정 완료'))
         .catchError((error) => print('[사용자: $email] - 수정 실패\n에러 내용: $error'));

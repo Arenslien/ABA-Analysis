@@ -9,6 +9,12 @@ const mainGreenColor = Color(0xFFA5D6A7);
 // ENUM 타입
 enum AutoID { child, test, testItem }
 
+String convertPhoneNumber(String phone) {
+  String phoneNumber;
+  phoneNumber = '${phone.substring(0, 3)} - ${phone.substring(3, 7)} - ${phone.substring(7, 11)}';
+  return phoneNumber;
+}
+
 // // 그라데이션 컬러 -> box decoration에서 gradient같은 곳에 사용됨
 // const kPrimaryGradientColor = LinearGradient(
 //   begin: Alignment.topLeft,
