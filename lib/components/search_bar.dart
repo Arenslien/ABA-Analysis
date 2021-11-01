@@ -10,7 +10,7 @@ AppBar searchBar({
     title: TextFormField(
       controller: controller,
       decoration: InputDecoration(
-        hintText: '검색',
+        hintText: '아동 검색',
         hintStyle: TextStyle(fontFamily: 'korean', color: Colors.black),
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: mainGreenColor),

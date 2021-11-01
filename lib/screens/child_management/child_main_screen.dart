@@ -5,7 +5,6 @@ import 'package:aba_analysis/components/search_bar.dart';
 import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/build_no_list_widget.dart';
-import 'package:aba_analysis/components/build_toggle_buttons.dart';
 import 'package:aba_analysis/components/build_floating_action_button.dart';
 import 'package:aba_analysis/screens/child_management/child_test_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_input_screen.dart';
@@ -110,6 +109,9 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
             MaterialPageRoute(
                 builder: (context) => ChildTestScreen(child: child)),
           );
+          setState(() {
+            searchTextEditingController.clear();
+          });
         },
         trailing: IconButton(
           icon: Icon(Icons.settings),
