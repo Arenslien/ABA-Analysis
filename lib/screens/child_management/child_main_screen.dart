@@ -21,7 +21,6 @@ class ChildMainScreen extends StatefulWidget {
 class _ChildMainScreenState extends State<ChildMainScreen> {
   List<Child> childList = [];
   List<Child> searchResult = [];
-  List<Widget> searchChildCardList = [];
   TextEditingController searchTextEditingController = TextEditingController();
 
   @override
