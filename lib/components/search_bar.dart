@@ -3,20 +3,20 @@ import 'package:aba_analysis/constants.dart';
 
 AppBar searchBar({
   TextEditingController? controller,
-  Function(String)? controlSearching,
-  Function()? onPressed,
+  Function(String)? onChanged,
+  Function()? clear,
 }) {
   return AppBar(
     title: TextFormField(
       controller: controller,
       decoration: InputDecoration(
         hintText: '검색',
-        hintStyle: TextStyle(color: Colors.black),
+        hintStyle: TextStyle(fontFamily: 'korean', color: Colors.black),
         enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.black),
+          borderSide: BorderSide(color: mainGreenColor),
         ),
         focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.black),
+          borderSide: BorderSide(color: mainGreenColor),
         ),
         prefixIcon: Icon(
           Icons.search_outlined,
@@ -28,10 +28,10 @@ AppBar searchBar({
             Icons.clear,
             color: Colors.black,
           ),
-          onPressed: onPressed,
+          onPressed: clear,
         ),
       ),
-      onChanged: controlSearching,
+      onChanged: onChanged,
       cursorColor: Colors.black,
       style: TextStyle(
         fontSize: 18,

@@ -67,7 +67,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     return GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
-          appBar: SelectAppBar(context, (widget.child.name + "의 테스트 날짜 선택"),
+          appBar: selectAppBar(context, (widget.child.name + "의 테스트 날짜 선택"),
               searchButton: searchButton),
           body: widget.testList.length == 0
               ? noTestData()

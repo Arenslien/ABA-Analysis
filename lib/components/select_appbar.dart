@@ -1,8 +1,12 @@
-import 'package:aba_analysis/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:aba_analysis/constants.dart';
 
-AppBar SelectAppBar(BuildContext context, String title,
-    {IconButton? searchButton, bool? isMain}) {
+AppBar selectAppBar(
+  BuildContext context,
+  String title, {
+  IconButton? searchButton,
+  bool? isMain,
+}) {
   return AppBar(
       title: Text(
         title,

@@ -8,7 +8,7 @@ Widget buildListTile(
     Function()? onTap,
     Widget? trailing}) {
   return Padding(
-    padding: const EdgeInsets.all(16.0),
+    padding: const EdgeInsets.all(8.0),
     child: ListTile(
       leading: icon == null
           ? null
@@ -18,13 +18,20 @@ Widget buildListTile(
             ),
       title: Text(
         titleText!,
-        style: TextStyle(fontSize: titleSize ?? 25, fontFamily: 'KoreanGothic'),
+        style: TextStyle(
+          fontSize: titleSize ?? 25,
+          fontFamily: 'KoreanGothic',
+          fontWeight: FontWeight.bold
+        ),
       ),
       subtitle: subtitleText == null
           ? null
           : Text(
               subtitleText,
-              style: TextStyle(fontSize: 15, fontFamily: 'KoreanGothic'),
+              style: TextStyle(
+                fontSize: 15,
+                fontFamily: 'KoreanGothic',
+              ),
             ),
       onTap: onTap,
       trailing: trailing,
