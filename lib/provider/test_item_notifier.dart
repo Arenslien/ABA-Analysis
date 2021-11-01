@@ -53,6 +53,27 @@ class TestItemNotifier extends ChangeNotifier {
     return testItemList;
   }
 
+  List<TestItem> getTestItemListFromChildId(int childId, bool nullValue) {
+    List<TestItem> testItemList = [];
+
+    if (nullValue) {
+      _testItemList.forEach((TestItem testItem) {
+        print(testItem.childId);
+        if (testItem.childId == childId) {
+          testItemList.add(testItem);
+        }
+      });
+    } else {
+      _testItemList.forEach((TestItem testItem) {
+        if (testItem.childId == childId && testItem.result != null) {
+          testItemList.add(testItem);
+        }
+      });
+    }
+
+    return testItemList;
+  }
+
   int getAverage(int testId) {
     List<TestItem> testItemList = getTestItemList(testId, false);
     if (testItemList.length == 0) {

@@ -29,5 +29,7 @@ ToggleButtons buildToggleButtons(
     splashColor: mainGreenColor,
     selectedColor: Colors.black,
     selectedBorderColor: Colors.black,
+    disabledColor: Colors.black,
+    disabledBorderColor: Colors.black,
   );
 }
