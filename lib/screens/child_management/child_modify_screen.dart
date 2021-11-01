@@ -83,7 +83,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                       // 아이에 대한 test
                       List<Test> testList = context
                           .read<TestNotifier>()
-                          .getAllTestListOf(widget.child.childId, true);
+                          .getAllTestListOf(widget.child.childId, false);
 
                       for (Test test in testList) {
                         // Child의 TestItem 제거

@@ -76,7 +76,7 @@ class UnapprovedUserTile extends StatelessWidget {
       child: InkWell(
         onTap: () {},
         child: ListTile(
-            title: Text(abaUser.name),
+            title: Text(abaUser.nickname),
             subtitle: Text(abaUser.email),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -86,9 +86,9 @@ class UnapprovedUserTile extends StatelessWidget {
                   style: ElevatedButton.styleFrom(primary: Colors.blue[400]),
                   onPressed: () async {
                     // 회원가입 승인
-                    await store.updateUser(abaUser.email, abaUser.name, abaUser.phone, abaUser.duty, true, false);
+                    await store.updateUser(abaUser.email, abaUser.nickname, abaUser.duty, true, false);
                     context.read<UserNotifier>().deleteUnapprovedUser(abaUser.email);
-                    auth.register(abaUser.email, abaUser.password, abaUser.name, abaUser.phone);
+                    auth.register(abaUser.email, abaUser.password);
                   }, 
                 ),
                 SizedBox(width: getProportionateScreenWidth(10.0)),
