@@ -43,7 +43,7 @@ class _BodyState extends State<Body> {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(
                       getProportionateScreenWidth(35),
-                      getProportionateScreenWidth(170),
+                      getProportionateScreenWidth(100),
                       getProportionateScreenWidth(35),
                       getProportionateScreenWidth(35),
                     ),
