@@ -1,20 +1,11 @@
-import 'package:aba_analysis/models/program_field.dart';
-import 'package:aba_analysis/models/sub_field.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
-import 'package:aba_analysis/models/test.dart';
-import 'package:aba_analysis/models/child.dart';
-import 'package:aba_analysis/models/test_item.dart';
+import 'package:aba_analysis/models/sub_field.dart';
 import 'package:aba_analysis/services/firestore.dart';
-import 'package:aba_analysis/provider/test_notifier.dart';
-import 'package:aba_analysis/components/show_date_picker.dart';
-import 'package:aba_analysis/provider/test_item_notifier.dart';
+import 'package:aba_analysis/models/program_field.dart';
 import 'package:aba_analysis/provider/program_field_notifier.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
-import 'package:provider/provider.dart';
 
 class SubFieldInputScreen extends StatefulWidget {
   final ProgramField program;
@@ -385,15 +376,4 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
       ),
     );
   }
-}
-
-class TestItemInfo {
-  final String programField;
-  final String subField;
-  final String subItem;
-
-  TestItemInfo(
-      {required this.programField,
-      required this.subField,
-      required this.subItem});
 }
