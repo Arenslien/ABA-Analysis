@@ -135,12 +135,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   ));                  
 
                   // 토스트 메시지
-                  Fluttertoast.showToast(
-                    msg: '회원가입 승인 요청이 되었습니다.',
-                    toastLength: Toast.LENGTH_LONG,
-                    backgroundColor: mainGreenColor,
-                    fontSize: 16.0
-                  );
+                  makeToast('회원가입 승인 요청이 되었습니다.');
                   Navigator.pop(context);
                 }
               },

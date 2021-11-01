@@ -49,25 +49,15 @@ class _FindPasswordFormState extends State<FindPasswordForm> {
               onPress: () async {
                 // 존재하지 않는 이메일 체크
                 if (!(await _fireStore.checkUserWithEmail(email))) {
-                  final snackBar = SnackBar(
-                    content: Text('존재하지 않는 이메일입니다.'),
-                    backgroundColor: Colors.red,
-                    duration: Duration(milliseconds: 1300),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  ScaffoldMessenger.of(context).showSnackBar(makeSnackBar('존재하지 않는 이메일입니다.', false));
                 }
                 else {
                   // 비밀번호 재설정 이메일 보내기
                   await _auth.resetPassword(email);
-
+                  ScaffoldMessenger.of(context).showSnackBar(makeSnackBar('해당 이메일로 비밀번호 재설정 메일을 보냈습니다.', true));
                   // Navigator
-                  final snackBar = SnackBar(
-                    content: Text('해당 이메일로 비밀번호 재설정 메일을 보냈습니다.'),
-                    backgroundColor: mainGreenColor,
-                    duration: Duration(milliseconds: 2000),
-                  );
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
                 }
               },
             ),
