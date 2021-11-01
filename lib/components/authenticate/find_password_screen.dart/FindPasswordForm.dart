@@ -1,3 +1,4 @@
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/size_config.dart';
@@ -5,7 +6,6 @@ import 'package:flutter/material.dart';
 
 import '../auth_default_button.dart';
 import '../auth_input_decoration.dart';
-import 'forgot_email_text.dart';
 
 class FindPasswordForm extends StatefulWidget {
   const FindPasswordForm({ Key? key }) : super(key: key);
@@ -40,7 +40,6 @@ class _FindPasswordFormState extends State<FindPasswordForm> {
                 setState(() => email = val!);
               },
             ),
-            ForgotEmailText(),
             SizedBox(
               height: getProportionateScreenHeight(7),
             ),
@@ -64,8 +63,8 @@ class _FindPasswordFormState extends State<FindPasswordForm> {
                   // Navigator
                   final snackBar = SnackBar(
                     content: Text('해당 이메일로 비밀번호 재설정 메일을 보냈습니다.'),
-                    backgroundColor: Colors.green,
-                    duration: Duration(milliseconds: 1300),
+                    backgroundColor: mainGreenColor,
+                    duration: Duration(milliseconds: 2000),
                   );
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);

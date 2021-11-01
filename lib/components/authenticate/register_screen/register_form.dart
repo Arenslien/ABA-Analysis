@@ -144,7 +144,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     password: password,
                     name: name, 
                     phone: phone, 
-                    duty: '치료자', 
+                    duty: '치료사', 
                     approvalStatus: false,
                     deleteRequest: false,
                   ));                  
@@ -152,8 +152,8 @@ class _RegisterFormState extends State<RegisterForm> {
                   // 토스트 메시지
                   Fluttertoast.showToast(
                     msg: '회원가입 승인 요청이 되었습니다.',
-                    toastLength: Toast.LENGTH_SHORT,
-                    backgroundColor: Colors.greenAccent,
+                    toastLength: Toast.LENGTH_LONG,
+                    backgroundColor: mainGreenColor,
                     fontSize: 16.0
                   );
                   Navigator.pop(context);
