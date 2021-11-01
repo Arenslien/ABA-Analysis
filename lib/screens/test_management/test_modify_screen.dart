@@ -22,9 +22,8 @@ class TestModifyScreen extends StatefulWidget {
 
 class _TestInputScreenState extends State<TestModifyScreen> {
   _TestInputScreenState();
-  late DateTime date;
-  TextEditingController dateTextEditingController = TextEditingController();
   late String title;
+  late DateTime date;
   final formkey = GlobalKey<FormState>();
   List<TestItem> testItemList = [];
   List<TestItemInfo> testItemInfoList = [];
@@ -34,10 +33,8 @@ class _TestInputScreenState extends State<TestModifyScreen> {
     super.initState();
 
     setState(() {
-      date = widget.test.date;
-      dateTextEditingController.text =
-          DateFormat('yyyyMMdd').format(widget.test.date);
       title = widget.test.title;
+      date = widget.test.date;
       testItemList = context
           .read<TestItemNotifier>()
           .getTestItemList(widget.test.testId, true);
@@ -119,8 +116,10 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                   // 완료 버튼 누르면 실행
                   if (formkey.currentState!.validate()) {
                     // 테스트의 날짜와 테스트 제목 수정
-                    store.updateTest(widget.test.testId, date, title, widget.test.isInput);
-                    context.read<TestNotifier>().updateTest(widget.test.testId, date, title, widget.test.isInput);
+                    store.updateTest(
+                        widget.test.testId, date, title, widget.test.isInput);
+                    context.read<TestNotifier>().updateTest(
+                        widget.test.testId, date, title, widget.test.isInput);
 
                     // 기존의 테스트에 대한 테스트 아이템 모두 제거
                     List<TestItem> testItemList1 = context
@@ -155,41 +154,55 @@ class _TestInputScreenState extends State<TestModifyScreen> {
           body: SafeArea(
             child: Column(
               children: [
-                buildTextFormField(
-                  controller: dateTextEditingController,
-                  text: '날짜',
-                  onTap: () async {
-                    date = await getDate(context);
-                    setState(() {
-                      dateTextEditingController.text =
-                          DateFormat('yyyyMMdd').format(date);
-                    });
-                  },
-                  validator: (val) {
-                    if (val!.length != 8) {
-                      return 'YYYYMMDD';
-                    }
-                    return null;
-                  },
-                  inputType: 'number',
-                ),
-                buildTextFormField(
-                  text: '테스트 이름',
-                  initialValue: title,
-                  onChanged: (val) {
-                    setState(() {
-                      title = val;
-                    });
-                  },
-                  validator: (val) {
-                    if (val!.length < 1) {
-                      return '이름은 필수사항입니다.';
-                    }
-                    return null;
-                  },
+                Row(
+                  children: [
+                    Flexible(
+                      child: buildTextFormField(
+                        text: '테스트 이름',
+                        initialValue: title,
+                        onChanged: (val) {
+                          setState(() {
+                            title = val;
+                          });
+                        },
+                        validator: (val) {
+                          if (val!.length < 1) {
+                            return '이름은 필수사항입니다.';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: OutlinedButton(
+                        onPressed: () async {
+                          date = await getDate(context);
+                          setState(() {});
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              DateFormat('yyyyMMdd').format(date),
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            SizedBox(width: 10),
+                            Icon(
+                              Icons.calendar_today_rounded,
+                              color: Colors.black,
+                            ),
+                          ],
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: Colors.black),
+                          minimumSize: Size(130, 50),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                  padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -197,9 +210,12 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                       IconButton(
                         icon: Icon(Icons.add_rounded),
                         onPressed: () {
-                          int selectedProgramFieldIndex = 0;
-                          int selectedSubFieldIndex = 0;
-                          int selectedSubItemIndex = 0;
+                          late int selectedProgramFieldIndex;
+                          late int selectedSubFieldIndex;
+                          late int selectedSubItemIndex;
+                          String? selectedProgramField;
+                          String? selectedSubField;
+                          String? selectedSubItem;
 
                           // 프로그램 영역 & 하위 영역 & 하위 목록 선택하는 드롭박스 형태 위젯
                           showDialog(
@@ -211,18 +227,15 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                                   return AlertDialog(
                                     title: Text('테스트 아이템 선택'),
                                     content: Container(
-                                      height: 150,
+                                      height: 180,
+                                      width: 300,
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           DropdownButton(
                                             hint: Text('프로그램 영역 선택'),
-                                            value: context
-                                                .read<ProgramFieldNotifier>()
-                                                .programFieldList[
-                                                    selectedProgramFieldIndex]
-                                                .title,
+                                            value: selectedProgramField,
                                             items: context
                                                 .read<ProgramFieldNotifier>()
                                                 .programFieldList
@@ -232,79 +245,62 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                                                 child: Text(value.title),
                                               );
                                             }).toList(),
-                                            onChanged: (value) {
+                                            onChanged: (String? value) {
+                                              selectedProgramFieldIndex = context
+                                                  .read<ProgramFieldNotifier>()
+                                                  .programFieldList
+                                                  .indexWhere((element) =>
+                                                      value == element.title);
                                               setState1(() {
-                                                print(value);
-                                                selectedProgramFieldIndex = context
-                                                    .read<
-                                                        ProgramFieldNotifier>()
-                                                    .programFieldList
-                                                    .indexWhere((element) =>
-                                                        value == element.title);
+                                                selectedProgramField = value;
+                                                selectedSubField = null;
+                                                selectedSubItem = null;
                                               });
                                             },
+                                            isExpanded: true,
                                           ),
                                           DropdownButton(
                                             hint: Text('하위 영역 선택'),
-                                            value: context
-                                                .read<ProgramFieldNotifier>()
-                                                .programFieldList[
-                                                    selectedProgramFieldIndex]
-                                                .subFieldList[
-                                                    selectedSubFieldIndex]
-                                                .subFieldName,
-                                            items: context
-                                                .read<ProgramFieldNotifier>()
-                                                .programFieldList[
-                                                    selectedProgramFieldIndex]
-                                                .subFieldList
-                                                .map((value) {
-                                              return DropdownMenuItem(
-                                                  value: value.subFieldName,
-                                                  child:
-                                                      Text(value.subFieldName));
-                                            }).toList(),
-                                            onChanged: (value) {
-                                              setState1(() {
-                                                print(value);
-                                                selectedSubFieldIndex = context
+                                            value: selectedSubField,
+                                            items: selectedProgramField == null
+                                                ? null
+                                                : context
                                                     .read<
                                                         ProgramFieldNotifier>()
                                                     .programFieldList[
                                                         selectedProgramFieldIndex]
                                                     .subFieldList
-                                                    .indexWhere((element) =>
-                                                        value ==
-                                                        element.subFieldName);
+                                                    .map((value) {
+                                                    return DropdownMenuItem(
+                                                        value:
+                                                            value.subFieldName,
+                                                        child: Text(value
+                                                            .subFieldName));
+                                                  }).toList(),
+                                            onChanged: (String? value) {
+                                              selectedSubFieldIndex = context
+                                                  .read<ProgramFieldNotifier>()
+                                                  .programFieldList[
+                                                      selectedProgramFieldIndex]
+                                                  .subFieldList
+                                                  .indexWhere((element) =>
+                                                      value ==
+                                                      element.subFieldName);
+                                              setState1(() {
+                                                selectedSubField = value;
+                                                selectedSubItem = null;
                                               });
                                             },
+                                            isExpanded: true,
                                           ),
                                           DropdownButton(
                                             hint: Text('하위 목록 선택'),
-                                            value: context
-                                                .read<ProgramFieldNotifier>()
-                                                .programFieldList[
-                                                    selectedProgramFieldIndex]
-                                                .subFieldList[
-                                                    selectedSubFieldIndex]
-                                                .subItemList[selectedSubItemIndex],
-                                            items: context
-                                                .read<ProgramFieldNotifier>()
-                                                .programFieldList[
-                                                    selectedProgramFieldIndex]
-                                                .subFieldList[
-                                                    selectedSubFieldIndex]
-                                                .subItemList
-                                                .map((value) {
-                                              return DropdownMenuItem(
-                                                value: value,
-                                                child: Text(value),
-                                              );
-                                            }).toList(),
-                                            onChanged: (value) {
-                                              setState1(() {
-                                                print(value);
-                                                selectedSubItemIndex = context
+                                            value: selectedSubItem,
+                                            items: selectedProgramField ==
+                                                        null ||
+                                                    selectedSubField == null
+                                                ? null
+                                                : context
                                                     .read<
                                                         ProgramFieldNotifier>()
                                                     .programFieldList[
@@ -312,10 +308,27 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                                                     .subFieldList[
                                                         selectedSubFieldIndex]
                                                     .subItemList
-                                                    .indexWhere((element) =>
-                                                        value == element);
+                                                    .map((value) {
+                                                    return DropdownMenuItem(
+                                                      value: value,
+                                                      child: Text(value),
+                                                    );
+                                                  }).toList(),
+                                            onChanged: (String? value) {
+                                              selectedSubItemIndex = context
+                                                  .read<ProgramFieldNotifier>()
+                                                  .programFieldList[
+                                                      selectedProgramFieldIndex]
+                                                  .subFieldList[
+                                                      selectedSubFieldIndex]
+                                                  .subItemList
+                                                  .indexWhere((element) =>
+                                                      value == element);
+                                              setState1(() {
+                                                selectedSubItem = value;
                                               });
                                             },
+                                            isExpanded: true,
                                           ),
                                         ],
                                       ),
@@ -383,15 +396,19 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                   child: ListView.builder(
                     itemCount: testItemInfoList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        title: Text(testItemInfoList[index].subItem),
-                        trailing: IconButton(
-                          icon: Icon(Icons.remove),
-                          onPressed: () {
-                            setState(() {
-                              testItemInfoList.removeAt(index);
-                            });
-                          },
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                        child: ListTile(
+                          title: Text(testItemInfoList[index].subItem),
+                          trailing: IconButton(
+                            icon: Icon(Icons.remove_rounded),
+                            color: Colors.black,
+                            onPressed: () {
+                              setState(() {
+                                testItemInfoList.removeAt(index);
+                              });
+                            },
+                          ),
                         ),
                       );
                     },

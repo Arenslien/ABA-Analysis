@@ -8,7 +8,7 @@ Widget buildListTile(
     Function()? onTap,
     Widget? trailing}) {
   return Padding(
-    padding: const EdgeInsets.all(8.0),
+    padding: const EdgeInsets.all(16.0),
     child: ListTile(
       leading: icon == null
           ? null
