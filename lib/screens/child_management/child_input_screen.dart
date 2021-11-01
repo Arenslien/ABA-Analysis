@@ -94,7 +94,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
               Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.fromLTRB( 30, 0, 30, 0),
+                    padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                     child: buildTextFormField(
                       text: '이름',
                       onChanged: (val) {
