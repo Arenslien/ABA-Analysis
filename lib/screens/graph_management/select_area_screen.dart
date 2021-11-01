@@ -7,7 +7,7 @@ import 'package:aba_analysis/screens/graph_management/select_item_graph_screen.d
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 
-// select_date 복붙한거라 select_item버전으로 다시 코딩 필요
+// 선택한 프로그램 영역의 하위영역을 선택하는 스크린
 class SelectAreaScreen extends StatefulWidget {
   final Child child;
   final ProgramField programField;
@@ -35,7 +35,6 @@ class _SelectAreaScreenState extends State<SelectAreaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //areaList = get areaList(selected_program_name); // program_name을 통해 areaList를 받아온다.
     IconButton searchButton = IconButton(
       // 검색버튼
       icon: Icon(Icons.search),
