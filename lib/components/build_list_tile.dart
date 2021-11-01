@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 
-Widget buildListTile(
-    {IconData? icon,
-    String? titleText,
-    String? subtitleText,
-    double? titleSize,
-    Function()? onTap,
-    Widget? trailing}) {
+Widget buildListTile({
+  IconData? icon,
+  String? titleText,
+  String? subtitleText,
+  double? titleSize,
+  Function()? onTap,
+  Widget? trailing,
+  double? top,
+  double? bottom,
+}) {
   return Padding(
-    padding: const EdgeInsets.all(16.0),
+    padding: EdgeInsets.fromLTRB(
+        16, top == null ? 16 : top, 16, bottom == null ? 16 : bottom),
     child: ListTile(
       leading: icon == null
           ? null
@@ -19,10 +23,9 @@ Widget buildListTile(
       title: Text(
         titleText!,
         style: TextStyle(
-          fontSize: titleSize ?? 25,
-          fontFamily: 'KoreanGothic',
-          fontWeight: FontWeight.bold
-        ),
+            fontSize: titleSize ?? 25,
+            fontFamily: 'KoreanGothic',
+            fontWeight: FontWeight.bold),
       ),
       subtitle: subtitleText == null
           ? null

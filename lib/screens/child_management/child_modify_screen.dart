@@ -179,9 +179,11 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                       children: [
                         OutlinedButton(
                           onPressed: () async {
-                            birth = await getDate(context);
-                            setState(() {
-                            });
+                            birth = await getDate(
+                              context: context,
+                              initialDate: birth,
+                            );
+                            setState(() {});
                           },
                           child: Text(
                             DateFormat('yyyyMMdd').format(birth),
