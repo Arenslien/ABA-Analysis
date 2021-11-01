@@ -1,15 +1,15 @@
-import 'package:aba_analysis/models/test.dart';
-import 'package:aba_analysis/models/test_item.dart';
-import 'package:aba_analysis/provider/test_item_notifier.dart';
-import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
+import 'package:aba_analysis/models/test.dart';
 import 'package:aba_analysis/models/child.dart';
+import 'package:aba_analysis/models/test_item.dart';
 import 'package:aba_analysis/services/firestore.dart';
+import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/provider/child_notifier.dart';
+import 'package:aba_analysis/provider/test_item_notifier.dart';
 import 'package:aba_analysis/components/show_date_picker.dart';
 import 'package:aba_analysis/components/show_dialog_delete.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
@@ -26,11 +26,9 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
   _ChildModifyScreenState();
   late String name;
   late DateTime birth;
-  TextEditingController dateTextEditingController = TextEditingController();
   late String gender;
-  List<bool> genderselected = [false, false];
+  List<bool> genderSelected = [];
   final formkey = GlobalKey<FormState>();
-
   FireStoreService store = FireStoreService();
 
   @override
@@ -39,8 +37,13 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
     name = widget.child.name;
     birth = widget.child.birthday;
     gender = widget.child.gender;
-    dateTextEditingController.text =
-        DateFormat('yyyyMMdd').format(widget.child.birthday);
+    if (gender == '남자') {
+      genderSelected.add(true);
+      genderSelected.add(false);
+    } else {
+      genderSelected.add(false);
+      genderSelected.add(true);
+    }
   }
 
   @override
@@ -78,16 +81,22 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                     text: '해당 아동에 데이터를 삭제 하시겠습니까?',
                     onPressed: () async {
                       // 아이에 대한 test
-                      List<Test> testList = context.read<TestNotifier>().getAllTestListOf(widget.child.childId, true);
+                      List<Test> testList = context
+                          .read<TestNotifier>()
+                          .getAllTestListOf(widget.child.childId, true);
 
                       for (Test test in testList) {
                         // Child의 TestItem 제거
-                        List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(test.testId, true);
+                        List<TestItem> testItemList = context
+                            .read<TestItemNotifier>()
+                            .getTestItemList(test.testId, true);
                         for (TestItem testItem in testItemList) {
                           // DB에서 TestItem 제거
                           await store.deleteTestItem(testItem.testItemId);
                           // Provider에서 TestItem 제거
-                          context.read<TestItemNotifier>().removeTestItem(testItem);
+                          context
+                              .read<TestItemNotifier>()
+                              .removeTestItem(testItem);
                         }
 
                         // DB에서 TestItem 제거
@@ -141,65 +150,72 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
             ],
             backgroundColor: mainGreenColor,
           ),
-          body: Column(
+          body: ListView(
             children: [
-              buildTextFormField(
-                text: '이름',
-                initialValue: name,
-                onChanged: (val) {
-                  setState(() {
-                    name = val;
-                  });
-                },
-                validator: (val) {
-                  if (val!.length < 1) {
-                    return '이름을 입력해 주세요.';
-                  }
-                  return null;
-                },
-              ),
-              buildTextFormField(
-                text: '생년월일',
-                controller: dateTextEditingController,
-                onTap: () {
-                  setState(() async {
-                    birth = await getDate(context);
-                    dateTextEditingController.text =
-                        DateFormat('yyyyMMdd').format(birth);
-                  });
-                },
-                validator: (val) {
-                  if (val!.length != 8) {
-                    return 'YYYYMMDD';
-                  }
-                  return null;
-                },
-                inputType: 'number',
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: buildToggleButtons(
-                  text: ['남자', '여자'],
-                  isSelected: genderselected,
-                  onPressed: (index) {
-                    if (!genderselected[index])
-                      setState(() {
-                        if (index == 0)
-                          gender = '남자';
-                        else
-                          gender = '여자';
-                        for (int buttonIndex = 0;
-                            buttonIndex < genderselected.length;
-                            buttonIndex++) {
-                          if (buttonIndex == index) {
-                            genderselected[buttonIndex] = true;
-                          } else {
-                            genderselected[buttonIndex] = false;
-                          }
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(100, 0, 100, 0),
+                    child: buildTextFormField(
+                      text: '이름',
+                      initialValue: name,
+                      onChanged: (val) {
+                        setState(() {
+                          name = val;
+                        });
+                      },
+                      validator: (val) {
+                        if (val!.length < 1) {
+                          return '이름을 입력해 주세요.';
                         }
-                      });
-                  },
-                ),
+                        return null;
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        OutlinedButton(
+                          onPressed: () async {
+                            birth = await getDate(context);
+                          },
+                          child: Text(
+                            DateFormat('yyyyMMdd').format(birth),
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: Colors.black),
+                            minimumSize: Size(120, 50),
+                          ),
+                        ),
+                        buildToggleButtons(
+                          text: ['남자', '여자'],
+                          isSelected: genderSelected,
+                          onPressed: (index) {
+                            if (!genderSelected[index])
+                              setState(() {
+                                if (index == 0)
+                                  gender = '남자';
+                                else
+                                  gender = '여자';
+                                for (int buttonIndex = 0;
+                                    buttonIndex < genderSelected.length;
+                                    buttonIndex++) {
+                                  if (buttonIndex == index) {
+                                    genderSelected[buttonIndex] = true;
+                                  } else {
+                                    genderSelected[buttonIndex] = false;
+                                  }
+                                }
+                              });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

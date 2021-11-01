@@ -49,7 +49,6 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                 });
                 for (int i = 0; i < childList.length; i++) {
                   bool flag = false;
-                  if (childList[i].age.toString().contains(str)) flag = true;
                   if (childList[i].name.contains(str)) flag = true;
                   if (flag) {
                     setState(() {
@@ -105,6 +104,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
   Widget bulidChildListTile(Child child) {
     return buildListTile(
         titleText: child.name,
+        subtitleText: '${child.age.toString()}세',
         onTap: () {
           Navigator.push(
             context,
