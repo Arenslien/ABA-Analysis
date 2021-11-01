@@ -15,10 +15,33 @@ class ProgramFieldNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<String> readAllSubFieldName() {
+    List<String> allSubFieldNameList = [];
+
+    for (ProgramField p in _programFieldList) {
+      for (SubField s in p.subFieldList) {
+        allSubFieldNameList.add(s.subFieldName);
+      }
+    }
+    return allSubFieldNameList;
+  }
+
+  List<String> readAllSubFieldItemList() {
+    List<String> allSubFieldItemList = [];
+
+    for (ProgramField p in _programFieldList) {
+      for (SubField s in p.subFieldList) {
+        for (String subItemName in s.subItemList) {
+          allSubFieldItemList.add(subItemName);
+        }
+      }
+    }
+    return allSubFieldItemList;
+  }
 
   List<SubField> readSubFieldList(String title) {
     List<SubField> subFieldList = [];
-    
+
     for (ProgramField programField in _programFieldList) {
       if (title == programField.title) {
         subFieldList = programField.subFieldList;

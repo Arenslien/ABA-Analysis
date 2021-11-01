@@ -1,5 +1,6 @@
 import 'package:aba_analysis/models/program_field.dart';
 import 'package:aba_analysis/models/sub_field.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +31,7 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
 
   // 완료할 때 추가할 하위영역의 하위목록 리스트
   List<String> subitemList = List<String>.generate(10, (index) => "");
+  Set<String> subItemSet = {};
   late String subFieldName;
   final formkey = GlobalKey<FormState>();
   FireStoreService store = FireStoreService();
@@ -37,6 +39,16 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
   @override
   void initState() {
     super.initState();
+  }
+
+  bool isCheckDup(String checkDup) {
+    List<String> s =
+        context.read<ProgramFieldNotifier>().readAllSubFieldItemList();
+    if (s.contains(checkDup)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @override
@@ -69,7 +81,6 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                 ),
                 onPressed: () async {
                   print(subitemList);
-                  // 저장 버튼 누르면 실행
                   if (formkey.currentState!.validate()) {
                     SubField addSub = SubField(
                       subFieldName: subFieldName,
@@ -84,24 +95,7 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                     context
                         .read<ProgramFieldNotifier>()
                         .updateProgramFieldList(await store.readProgramField());
-
-                    // DB에 테스트 아이템 추가 & TestItem Notifier에 테스트 아이템 추가
-                    // 서브필드 아이템들도 같이 추가되므로 테스트 아이템도 추가해야함
-
-                    // for (String subItem in subitemList) {
-                    //   TestItem testItem = TestItem(
-                    //       testItemId: await store.updateId(AutoID.testItem),
-                    //       testId: 55555, // 테스트 아이디를 줄 수가 없음.
-                    //       programField: widget.program.title,
-                    //       subField: title,
-                    //       subItem: subItem,
-                    //       result: null);
-
-                    //   await store.createTestItem(testItem);
-
-                    //   context.read<TestItemNotifier>().addTestItem(testItem);
-                    // }
-                    subitemList.clear();
+                    subitemList = List<String>.generate(10, (index) => "");
                     Navigator.pop(context);
                   }
                 },
@@ -123,6 +117,14 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                     if (val!.length < 1) {
                       return '하위영역 이름을 입력해주세요.';
                     }
+
+                    for (String subFieldName in context
+                        .read<ProgramFieldNotifier>()
+                        .readAllSubFieldName()) {
+                      if (subFieldName == val) {
+                        return '중복된 하위영역 이름입니다.';
+                      }
+                    }
                     return null;
                   },
                 ),
@@ -140,13 +142,22 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                   text: '1번 하위목록 이름',
                   onChanged: (val) {
                     setState(() {
-                      print(val);
                       subitemList[0] = val;
                     });
                   },
                   validator: (val) {
                     if (val!.length < 1) {
                       return '1번 하위목록을 입력해주세요.';
+                    }
+                    int i = 0;
+                    while (i < 10) {
+                      if (val == subitemList[i] && i != 0) {
+                        return "중복된 이름입니다.";
+                      }
+                      i++;
+                    }
+                    if (isCheckDup(val)) {
+                      return '다른 하위목록의 이름과 중복되었습니다.';
                     }
                     return null;
                   },
@@ -162,6 +173,16 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                     if (val!.length < 1) {
                       return '2번 하위목록을 입력해주세요.';
                     }
+                    int i = 0;
+                    while (i < 10) {
+                      if (val == subitemList[i] && i != 1) {
+                        return "중복된 이름입니다.";
+                      }
+                      i++;
+                    }
+                    if (isCheckDup(val)) {
+                      return '다른 하위목록의 이름과 중복되었습니다.';
+                    }
                     return null;
                   },
                 ),
@@ -175,6 +196,16 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                   validator: (val) {
                     if (val!.length < 1) {
                       return '3번 하위목록을 입력해주세요.';
+                    }
+                    int i = 0;
+                    while (i < 10) {
+                      if (val == subitemList[i] && i != 2) {
+                        return "중복된 이름입니다.";
+                      }
+                      i++;
+                    }
+                    if (isCheckDup(val)) {
+                      return '다른 하위목록의 이름과 중복되었습니다.';
                     }
                     return null;
                   },
@@ -190,6 +221,16 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                     if (val!.length < 1) {
                       return '4번 하위목록을 입력해주세요.';
                     }
+                    int i = 0;
+                    while (i < 10) {
+                      if (val == subitemList[i] && i != 3) {
+                        return "중복된 이름입니다.";
+                      }
+                      i++;
+                    }
+                    if (isCheckDup(val)) {
+                      return '다른 하위목록의 이름과 중복되었습니다.';
+                    }
                     return null;
                   },
                 ),
@@ -203,6 +244,16 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                   validator: (val) {
                     if (val!.length < 1) {
                       return '5번 하위목록을 입력해주세요.';
+                    }
+                    int i = 0;
+                    while (i < 10) {
+                      if (val == subitemList[i] && i != 4) {
+                        return "중복된 이름입니다.";
+                      }
+                      i++;
+                    }
+                    if (isCheckDup(val)) {
+                      return '다른 하위목록의 이름과 중복되었습니다.';
                     }
                     return null;
                   },
@@ -218,6 +269,16 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                     if (val!.length < 1) {
                       return '6번 하위목록을 입력해주세요.';
                     }
+                    int i = 0;
+                    while (i < 10) {
+                      if (val == subitemList[i] && i != 5) {
+                        return "중복된 이름입니다.";
+                      }
+                      i++;
+                    }
+                    if (isCheckDup(val)) {
+                      return '다른 하위목록의 이름과 중복되었습니다.';
+                    }
                     return null;
                   },
                 ),
@@ -231,6 +292,16 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                   validator: (val) {
                     if (val!.length < 1) {
                       return '7번 하위목록을 입력해주세요.';
+                    }
+                    int i = 0;
+                    while (i < 10) {
+                      if (val == subitemList[i] && i != 6) {
+                        return "중복된 이름입니다.";
+                      }
+                      i++;
+                    }
+                    if (isCheckDup(val)) {
+                      return '다른 하위목록의 이름과 중복되었습니다.';
                     }
                     return null;
                   },
@@ -246,6 +317,16 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                     if (val!.length < 1) {
                       return '8번 하위목록을 입력해주세요.';
                     }
+                    int i = 0;
+                    while (i < 10) {
+                      if (val == subitemList[i] && i != 7) {
+                        return "중복된 이름입니다.";
+                      }
+                      i++;
+                    }
+                    if (isCheckDup(val)) {
+                      return '다른 하위목록의 이름과 중복되었습니다.';
+                    }
                     return null;
                   },
                 ),
@@ -260,6 +341,16 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                     if (val!.length < 1) {
                       return '9번 하위목록을 입력해주세요.';
                     }
+                    int i = 0;
+                    while (i < 10) {
+                      if (val == subitemList[i] && i != 8) {
+                        return "중복된 이름입니다.";
+                      }
+                      i++;
+                    }
+                    if (isCheckDup(val)) {
+                      return '다른 하위목록의 이름과 중복되었습니다.';
+                    }
                     return null;
                   },
                 ),
@@ -273,6 +364,16 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                   validator: (val) {
                     if (val!.length < 1) {
                       return '10번 하위목록을 입력해주세요.';
+                    }
+                    int i = 0;
+                    while (i < 10) {
+                      if (val == subitemList[i] && i != 9) {
+                        return "중복된 이름입니다.";
+                      }
+                      i++;
+                    }
+                    if (isCheckDup(val)) {
+                      return '다른 하위목록의 이름과 중복되었습니다.';
                     }
                     return null;
                   },

@@ -295,9 +295,7 @@ class FireStoreService {
     // 변경된 sub-field DB에 저장
     _programField
         .doc(title)
-        .update({
-          'sub-field-list': newSubFieldList
-        })
+        .update({'sub-field-list': newSubFieldList})
         .then((value) => print("하위 영역이 업데이트 되었습니다."))
         .catchError((error) => print("하위 영역 업데이트를 실패했습니다. : $error"));
   }
@@ -313,12 +311,10 @@ class FireStoreService {
     // 기존의 sub-field-list에 해당 인덱sub-field
     newSubFieldList.removeAt(index);
 
-     // 변경된 sub-field DB에 저장
+    // 변경된 sub-field DB에 저장
     _programField
         .doc(title)
-        .update({
-          'sub-field-list': newSubFieldList
-        })
+        .update({'sub-field-list': newSubFieldList})
         .then((value) => print("하위 영역이 업데이트 되었습니다."))
         .catchError((error) => print("하위 영역 업데이트를 실패했습니다. : $error"));
   }
