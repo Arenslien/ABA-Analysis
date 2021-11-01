@@ -19,9 +19,13 @@ class _BodyState extends State<Body> {
   // FirebStoreService 인스턴스
   FireStoreService store = FireStoreService();
 
-  String name = '';
-  String phone = '';
+  String nickname = '';
   String duty = '';
+  void initState() {
+    super.initState();
+    nickname = context.read<UserNotifier>().abaUser!.nickname;
+    duty = context.read<UserNotifier>().abaUser!.duty;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +61,7 @@ class _BodyState extends State<Body> {
                           decoration: buildAuthInputDecoration(context.watch<UserNotifier>().abaUser!.nickname, Icons.person),
                           onChanged: (String? val) {
                             setState(() {
-                              name = val!;
+                              nickname = val!;
                             });
                           },
                         ),
@@ -78,7 +82,7 @@ class _BodyState extends State<Body> {
                           onPress: () async {
                             ABAUser abaUser = context.read<UserNotifier>().abaUser!;
                             // 해당 Form 내용으로 사용자 정보 수정
-                            store.updateUser(abaUser.email, name, duty, true, false);
+                            store.updateUser(abaUser.email, nickname, duty, true, false);
 
                             // 수정 완료 메시지
 
