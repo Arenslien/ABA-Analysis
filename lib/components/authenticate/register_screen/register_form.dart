@@ -45,11 +45,11 @@ class _RegisterFormState extends State<RegisterForm> {
       key: _formKey,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: getProportionateScreenWidth(30)
+          horizontal: getProportionateScreenWidth(padding)
         ),
         child: Column(
           children: [
-            SizedBox(height: getProportionateScreenHeight(35)),
+            Spacer(),
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
@@ -66,7 +66,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 });
               },
             ),
-            SizedBox(height: getProportionateScreenHeight(20)),
+            SizedBox(height: getProportionateScreenHeight(35)),
             TextFormField(
               textInputAction: TextInputAction.next,
               obscureText: true,
@@ -83,7 +83,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 });
               },
             ),
-            SizedBox(height: getProportionateScreenHeight(20)),
+            SizedBox(height: getProportionateScreenHeight(35)),
             TextFormField(
               textInputAction: TextInputAction.next,
               obscureText: true,
@@ -100,11 +100,11 @@ class _RegisterFormState extends State<RegisterForm> {
                 });
               },
             ),
-            SizedBox(height: getProportionateScreenHeight(20)),
+            SizedBox(height: getProportionateScreenHeight(35)),
             TextFormField(
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next, 
-              decoration: buildAuthInputDecoration('이름', Icons.person),
+              decoration: buildAuthInputDecoration('닉네임', Icons.person),
               onChanged: (String? val) {
                 setState(() {
                   name = val!;
@@ -114,11 +114,11 @@ class _RegisterFormState extends State<RegisterForm> {
                 });
               },
             ),
-            SizedBox(height: getProportionateScreenHeight(10)),
+            SizedBox(height: getProportionateScreenHeight(20)),
             Column(
               children: errors.map((e) => FormErrorText(error: e)).toList(),
             ),
-            SizedBox(height: getProportionateScreenHeight(10)),
+            Spacer(),
             AuthDefaultButton(
               text: '회원 가입',
               onPress: () async {

@@ -32,7 +32,7 @@ class _BodyState extends State<Body> {
                 // 백그라운드 배경
                 Container(
                   width: double.infinity,
-                  margin: EdgeInsets.only(top: getProportionateScreenHeight(120)),
+                  margin: EdgeInsets.only(top: getProportionateScreenHeight(140)),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -42,13 +42,14 @@ class _BodyState extends State<Body> {
                   ),
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(
-                      getProportionateScreenWidth(35),
-                      getProportionateScreenWidth(100),
-                      getProportionateScreenWidth(35),
-                      getProportionateScreenWidth(35),
+                      getProportionateScreenWidth(padding),
+                      getProportionateScreenWidth(0),
+                      getProportionateScreenWidth(padding),
+                      getProportionateScreenWidth(padding),
                     ),
                     child: SettingButtonListView(
                       settingButtons: [
+                        Spacer(),
                         SettingDefaultButton(text: '내정보 수정', onTap: () {
                           // 내정보 수정 페이지로 이동
                           Navigator.pushNamed(context, '/edit_info');
@@ -124,8 +125,8 @@ class UserInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(
-        horizontal: getProportionateScreenWidth(15),
-        vertical: getProportionateScreenHeight(15),
+        horizontal: getProportionateScreenWidth(50),
+        vertical: getProportionateScreenHeight(30),
       ),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -141,8 +142,8 @@ class UserInfoCard extends StatelessWidget {
       height: getProportionateScreenHeight(230),
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: 20.0,
-          vertical: 20.0
+          horizontal: getProportionateScreenWidth(40),
+          vertical: getProportionateScreenWidth(60)
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,27 +155,31 @@ class UserInfoCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      context.watch<UserNotifier>().abaUser!.nickname, 
+                      '닉네임: ${context.watch<UserNotifier>().abaUser!.nickname} ${context.watch<UserNotifier>().abaUser!.duty}', 
                       style: TextStyle(
                         fontSize: 30.0,
                         fontWeight: FontWeight.bold
                       ),
                     ),
+                    SizedBox(height: getProportionateScreenHeight(20)),
                     Text(
-                      context.watch<UserNotifier>().abaUser!.email, 
+                      '직  책: ${context.watch<UserNotifier>().abaUser!.duty}', 
                       style: TextStyle(
-                        fontSize: 18.0,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    SizedBox(height: getProportionateScreenHeight(20)),
+                    Text(
+                      '이메일: ${context.watch<UserNotifier>().abaUser!.email}', 
+                      style: TextStyle(
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold
                       ),
                     ),
                   ],
                 )
               ],
-            ),
-            Text(
-              context.watch<UserNotifier>().abaUser!.duty, 
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
             ),
           ],
         ),

@@ -1,5 +1,6 @@
 import 'package:aba_analysis/components/authenticate/auth_default_button.dart';
 import 'package:aba_analysis/components/authenticate/auth_input_decoration.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/aba_user.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/firestore.dart';
@@ -43,13 +44,13 @@ class _BodyState extends State<Body> {
                   ),
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(
-                      getProportionateScreenWidth(35),
-                      getProportionateScreenWidth(35),
-                      getProportionateScreenWidth(35),
-                      getProportionateScreenWidth(35),
+                      getProportionateScreenWidth(padding),
+                      getProportionateScreenWidth(padding * 2),
+                      getProportionateScreenWidth(padding),
+                      getProportionateScreenWidth(padding),
                     ),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         TextFormField(
                           keyboardType: TextInputType.emailAddress,
@@ -60,15 +61,18 @@ class _BodyState extends State<Body> {
                             });
                           },
                         ),
+                        SizedBox(height: getProportionateScreenHeight(45)),
                         TextFormField(
                           keyboardType: TextInputType.emailAddress,
                           decoration: buildAuthInputDecoration(context.watch<UserNotifier>().abaUser!.duty, Icons.star),
+                          readOnly: context.read<UserNotifier>().abaUser!.duty == '관리자',
                           onChanged: (String? val) {
                             setState(() {
                               duty = val!;
                             });
                           },
                         ),
+                        SizedBox(height: getProportionateScreenHeight(45)),
                         AuthDefaultButton(
                           text: '수정 완료',
                           onPress: () async {

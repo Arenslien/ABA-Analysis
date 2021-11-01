@@ -458,10 +458,11 @@ class FireStoreService {
         .catchError((error) => print('테스트를 추가하지 못했습니다.\n에러 내용: $error'));
   }
 
-  Future<TestItem> copyTestItem(int testId, TestItem testItem) async {
+  Future<TestItem> copyTestItem(int testId, int childId, TestItem testItem) async {
     TestItem copiedTestItem = TestItem(
       testItemId: await updateId(AutoID.testItem),
       testId: testId,
+      childId: childId,
       programField: testItem.programField,
       subField: testItem.subField,
       subItem: testItem.subItem,
@@ -488,6 +489,7 @@ class FireStoreService {
     TestItem testItem = TestItem(
       testItemId: data['test-item-id'],
       testId: data['test-id'],
+      childId: data['child-id'],
       programField: data['program-field'],
       subField: data['sub-field'],
       subItem: data['sub-item'],
@@ -512,6 +514,7 @@ class FireStoreService {
       TestItem testItem = TestItem(
           testItemId: data['test-item-id'],
           testId: data['test-id'],
+          childId: data['child-id'],
           programField: data['program-field'],
           subField: data['sub-field'],
           subItem: data['sub-item'],
