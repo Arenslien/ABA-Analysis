@@ -71,15 +71,19 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                   print(subitemList);
                   // 저장 버튼 누르면 실행
                   if (formkey.currentState!.validate()) {
-                    SubField test = SubField(
+                    SubField addSub = SubField(
                       subFieldName: subFieldName,
                       subItemList: subitemList,
                     );
                     // DB에 서브필드 추가
 //                    await store.create
-
-                    // Subfield Notifier에 추가
-//                    context.read<ProgramFieldNotifier>().programFieldList.
+                    await store.addSubField(
+                        convertProgramFieldTitle(widget.program.title)!,
+                        addSub);
+                    // Subfield를 Notifier에 추가
+                    context
+                        .read<ProgramFieldNotifier>()
+                        .updateProgramFieldList(await store.readProgramField());
 
                     // DB에 테스트 아이템 추가 & TestItem Notifier에 테스트 아이템 추가
                     // 서브필드 아이템들도 같이 추가되므로 테스트 아이템도 추가해야함
@@ -98,7 +102,7 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                     //   context.read<TestItemNotifier>().addTestItem(testItem);
                     // }
                     subitemList.clear();
-                    // Navigator.pop(context);
+                    Navigator.pop(context);
                   }
                 },
               ),

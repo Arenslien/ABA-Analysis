@@ -83,7 +83,7 @@ class _SelectSubfieldScreenState extends State<SelectSubfieldScreen> {
                                   ),
                                   style: TextButton.styleFrom(
                                     primary: Colors.white,
-                                    backgroundColor: Colors.red,
+                                    backgroundColor: Colors.green,
                                   ),
                                   onPressed: () {
                                     Navigator.pop(context);
@@ -96,7 +96,7 @@ class _SelectSubfieldScreenState extends State<SelectSubfieldScreen> {
                                   ),
                                   style: TextButton.styleFrom(
                                     primary: Colors.white,
-                                    backgroundColor: Colors.green,
+                                    backgroundColor: Colors.red,
                                   ),
                                   onPressed: () {
                                     // 해당 서브필드를 삭제한다.
