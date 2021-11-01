@@ -1,3 +1,4 @@
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/size_config.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class AuthTitleCard extends StatelessWidget {
       flex: 2,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: getProportionateScreenWidth(30),
+          horizontal: getProportionateScreenWidth(0.1),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -23,18 +24,18 @@ class AuthTitleCard extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                fontSize: 40.0,
+                fontSize: getProportionateScreenWidth(0.09),
                 color: Colors.white,
                 fontWeight: FontWeight.bold
               ),
             ),
             SizedBox(
-              height: 10,
+              height: getProportionateScreenHeight(0.01),
             ),
             Text(
               subInformation,
               style: TextStyle(
-                fontSize: 18.0,
+                fontSize: getProportionateScreenWidth(0.045),
                 color: Colors.white,
               ),
             )

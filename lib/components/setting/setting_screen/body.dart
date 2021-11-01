@@ -1,4 +1,5 @@
 import 'package:aba_analysis/components/setting/setting_default_button.dart';
+import 'package:aba_analysis/components/show_dialog_delete.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/program_field.dart';
 import 'package:aba_analysis/models/sub_field.dart';
@@ -32,7 +33,7 @@ class _BodyState extends State<Body> {
                 // 백그라운드 배경
                 Container(
                   width: double.infinity,
-                  margin: EdgeInsets.only(top: getProportionateScreenHeight(140)),
+                  margin: EdgeInsets.only(top: getProportionateScreenHeight(0.15)),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -43,13 +44,12 @@ class _BodyState extends State<Body> {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(
                       getProportionateScreenWidth(padding),
+                      getProportionateScreenWidth(0.25),
+                      getProportionateScreenWidth(padding),
                       getProportionateScreenWidth(0),
-                      getProportionateScreenWidth(padding),
-                      getProportionateScreenWidth(padding),
                     ),
                     child: SettingButtonListView(
                       settingButtons: [
-                        Spacer(),
                         SettingDefaultButton(text: '내정보 수정', onTap: () {
                           // 내정보 수정 페이지로 이동
                           Navigator.pushNamed(context, '/edit_info');
@@ -66,26 +66,20 @@ class _BodyState extends State<Body> {
                         }),
                         SettingDefaultButton(text: '회원 탈퇴', onTap: () {
                           if (context.read<UserNotifier>().abaUser!.duty == '관리자') {
-                            for (ProgramField pf in context.read<ProgramFieldNotifier>().programFieldList) {
-                              print("[프로그램 영역 ${pf.title}]");
-                              for (SubField sf in pf.subFieldList) {
-                                print("[하위 영역 ${sf.subFieldName}]");
-                                for (String item in sf.subItemList) {
-                                  print(item);
-                                }
-                              }
-                            }
-                            print('관리자는 회원 탈퇴할 수 없습니다.');
+                            makeToast('관리자는 회원 탈퇴할 수 없습니다.');
                           } else {
-                            
-
-                            // Alert Dialog
-                            // AlertDialog(
-                            //   title: Text('정말 회원 탈퇴를 하시겠습니까?'),
-
-                            // );
-                            // store.deleteUser(context.read<UserNotifier>().abaUser!.email);
-                            // auth.deleteAuthUser();
+                            showDialogYesOrNo(context: context, title: '회원 탈퇴 요청', text: '회원 탈퇴 요청을 하시겠습니까?', onPressed: () async {
+                              await store.updateUser(
+                                context.read<UserNotifier>().abaUser!.email, 
+                                context.read<UserNotifier>().abaUser!.nickname, 
+                                context.read<UserNotifier>().abaUser!.duty, 
+                                context.read<UserNotifier>().abaUser!.approvalStatus, 
+                                true
+                              );
+                              makeToast('회원 탈퇴 요청이 되었습니다.');
+                              Navigator.pop(context);
+                            });
+                            auth.signOut();
                           }
                         }),
                         Visibility(
@@ -125,9 +119,10 @@ class UserInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(
-        horizontal: getProportionateScreenWidth(50),
-        vertical: getProportionateScreenHeight(30),
+        horizontal: getProportionateScreenWidth(padding),
+        vertical: getProportionateScreenHeight(0.05),
       ),
+      height: getProportionateScreenHeight(0.2),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10.0),
@@ -139,41 +134,39 @@ class UserInfoCard extends StatelessWidget {
           )
         ]
       ),
-      height: getProportionateScreenHeight(230),
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: getProportionateScreenWidth(40),
-          vertical: getProportionateScreenWidth(60)
+          horizontal: getProportionateScreenWidth(0.04),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       '닉네임: ${context.watch<UserNotifier>().abaUser!.nickname} ${context.watch<UserNotifier>().abaUser!.duty}', 
                       style: TextStyle(
-                        fontSize: 30.0,
+                        fontSize: getProportionateScreenWidth(0.045),
                         fontWeight: FontWeight.bold
                       ),
                     ),
-                    SizedBox(height: getProportionateScreenHeight(20)),
+                    SizedBox(height: getProportionateScreenHeight(0.01)),
                     Text(
-                      '직  책: ${context.watch<UserNotifier>().abaUser!.duty}', 
+                      '직   책: ${context.watch<UserNotifier>().abaUser!.duty}', 
                       style: TextStyle(
-                        fontSize: 30.0,
+                        fontSize: getProportionateScreenWidth(0.045),
                         fontWeight: FontWeight.bold
                       ),
                     ),
-                    SizedBox(height: getProportionateScreenHeight(20)),
+                    SizedBox(height: getProportionateScreenHeight(0.01)),
                     Text(
                       '이메일: ${context.watch<UserNotifier>().abaUser!.email}', 
                       style: TextStyle(
-                        fontSize: 30.0,
+                        fontSize: getProportionateScreenWidth(0.045),
                         fontWeight: FontWeight.bold
                       ),
                     ),

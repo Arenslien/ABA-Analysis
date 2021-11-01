@@ -31,7 +31,7 @@ class _FindPasswordFormState extends State<FindPasswordForm> {
         child: Column(
           children: [
             SizedBox(
-              height: getProportionateScreenHeight(80),
+              height: getProportionateScreenHeight(0.1),
             ),
             TextField(
               keyboardType: TextInputType.emailAddress,
@@ -41,7 +41,7 @@ class _FindPasswordFormState extends State<FindPasswordForm> {
               },
             ),
             SizedBox(
-              height: getProportionateScreenHeight(40),
+              height: getProportionateScreenHeight(0.03),
             ),
             AuthDefaultButton(
               text: '비밀번호 재설정',
@@ -61,7 +61,7 @@ class _FindPasswordFormState extends State<FindPasswordForm> {
               },
             ),
             SizedBox(
-              height: getProportionateScreenHeight(7),
+              height: getProportionateScreenHeight(0.01),
             ),
             Spacer(),
           ],

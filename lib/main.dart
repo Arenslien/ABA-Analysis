@@ -67,13 +67,6 @@ class _MyAppState extends State<MyApp> {
         theme: theme(),
         routes: routes,
         initialRoute: '/wrapper',
-        // localizationsDelegates: [
-        //   GlobalMaterialLocalizations.delegate,
-        //   GlobalWidgetsLocalizations.delegate,
-        // ],
-        // supportedLocales: [
-        //   const Locale('ko', 'KR'),
-        // ],
       ),
     );
   }
