@@ -18,20 +18,12 @@ class ChildMainScreen extends StatefulWidget {
 }
 
 class _ChildMainScreenState extends State<ChildMainScreen> {
-  List<Child> childList = [];
   List<Child> searchResult = [];
   TextEditingController searchTextEditingController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-
-    //childList 초기화
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      setState(() {
-        childList = context.read<ChildNotifier>().children;
-      });
-    });
   }
 
   @override
@@ -45,12 +37,12 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                 setState(() {
                   searchResult.clear();
                 });
-                for (int i = 0; i < childList.length; i++) {
+                for (int i = 0; i < context.read<ChildNotifier>().children.length; i++) {
                   bool flag = false;
-                  if (childList[i].name.contains(str)) flag = true;
+                  if (context.read<ChildNotifier>().children[i].name.contains(str)) flag = true;
                   if (flag) {
                     setState(() {
-                      searchResult.add(childList[i]);
+                      searchResult.add(context.read<ChildNotifier>().children[i]);
                     });
                   }
                 }
@@ -60,7 +52,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                   searchTextEditingController.clear();
                 });
               }),
-          body: childList.length == 0
+          body: context.read<ChildNotifier>().children.length == 0
               ? noListData(Icons.group, '아동 추가')
               : searchTextEditingController.text.isEmpty
                   ? ListView.separated(

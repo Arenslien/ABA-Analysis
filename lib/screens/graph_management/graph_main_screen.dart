@@ -19,18 +19,13 @@ class GraphScreen extends StatefulWidget {
 }
 
 class _GraphScreenState extends State<GraphScreen> {
-  List<Child> childList = [];
   List<Child> searchResult = [];
   TextEditingController searchTextEditingController = TextEditingController();
 
   void initState() {
     super.initState();
     //childList 초기화
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      setState(() {
-        childList = context.read<ChildNotifier>().children;
-      });
-    });
+
   }
 
   @override
@@ -44,12 +39,12 @@ class _GraphScreenState extends State<GraphScreen> {
                 setState(() {
                   searchResult.clear();
                 });
-                for (int i = 0; i < childList.length; i++) {
+                for (int i = 0; i < context.read<ChildNotifier>().children.length; i++) {
                   bool flag = false;
-                  if (childList[i].name.contains(str)) flag = true;
+                  if (context.read<ChildNotifier>().children[i].name.contains(str)) flag = true;
                   if (flag) {
                     setState(() {
-                      searchResult.add(childList[i]);
+                      searchResult.add(context.read<ChildNotifier>().children[i]);
                     });
                   }
                 }
@@ -59,7 +54,7 @@ class _GraphScreenState extends State<GraphScreen> {
                   searchTextEditingController.clear();
                 });
               }),
-          body: childList.length == 0
+          body: context.read<ChildNotifier>().children.length == 0
               ? noListData(Icons.auto_graph, '아동이 없습니다.')
               : searchTextEditingController.text.isEmpty
                   ? ListView.separated(

@@ -340,7 +340,7 @@ class FireStoreService {
         childId: test.childId,
         date: DateTime.now(),
         title: '${test.title} 복사본',
-        isInput: test.isInput);
+        isInput: false);
     await _test
         .doc(copiedTest.testId.toString())
         .set(copiedTest.toMap())

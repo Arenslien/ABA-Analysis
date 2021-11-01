@@ -21,7 +21,7 @@ class Body extends StatelessWidget {
             AuthTitleCard(title: '회원가입', subInformation: '사용자 정보를 입력해 주세요'),
             // 로그인 Form Card
             AuthFormCard(
-              flex: 8,
+              flex: 5,
               child: RegisterForm(),
             )
           ],
