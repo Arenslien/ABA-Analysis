@@ -61,11 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-=======
-    if (!firebaseInitialized) return CircularProgressIndicator();
-    // SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
->>>>>>> 5199001856a63e37a6a7a478fd83ae41110d38aa
     return Scaffold(
       body: PageView(
         children: [
