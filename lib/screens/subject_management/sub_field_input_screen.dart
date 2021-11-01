@@ -29,8 +29,8 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
   late String title;
 
   // 완료할 때 추가할 하위영역의 하위목록 리스트
-  List<String> subitemList = [];
-
+  List<String> subitemList = List<String>.generate(10, (index) => "");
+  late String subFieldName;
   final formkey = GlobalKey<FormState>();
   FireStoreService store = FireStoreService();
   final textController = TextEditingController();
@@ -48,7 +48,7 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              '서브필드 추가',
+              '하위영역 추가',
               style: TextStyle(color: Colors.black),
             ),
             centerTitle: true,
@@ -68,10 +68,11 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                   color: Colors.black,
                 ),
                 onPressed: () async {
-                  // 완료 버튼 누르면 실행
+                  print(subitemList);
+                  // 저장 버튼 누르면 실행
                   if (formkey.currentState!.validate()) {
                     SubField test = SubField(
-                      subFieldName: title,
+                      subFieldName: subFieldName,
                       subItemList: subitemList,
                     );
                     // DB에 서브필드 추가
@@ -82,40 +83,41 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
 
                     // DB에 테스트 아이템 추가 & TestItem Notifier에 테스트 아이템 추가
                     // 서브필드 아이템들도 같이 추가되므로 테스트 아이템도 추가해야함
-                    // 근데 여기엔 테스트아이디가 없네?
-                    for (String subItem in subitemList) {
-                      TestItem testItem = TestItem(
-                          testItemId: await store.updateId(AutoID.testItem),
-                          testId: 55555, // 테스트 아이디를 줄 수가 없음.
-                          programField: widget.program.title,
-                          subField: title,
-                          subItem: subItem,
-                          result: null);
 
-                      await store.createTestItem(testItem);
+                    // for (String subItem in subitemList) {
+                    //   TestItem testItem = TestItem(
+                    //       testItemId: await store.updateId(AutoID.testItem),
+                    //       testId: 55555, // 테스트 아이디를 줄 수가 없음.
+                    //       programField: widget.program.title,
+                    //       subField: title,
+                    //       subItem: subItem,
+                    //       result: null);
 
-                      context.read<TestItemNotifier>().addTestItem(testItem);
-                    }
-                    Navigator.pop(context);
+                    //   await store.createTestItem(testItem);
+
+                    //   context.read<TestItemNotifier>().addTestItem(testItem);
+                    // }
+                    subitemList.clear();
+                    // Navigator.pop(context);
                   }
                 },
               ),
             ],
             backgroundColor: mainGreenColor,
           ),
-          body: SafeArea(
+          body: SingleChildScrollView(
             child: Column(
               children: [
                 buildTextFormField(
-                  text: '서브필드 이름',
+                  text: '하위영역 이름',
                   onChanged: (val) {
                     setState(() {
-                      title = val;
+                      subFieldName = val;
                     });
                   },
                   validator: (val) {
                     if (val!.length < 1) {
-                      return '이름은 필수사항입니다.';
+                      return '하위영역 이름을 입력해주세요.';
                     }
                     return null;
                   },
@@ -126,87 +128,150 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('하위 목록'),
-                      IconButton(
-                        icon: Icon(Icons.add_rounded),
-                        onPressed: () {
-                          // 하위 목록 입력하는 텍스트폼필드 위젯
-                          showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (BuildContext context) {
-                              return StatefulBuilder(
-                                builder: (context, setState1) {
-                                  return AlertDialog(
-                                    title: Text('하위 목록 입력'),
-                                    content: TextFormField(
-                                      controller: textController,
-                                      validator: (val) {
-                                        if (val == null) {
-                                          return "하위 목록을 입력해주세요.";
-                                        } else {
-                                          return null;
-                                        }
-                                      },
-                                      decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: "하위 목록을 입력해주세요.",
-                                          labelText: "하위 목록"),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        child: Text(
-                                          "취소",
-                                          style: TextStyle(color: Colors.red),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: Text(
-                                          "확인",
-                                          style: TextStyle(color: Colors.blue),
-                                        ),
-                                        onPressed: () {
-                                          // 저장
-                                          // 리스트에 추가
-                                          setState(() {
-                                            subitemList
-                                                .add(textController.text);
-                                          });
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                          );
-                        },
-                      ),
                     ],
                   ),
                 ),
                 // 하위 목록 아래부분 실제 하위목록들을 그려준다.
-                Flexible(
-                  child: ListView.builder(
-                    itemCount: subitemList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        title: Text(subitemList[index]),
-                        trailing: IconButton(
-                          icon: Icon(Icons.remove_rounded),
-                          color: Colors.black,
-                          onPressed: () {
-                            setState(() {
-                              subitemList.removeAt(index);
-                            });
-                          },
-                        ),
-                      );
-                    },
-                  ),
+                buildTextFormField(
+                  text: '1번 하위목록 이름',
+                  onChanged: (val) {
+                    setState(() {
+                      print(val);
+                      subitemList[0] = val;
+                    });
+                  },
+                  validator: (val) {
+                    if (val!.length < 1) {
+                      return '1번 하위목록을 입력해주세요.';
+                    }
+                    return null;
+                  },
+                ),
+                buildTextFormField(
+                  text: '2번 하위목록 이름',
+                  onChanged: (val) {
+                    setState(() {
+                      subitemList[1] = val;
+                    });
+                  },
+                  validator: (val) {
+                    if (val!.length < 1) {
+                      return '2번 하위목록을 입력해주세요.';
+                    }
+                    return null;
+                  },
+                ),
+                buildTextFormField(
+                  text: '3번 하위목록 이름',
+                  onChanged: (val) {
+                    setState(() {
+                      subitemList[2] = val;
+                    });
+                  },
+                  validator: (val) {
+                    if (val!.length < 1) {
+                      return '3번 하위목록을 입력해주세요.';
+                    }
+                    return null;
+                  },
+                ),
+                buildTextFormField(
+                  text: '4번 하위목록 이름',
+                  onChanged: (val) {
+                    setState(() {
+                      subitemList[3] = val;
+                    });
+                  },
+                  validator: (val) {
+                    if (val!.length < 1) {
+                      return '4번 하위목록을 입력해주세요.';
+                    }
+                    return null;
+                  },
+                ),
+                buildTextFormField(
+                  text: '5번 하위목록 이름',
+                  onChanged: (val) {
+                    setState(() {
+                      subitemList[4] = val;
+                    });
+                  },
+                  validator: (val) {
+                    if (val!.length < 1) {
+                      return '5번 하위목록을 입력해주세요.';
+                    }
+                    return null;
+                  },
+                ),
+                buildTextFormField(
+                  text: '6번 하위목록 이름',
+                  onChanged: (val) {
+                    setState(() {
+                      subitemList[5] = val;
+                    });
+                  },
+                  validator: (val) {
+                    if (val!.length < 1) {
+                      return '6번 하위목록을 입력해주세요.';
+                    }
+                    return null;
+                  },
+                ),
+                buildTextFormField(
+                  text: '7번 하위목록 이름',
+                  onChanged: (val) {
+                    setState(() {
+                      subitemList[6] = val;
+                    });
+                  },
+                  validator: (val) {
+                    if (val!.length < 1) {
+                      return '7번 하위목록을 입력해주세요.';
+                    }
+                    return null;
+                  },
+                ),
+                buildTextFormField(
+                  text: '8번 하위목록 이름',
+                  onChanged: (val) {
+                    setState(() {
+                      subitemList[7] = val;
+                    });
+                  },
+                  validator: (val) {
+                    if (val!.length < 1) {
+                      return '8번 하위목록을 입력해주세요.';
+                    }
+                    return null;
+                  },
+                ),
+                buildTextFormField(
+                  text: '9번 하위목록 이름',
+                  onChanged: (val) {
+                    setState(() {
+                      subitemList[8] = val;
+                    });
+                  },
+                  validator: (val) {
+                    if (val!.length < 1) {
+                      return '9번 하위목록을 입력해주세요.';
+                    }
+                    return null;
+                  },
+                ),
+                buildTextFormField(
+                  text: '10번 하위목록 이름',
+                  onChanged: (val) {
+                    setState(() {
+                      subitemList[9] = val;
+                    });
+                  },
+                  validator: (val) {
+                    if (val!.length < 1) {
+                      return '10번 하위목록을 입력해주세요.';
+                    }
+                    return null;
+                  },
                 ),
               ],
             ),
