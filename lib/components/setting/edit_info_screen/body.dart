@@ -34,7 +34,7 @@ class _BodyState extends State<Body> {
                 // 백그라운드 배경
                 Container(
                   width: double.infinity,
-                  margin: EdgeInsets.only(top: getProportionateScreenHeight(120)),
+                  margin: EdgeInsets.only(top: getProportionateScreenHeight(0.15)),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -45,9 +45,9 @@ class _BodyState extends State<Body> {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(
                       getProportionateScreenWidth(padding),
-                      getProportionateScreenWidth(padding * 2),
+                      getProportionateScreenWidth(0.25),
                       getProportionateScreenWidth(padding),
-                      getProportionateScreenWidth(padding),
+                      getProportionateScreenWidth(0),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -61,7 +61,7 @@ class _BodyState extends State<Body> {
                             });
                           },
                         ),
-                        SizedBox(height: getProportionateScreenHeight(45)),
+                        SizedBox(height: getProportionateScreenHeight(0.03)),
                         TextFormField(
                           keyboardType: TextInputType.emailAddress,
                           decoration: buildAuthInputDecoration(context.watch<UserNotifier>().abaUser!.duty, Icons.star),
@@ -72,7 +72,7 @@ class _BodyState extends State<Body> {
                             });
                           },
                         ),
-                        SizedBox(height: getProportionateScreenHeight(45)),
+                        SizedBox(height: getProportionateScreenHeight(0.06)),
                         AuthDefaultButton(
                           text: '수정 완료',
                           onPress: () async {

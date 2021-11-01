@@ -30,7 +30,7 @@ class _BodyState extends State<Body> {
                 // 카드 배경
                 Container(
                   width: double.infinity,
-                  margin: EdgeInsets.only(top: getProportionateScreenHeight(0)),
+                  margin: EdgeInsets.only(top: getProportionateScreenHeight(0.1)),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -39,7 +39,7 @@ class _BodyState extends State<Body> {
                     )
                   ),
                   child: ListView.separated(
-                    padding: const EdgeInsets.fromLTRB(15, 30, 15, 30),
+                    padding: EdgeInsets.fromLTRB(getProportionateScreenWidth(padding/2), getProportionateScreenHeight(0.04), getProportionateScreenWidth(padding/2), getProportionateScreenHeight(0.04)),
                     itemCount: context.watch<UserNotifier>().approvedUsers.length,
                     itemBuilder: (BuildContext context, int index) {
                       return ApprovedUserTile(abaUser: context.watch<UserNotifier>().approvedUsers[index], index: index);
@@ -94,7 +94,7 @@ class _ApprovedUserTileState extends State<ApprovedUserTile> {
                       context.read<UserNotifier>().deleteApprovedUser(widget.abaUser.email);
                     }, 
                   ),
-                  SizedBox(width: getProportionateScreenWidth(10.0)),
+                  SizedBox(width: getProportionateScreenWidth(0.01)),
                   ElevatedButton(
                     child: Text('탈퇴 거부'),
                     style: ElevatedButton.styleFrom(primary: Colors.red[400]),

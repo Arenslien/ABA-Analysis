@@ -49,7 +49,7 @@ class _RegisterFormState extends State<RegisterForm> {
         ),
         child: Column(
           children: [
-            Spacer(),
+            SizedBox(height: getProportionateScreenHeight(0.1)),
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
@@ -66,7 +66,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 });
               },
             ),
-            SizedBox(height: getProportionateScreenHeight(35)),
+            SizedBox(height: getProportionateScreenHeight(0.03)),
             TextFormField(
               textInputAction: TextInputAction.next,
               obscureText: true,
@@ -83,7 +83,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 });
               },
             ),
-            SizedBox(height: getProportionateScreenHeight(35)),
+            SizedBox(height: getProportionateScreenHeight(0.03)),
             TextFormField(
               textInputAction: TextInputAction.next,
               obscureText: true,
@@ -100,7 +100,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 });
               },
             ),
-            SizedBox(height: getProportionateScreenHeight(35)),
+            SizedBox(height: getProportionateScreenHeight(0.03)),
             TextFormField(
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next, 
@@ -114,7 +114,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 });
               },
             ),
-            SizedBox(height: getProportionateScreenHeight(20)),
+            SizedBox(height: getProportionateScreenHeight(0.02)),
             Column(
               children: errors.map((e) => FormErrorText(error: e)).toList(),
             ),

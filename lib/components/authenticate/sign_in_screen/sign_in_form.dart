@@ -48,7 +48,7 @@ class _SignInFormState extends State<SignInForm> {
         ),
         child: Column(
           children: [
-            Spacer(),
+            SizedBox(height: getProportionateScreenHeight(0.1)),
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               decoration: buildAuthInputDecoration('아이디(이메일)', Icons.email),
@@ -65,7 +65,7 @@ class _SignInFormState extends State<SignInForm> {
               },
             ),
             SizedBox(
-              height: getProportionateScreenHeight(35),
+              height: getProportionateScreenHeight(0.03),
             ),
             TextFormField(
               obscureText: true,
@@ -83,14 +83,14 @@ class _SignInFormState extends State<SignInForm> {
               },
             ),
             SizedBox(
-              height: getProportionateScreenHeight(7),
+              height: getProportionateScreenHeight(0.01),
             ),
             ForgotPasswordText(),
-            SizedBox(height: getProportionateScreenHeight(50)),
+            SizedBox(height: getProportionateScreenHeight(0.05)),
             Column(
               children: errors.map((e) => FormErrorText(error: e)).toList(),
             ),
-            SizedBox(height: getProportionateScreenHeight(20)),
+            SizedBox(height: getProportionateScreenHeight(0.02)),
             AuthDefaultButton(
               text: '로그인',
               onPress: () async {
@@ -98,11 +98,6 @@ class _SignInFormState extends State<SignInForm> {
                   // 로그인 시도
                   String result = await _auth.signIn(email, password);
                   if (result != '로그인 성공') {
-                    final snackBar = SnackBar(
-                      content: Text('$result'),
-                      backgroundColor: Colors.red,
-                      duration: Duration(milliseconds: 800),
-                    );
                     ScaffoldMessenger.of(context).showSnackBar(makeSnackBar(result, false));
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(makeSnackBar(result, true));
@@ -120,7 +115,7 @@ class _SignInFormState extends State<SignInForm> {
               },
             ),
             SizedBox(
-              height: getProportionateScreenHeight(7),
+              height: getProportionateScreenHeight(0.01),
             ),
             RegisterText(),
             Spacer(),

@@ -44,7 +44,7 @@ void makeToast(String text) {
   );
 }
 
-double padding = 70;
+double padding = 0.1;
 
 
 
