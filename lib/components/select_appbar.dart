@@ -10,7 +10,10 @@ AppBar selectAppBar(
   return AppBar(
       title: Text(
         title,
-        style: TextStyle(fontFamily: 'korean'),
+        style: TextStyle(
+          fontFamily: 'korean',
+          color: Colors.black,
+        ),
       ),
       backgroundColor: mainGreenColor,
       centerTitle: true,

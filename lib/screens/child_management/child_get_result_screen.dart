@@ -23,19 +23,15 @@ class ChildGetResultScreen extends StatefulWidget {
 
 class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
   List<TestItem> testItemList = [];
+  List<TestItem> childTestItemList = [];
   List<String?> result = [];
   List<List<bool>> resultSelected = [];
+  List<List<int>> countResult = [];
 
   bool checkResultList() {
     // 참일 때 문제 없음
     bool returnValue = true;
-
-    for (int i = 0; i < result.length; i++) {
-      if (result[i] == null) {
-        return false;
-      }
-    }
-
+    for (int i = 0; i < result.length; i++) if (result[i] == null) return false;
     return returnValue;
   }
 
@@ -45,7 +41,23 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
     testItemList = context
         .read<TestItemNotifier>()
         .getTestItemList(widget.test.testId, true);
+    childTestItemList = context
+        .read<TestItemNotifier>()
+        .getTestItemListFromChildId(widget.child.childId, false);
     for (TestItem testItem in testItemList) {
+      countResult.add([0, 0, 0]);
+      for (TestItem temp in childTestItemList) {
+        if (temp.testId == testItem.testId) continue;
+        if (temp.subItem == testItem.subItem) {
+          if (temp.result == '+') {
+            countResult[countResult.length - 1][0]++;
+          } else if (temp.result == '-') {
+            countResult[countResult.length - 1][1]++;
+          } else if (temp.result == 'P') {
+            countResult[countResult.length - 1][2]++;
+          }
+        }
+      }
       if (testItem.result == null) {
         result.add(null);
         resultSelected.add([false, false, false]);
@@ -126,6 +138,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
                     else if (buttonIndex == 1)
                       result[index] = '-';
                     else if (buttonIndex == 2) result[index] = 'P';
+
                     setState(() {
                       for (int i = 0; i < 3; i++) {
                         resultSelected[index][i] = false;
@@ -143,7 +156,11 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
               buildListTile(
                 titleText: '',
                 trailing: buildToggleButtons(
-                  text: ['110', '0', '0'],
+                  text: [
+                    '${countResult[index][0] + (resultSelected[index][0] ? 1 : 0)}',
+                    '${countResult[index][1] + (resultSelected[index][1] ? 1 : 0)}',
+                    '${countResult[index][2] + (resultSelected[index][2] ? 1 : 0)}',
+                  ],
                   minWidth: 50,
                 ),
                 top: 0,
