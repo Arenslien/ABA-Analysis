@@ -76,7 +76,7 @@ class _DateGraphState extends State<DateGraph> {
     _charTitleName = DateFormat(graphDateFormat).format(widget.test.date);
     _tableColumn = ['날짜', '하위목록', '성공여부'];
     _chartData = getDateGraphData(_charTitleName, widget.test, context);
-    exportData = ExportData(context.read<UserNotifier>().abaUser!.name,
+    exportData = ExportData(context.read<UserNotifier>().abaUser!.nickname,
         _childName, _averageRate, '', '');
     return Scaffold(
       appBar: selectAppBar(context, _childName + "의 " + _graphType + "별 그래프"),

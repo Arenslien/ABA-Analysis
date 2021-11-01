@@ -155,7 +155,7 @@ class UserInfoCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      context.watch<UserNotifier>().abaUser!.name, 
+                      context.watch<UserNotifier>().abaUser!.nickname, 
                       style: TextStyle(
                         fontSize: 30.0,
                         fontWeight: FontWeight.bold
@@ -170,12 +170,6 @@ class UserInfoCard extends StatelessWidget {
                   ],
                 )
               ],
-            ),
-            Text(
-              convertPhoneNumber(context.watch<UserNotifier>().abaUser!.phone), 
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
             ),
             Text(
               context.watch<UserNotifier>().abaUser!.duty, 
