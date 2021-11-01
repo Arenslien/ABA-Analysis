@@ -14,11 +14,11 @@ class SettingDefaultButton extends StatelessWidget {
       color: Colors.white,
       child: InkWell(
         child: Container(
-          height: getProportionateScreenHeight(55),
+          height: getProportionateScreenHeight(77),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(text, style: TextStyle(color: Colors.black, fontSize: 20.0, fontWeight: FontWeight.bold)),
+              Text(text, style: TextStyle(color: Colors.black, fontSize: 25.0, fontWeight: FontWeight.bold)),
               Icon(Icons.arrow_forward_ios, size: 20.0, color: Colors.grey),
             ],
           ),

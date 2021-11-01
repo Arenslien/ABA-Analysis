@@ -44,6 +44,10 @@ void makeToast(String text) {
   );
 }
 
+double padding = 70;
+
+
+
 // 폼 에러
 final RegExp emailValidatorRegExp =
     RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");

@@ -26,7 +26,7 @@ class _FindPasswordFormState extends State<FindPasswordForm> {
     return Form(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: getProportionateScreenWidth(30)
+          horizontal: getProportionateScreenWidth(padding)
         ),
         child: Column(
           children: [
@@ -41,11 +41,10 @@ class _FindPasswordFormState extends State<FindPasswordForm> {
               },
             ),
             SizedBox(
-              height: getProportionateScreenHeight(7),
+              height: getProportionateScreenHeight(40),
             ),
-            Spacer(),
             AuthDefaultButton(
-              text: '비밀번호 찾기',
+              text: '비밀번호 재설정',
               onPress: () async {
                 // 존재하지 않는 이메일 체크
                 if (!(await _fireStore.checkUserWithEmail(email))) {

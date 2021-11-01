@@ -44,13 +44,11 @@ class _SignInFormState extends State<SignInForm> {
       key: _formKey,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: getProportionateScreenWidth(30)
+          horizontal: getProportionateScreenWidth(padding)
         ),
         child: Column(
           children: [
-            SizedBox(
-              height: getProportionateScreenHeight(80),
-            ),
+            Spacer(),
             TextFormField(
               keyboardType: TextInputType.emailAddress,
               decoration: buildAuthInputDecoration('아이디(이메일)', Icons.email),
@@ -67,7 +65,7 @@ class _SignInFormState extends State<SignInForm> {
               },
             ),
             SizedBox(
-              height: getProportionateScreenHeight(30),
+              height: getProportionateScreenHeight(35),
             ),
             TextFormField(
               obscureText: true,
@@ -88,12 +86,11 @@ class _SignInFormState extends State<SignInForm> {
               height: getProportionateScreenHeight(7),
             ),
             ForgotPasswordText(),
-            Spacer(),
-            SizedBox(height: getProportionateScreenHeight(10)),
+            SizedBox(height: getProportionateScreenHeight(50)),
             Column(
               children: errors.map((e) => FormErrorText(error: e)).toList(),
             ),
-            SizedBox(height: getProportionateScreenHeight(10)),
+            SizedBox(height: getProportionateScreenHeight(20)),
             AuthDefaultButton(
               text: '로그인',
               onPress: () async {

@@ -136,6 +136,7 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                       TestItem testItem = TestItem(
                           testItemId: await store.updateId(AutoID.testItem),
                           testId: widget.test.testId,
+                          childId: widget.test.childId,
                           programField: testItemInfo.programField,
                           subField: testItemInfo.subField,
                           subItem: testItemInfo.subItem,
