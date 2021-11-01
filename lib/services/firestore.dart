@@ -218,7 +218,7 @@ class FireStoreService {
         .doc(childId.toString())
         .update({
           'name': name,
-          'birtday': birthday,
+          'birthday': birthday,
           'gender': gender,
         })
         .then((value) => print('[아동: $name] - 추가 완료'))
@@ -346,8 +346,8 @@ class FireStoreService {
     Test copiedTest = Test(
         testId: await updateId(AutoID.test),
         childId: test.childId,
-        date: test.date,
-        title: test.title,
+        date: DateTime.now(),
+        title: '${test.title} 복사본',
         isInput: test.isInput);
     await _test
         .doc(copiedTest.testId.toString())
@@ -466,14 +466,14 @@ class FireStoreService {
         .catchError((error) => print('테스트를 추가하지 못했습니다.\n에러 내용: $error'));
   }
 
-  Future<TestItem> copyTestItem(TestItem testItem) async {
+  Future<TestItem> copyTestItem(int testId, TestItem testItem) async {
     TestItem copiedTestItem = TestItem(
       testItemId: await updateId(AutoID.testItem),
-      testId: testItem.testId + 1,
+      testId: testId,
       programField: testItem.programField,
       subField: testItem.subField,
       subItem: testItem.subItem,
-      result: null,
+      result: testItem.result,
     );
     await _testItem
         .doc(copiedTestItem.testItemId.toString())
