@@ -184,10 +184,11 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
             List<TestItem> testItemList = context
                 .read<TestItemNotifier>()
                 .getTestItemList(test.testId, true);
-            
+
             for (TestItem testItem in testItemList) {
               // DB에 TestItem 추가
-              TestItem copiedTestItem = await store.copyTestItem(copiedTest.testId, testItem);
+              TestItem copiedTestItem =
+                  await store.copyTestItem(copiedTest.testId, testItem);
               // 복사된 테스트 아이템 TestItem Notifier에 추가
               context.read<TestItemNotifier>().addTestItem(copiedTestItem);
             }

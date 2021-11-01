@@ -465,7 +465,7 @@ class FireStoreService {
       programField: testItem.programField,
       subField: testItem.subField,
       subItem: testItem.subItem,
-      result: testItem.result,
+      result: null,
     );
     await _testItem
         .doc(copiedTestItem.testItemId.toString())

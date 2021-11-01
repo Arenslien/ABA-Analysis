@@ -119,7 +119,10 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                           children: [
                             OutlinedButton(
                               onPressed: () async {
-                                birth = await getDate(context);
+                                birth = await getDate(
+                                  context: context,
+                                  initialDate: birth,
+                                );
                                 setState(() {
                                   isBirthSelected = true;
                                 });

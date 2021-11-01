@@ -1,11 +1,11 @@
-import 'package:aba_analysis/provider/test_notifier.dart';
-import 'package:aba_analysis/services/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/test.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/test_item.dart';
+import 'package:aba_analysis/services/firestore.dart';
+import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/provider/test_item_notifier.dart';
 import 'package:aba_analysis/components/build_toggle_buttons.dart';
@@ -26,16 +26,17 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
   List<String?> result = [];
   List<List<bool>> resultSelected = [];
 
-  bool checkResultList() { // 참일 때 문제 없음
+  bool checkResultList() {
+    // 참일 때 문제 없음
     bool returnValue = true;
 
-    for (int i=0; i<result.length; i++) {
+    for (int i = 0; i < result.length; i++) {
       if (result[i] == null) {
         return false;
       }
     }
 
-    return returnValue;    
+    return returnValue;
   }
 
   @override
@@ -45,14 +46,20 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
         .read<TestItemNotifier>()
         .getTestItemList(widget.test.testId, true);
     for (TestItem testItem in testItemList) {
-      result.add(null);
-      if (testItem.result == null)
+      if (testItem.result == null) {
+        result.add(null);
         resultSelected.add([false, false, false]);
-      else if (testItem.result == '+')
+        continue;
+      } else if (testItem.result == '+') {
+        result.add('+');
         resultSelected.add([true, false, false]);
-      else if (testItem.result == '-')
+      } else if (testItem.result == '-') {
+        result.add('-');
         resultSelected.add([false, true, false]);
-      else if (testItem.result == 'P') resultSelected.add([false, false, true]);
+      } else if (testItem.result == 'P') {
+        result.add('P');
+        resultSelected.add([false, false, true]);
+      }
     }
   }
 
@@ -83,12 +90,17 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
             ),
             onPressed: () async {
               if (checkResultList()) {
-                for (int i=0; i<testItemList.length; i++) {
-                  await store.updateTestItem(testItemList[i].testItemId, result[i]!);
-                  context.read<TestItemNotifier>().updateTestItem(testItemList[i].testItemId, result[i]!);
+                for (int i = 0; i < testItemList.length; i++) {
+                  await store.updateTestItem(
+                      testItemList[i].testItemId, result[i]!);
+                  context
+                      .read<TestItemNotifier>()
+                      .updateTestItem(testItemList[i].testItemId, result[i]!);
                 }
-                await store.updateTest(widget.test.testId, widget.test.date, widget.test.title, true);
-                context.read<TestNotifier>().updateTest(widget.test.testId, widget.test.date, widget.test.title, true);
+                await store.updateTest(widget.test.testId, widget.test.date,
+                    widget.test.title, true);
+                context.read<TestNotifier>().updateTest(widget.test.testId,
+                    widget.test.date, widget.test.title, true);
 
                 Navigator.pop(context);
               } else {
@@ -102,33 +114,44 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
       body: ListView.builder(
         itemCount: testItemList.length,
         itemBuilder: (BuildContext context, int index) {
-          return buildListTile(
-            titleText: testItemList[index].subItem,
-            trailing: buildToggleButtons(
-              text: ['+', '-', 'P'],
-              onPressed: (buttonIndex) {
-                if (buttonIndex == 0)
-                  result[index] = '+';
-                else if (buttonIndex == 1)
-                  result[index] = '-';
-                else if (buttonIndex == 2) result[index] = 'P';
-                setState(() {
-                  for (int i = 0; i < 3; i++) {
-                    resultSelected[index][i] = false;
-                    if (buttonIndex == i) {
-                      resultSelected[index][i] = true;
-                    }
-                  }
-                });
-              },
-              isSelected: resultSelected[index],
-              minWidth: 50,
-            ),
+          return Column(
+            children: [
+              buildListTile(
+                titleText: testItemList[index].subItem,
+                trailing: buildToggleButtons(
+                  text: ['+', '-', 'P'],
+                  onPressed: (buttonIndex) {
+                    if (buttonIndex == 0)
+                      result[index] = '+';
+                    else if (buttonIndex == 1)
+                      result[index] = '-';
+                    else if (buttonIndex == 2) result[index] = 'P';
+                    setState(() {
+                      for (int i = 0; i < 3; i++) {
+                        resultSelected[index][i] = false;
+                        if (buttonIndex == i) {
+                          resultSelected[index][i] = true;
+                        }
+                      }
+                    });
+                  },
+                  isSelected: resultSelected[index],
+                  minWidth: 50,
+                ),
+                bottom: 0,
+              ),
+              buildListTile(
+                titleText: '',
+                trailing: buildToggleButtons(
+                  text: ['110', '0', '0'],
+                  minWidth: 50,
+                ),
+                top: 0,
+              ),
+            ],
           );
         },
       ),
     );
-
   }
-  
 }
