@@ -29,7 +29,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
 
   FireStoreService store = FireStoreService();
 
-  List<Test> testList = [];
+  //List<Test> testList = [];
   List<Test> searchResult = [];
 
   TextEditingController searchTextEditingController = TextEditingController();
@@ -38,13 +38,13 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      setState(() {
-        testList = context
-            .read<TestNotifier>()
-            .getAllTestListOf(widget.child.childId, false);
-      });
-    });
+    // WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    //   setState(() {
+    //     testList = context
+    //         .read<TestNotifier>()
+    //         .getAllTestListOf(widget.child.childId, false);
+    //   });
+    // });
   }
 
   @override
@@ -79,23 +79,32 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                 ? ListView.separated(
                     // 검색한 결과가 없으면 다 출력
                     itemCount: context
-                        .watch<TestNotifier>()
-                        .getAllTestListOf(widget.child.childId, false)
-                        .length,
+                            .watch<TestNotifier>()
+                            .getAllTestListOf(widget.child.childId, false)
+                            .length +
+                        1,
                     itemBuilder: (BuildContext context, int index) {
-                      return buildTestListTile(context
-                          .watch<TestNotifier>()
-                          .getAllTestListOf(
-                              widget.child.childId, false)[index]);
+                      return index <
+                              context
+                                  .watch<TestNotifier>()
+                                  .getAllTestListOf(widget.child.childId, false)
+                                  .length
+                          ? buildTestListTile(context
+                              .watch<TestNotifier>()
+                              .getAllTestListOf(
+                                  widget.child.childId, false)[index])
+                          : buildListTile(titleText: '');
                     },
                     separatorBuilder: (BuildContext context, int index) {
                       return const Divider(color: Colors.black);
                     },
                   )
                 : ListView.separated(
-                    itemCount: searchResult.length,
+                    itemCount: searchResult.length + 1,
                     itemBuilder: (BuildContext context, int index) {
-                      return buildTestListTile(searchResult[index]);
+                      return index < searchResult.length
+                          ? buildTestListTile(searchResult[index])
+                          : buildListTile(titleText: '');
                     },
                     separatorBuilder: (BuildContext context, int index) {
                       return const Divider(color: Colors.black);
@@ -122,7 +131,13 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
             setState(() {
               searchResult.clear();
             });
-            for (int i = 0; i < testList.length; i++) {
+            for (int i = 0;
+                i <
+                    context
+                        .read<TestNotifier>()
+                        .getAllTestListOf(widget.child.childId, false)
+                        .length;
+                i++) {
               bool flag = false;
               if (context
                   .read<TestNotifier>()
@@ -184,6 +199,9 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
                 builder: (context) => TestModifyScreen(test: test),
               ),
             );
+            setState(() {
+              searchTextEditingController.text = '';
+            });
           }
         },
       ),
