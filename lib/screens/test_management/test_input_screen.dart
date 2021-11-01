@@ -23,7 +23,7 @@ class TestInputScreen extends StatefulWidget {
 class _TestInputScreenState extends State<TestInputScreen> {
   _TestInputScreenState();
   late String title;
-  DateTime? date = DateTime.now();
+  DateTime date = DateTime.now();
 
   List<TestItemInfo> testItemInfoList = [];
   final formkey = GlobalKey<FormState>();
@@ -64,7 +64,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                         testId: await store.updateId(AutoID.test),
                         childId: widget.child.childId,
                         title: title,
-                        date: date!,
+                        date: date,
                         isInput: false);
                     // DB에 테스트 추가
                     await store.createTest(test);
@@ -121,13 +121,16 @@ class _TestInputScreenState extends State<TestInputScreen> {
                               padding: const EdgeInsets.all(16.0),
                               child: OutlinedButton(
                                 onPressed: () async {
-                                  date = await getDate(context);
+                                  date = await getDate(
+                                    context: context,
+                                    initialDate: date,
+                                  );
                                   setState(() {});
                                 },
                                 child: Row(
                                   children: [
                                     Text(
-                                      DateFormat('yyyyMMdd').format(date!),
+                                      DateFormat('yyyyMMdd').format(date),
                                       style: TextStyle(color: Colors.black),
                                     ),
                                     SizedBox(width: 10),

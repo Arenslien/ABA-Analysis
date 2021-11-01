@@ -180,7 +180,10 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                               padding: const EdgeInsets.all(16.0),
                               child: OutlinedButton(
                                 onPressed: () async {
-                                  date = await getDate(context);
+                                  date = await getDate(
+                                    context: context,
+                                    initialDate: date,
+                                  );
                                   setState(() {});
                                 },
                                 child: Row(
