@@ -8,7 +8,7 @@ class AuthService {
   final FireStoreService store = FireStoreService();
 
   // 2. 회원가입
-  Future register(String email, String password, String name, String phone) async {
+  Future register(String email, String password) async {
     try {
       // Firebase 제공 계정 만들기 -> Authentication에 등록
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(

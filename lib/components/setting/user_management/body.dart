@@ -78,10 +78,8 @@ class _ApprovedUserTileState extends State<ApprovedUserTile> {
       child: InkWell(
         onTap: () {},
         child: ListTile(
-            title: Text('${widget.abaUser.name} - ${widget.abaUser.duty}'),
-            subtitle: Text('${widget.abaUser.email}\n${convertPhoneNumber(widget.abaUser.phone)}'),
-            isThreeLine: true,
-
+            title: Text('${widget.abaUser.nickname} - ${widget.abaUser.duty}'),
+            subtitle: Text('${widget.abaUser.email}'),
             trailing: Visibility(
               visible: widget.abaUser.deleteRequest,
               child: Row(
@@ -102,7 +100,7 @@ class _ApprovedUserTileState extends State<ApprovedUserTile> {
                     style: ElevatedButton.styleFrom(primary: Colors.red[400]),
                     onPressed: () async {
                       // 회원 탈퇴 거절
-                      await store.updateUser(widget.abaUser.email, widget.abaUser.name, widget.abaUser.phone, widget.abaUser.duty, true, false);
+                      await store.updateUser(widget.abaUser.email, widget.abaUser.nickname,  widget.abaUser.duty, true, false);
                       context.read<UserNotifier>().updateApprovedUser(widget.index);
                     }, 
                   ),

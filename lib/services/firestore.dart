@@ -49,8 +49,7 @@ class FireStoreService {
     ABAUser abaUser = ABAUser(
       email: data['email'],
       password: data['password'],
-      name: data['name'],
-      phone: data['phone'],
+      nickname: data['nickname'],
       duty: data['duty'],
       approvalStatus: data['approval-status'],
       deleteRequest: data['delete-request'],
@@ -73,8 +72,7 @@ class FireStoreService {
               ABAUser abaUser = ABAUser(
                 email: data['email'],
                 password: data['password'],
-                name: data['name'],
-                phone: data['phone'],
+                nickname: data['nickname'],
                 duty: data['duty'],
                 approvalStatus: data['approval-status'],
                 deleteRequest: data['delete-request'],
@@ -98,8 +96,7 @@ class FireStoreService {
               ABAUser abaUser = ABAUser(
                 email: data['email'],
                 password: data['password'],
-                name: data['name'],
-                phone: data['phone'],
+                nickname: data['nickname'],
                 duty: data['duty'],
                 approvalStatus: data['approval-status'],
                 deleteRequest: data['delete-request'],
@@ -111,13 +108,12 @@ class FireStoreService {
   }
 
   // 사용자 수정
-  Future updateUser(String email, String name, String phone, String duty,
+  Future updateUser(String email, String nickname, String duty,
       bool approvalStatus, bool deleteRequest) async {
     return _user
         .doc(email)
         .update({
-          'name': name,
-          'phone': phone,
+          'nickname': nickname,
           'duty': duty,
           'approval-status': approvalStatus,
           'delete-request': deleteRequest,

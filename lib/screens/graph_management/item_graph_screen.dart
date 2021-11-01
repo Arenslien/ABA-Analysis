@@ -95,7 +95,7 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
     // _chartData = getItemGraphData(_charTitleName, widget.subItemList);
 
     exportData = ExportData(
-        context.watch<UserNotifier>().abaUser!.name,
+        context.watch<UserNotifier>().abaUser!.nickname,
         widget.child.name,
         _averageRate,
         widget.subItemList[0].testItem.programField,

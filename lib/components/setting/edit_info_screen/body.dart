@@ -53,19 +53,10 @@ class _BodyState extends State<Body> {
                       children: [
                         TextFormField(
                           keyboardType: TextInputType.emailAddress,
-                          decoration: buildAuthInputDecoration(context.watch<UserNotifier>().abaUser!.name, Icons.person),
+                          decoration: buildAuthInputDecoration(context.watch<UserNotifier>().abaUser!.nickname, Icons.person),
                           onChanged: (String? val) {
                             setState(() {
                               name = val!;
-                            });
-                          },
-                        ),
-                        TextFormField(
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: buildAuthInputDecoration(context.watch<UserNotifier>().abaUser!.phone, Icons.phone),
-                          onChanged: (String? val) {
-                            setState(() {
-                              phone = val!;
                             });
                           },
                         ),
@@ -83,7 +74,7 @@ class _BodyState extends State<Body> {
                           onPress: () async {
                             ABAUser abaUser = context.read<UserNotifier>().abaUser!;
                             // 해당 Form 내용으로 사용자 정보 수정
-                            store.updateUser(abaUser.email, name, phone, duty, true, false);
+                            store.updateUser(abaUser.email, name, duty, true, false);
 
                             // 수정 완료 메시지
 

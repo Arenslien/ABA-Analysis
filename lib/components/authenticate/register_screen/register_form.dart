@@ -114,20 +114,6 @@ class _RegisterFormState extends State<RegisterForm> {
                 });
               },
             ),
-            SizedBox(height: getProportionateScreenHeight(20)),
-            TextFormField(
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.done, 
-              decoration: buildAuthInputDecoration('\'-\' 구분없이 입력', Icons.phone),
-              onChanged: (String? val) {
-                setState(() {
-                  phone = val!;
-                  if (val.isNotEmpty) {
-                    setState(() => errors.remove(kPhoneNumberNullError));
-                  }
-                });
-              },
-            ),
             SizedBox(height: getProportionateScreenHeight(10)),
             Column(
               children: errors.map((e) => FormErrorText(error: e)).toList(),
@@ -137,13 +123,12 @@ class _RegisterFormState extends State<RegisterForm> {
               text: '회원 가입',
               onPress: () async {
                 if (await checkEmailForm() && checkPasswordAndConfirmPasswordForm() && 
-                    checkNameForm() && checkPhoneNumberForm()) {
+                    checkNameForm()) {
                   // 회원가입 승인 요청
                   await fireStore.createUser(ABAUser(
                     email: email,
                     password: password,
-                    name: name, 
-                    phone: phone, 
+                    nickname: name, 
                     duty: '치료사', 
                     approvalStatus: false,
                     deleteRequest: false,
@@ -215,15 +200,6 @@ class _RegisterFormState extends State<RegisterForm> {
     bool result = true;
     if (name.isEmpty) {
       setState(() => errors.add(kNameNullError));
-      result = false;
-    }
-    return result;
-  }
-
-  bool checkPhoneNumberForm() {
-    bool result = true;
-    if(phone.isEmpty) {
-      setState(() => errors.add(kPhoneNumberNullError));
       result = false;
     }
     return result;
