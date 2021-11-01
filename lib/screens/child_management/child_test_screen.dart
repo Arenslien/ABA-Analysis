@@ -29,7 +29,6 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
 
   FireStoreService store = FireStoreService();
 
-  //List<Test> testList = [];
   List<Test> searchResult = [];
 
   TextEditingController searchTextEditingController = TextEditingController();
@@ -37,14 +36,6 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
   @override
   void initState() {
     super.initState();
-
-    // WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-    //   setState(() {
-    //     testList = context
-    //         .read<TestNotifier>()
-    //         .getAllTestListOf(widget.child.childId, false);
-    //   });
-    // });
   }
 
   @override

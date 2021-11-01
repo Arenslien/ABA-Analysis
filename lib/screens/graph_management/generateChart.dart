@@ -68,7 +68,7 @@ class GraphData {
   GraphData(this.testDate, this.subItem, this.result, this.averageRate) {
     if (this.result == '+') {
       this.successRate = 100;
-    } else if (this.result == '-' || this.result == 'p') {
+    } else if (this.result == '-' || this.result == 'P') {
       this.successRate = 0;
     }
   }

@@ -1,15 +1,16 @@
-import 'package:aba_analysis/models/program_field.dart';
+import 'package:aba_analysis/components/build_floating_action_button.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/sub_field.dart';
 import 'package:aba_analysis/models/test_item.dart';
-import 'package:aba_analysis/provider/program_field_notifier.dart';
+import 'package:aba_analysis/services/firestore.dart';
+import 'package:aba_analysis/models/program_field.dart';
+import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/provider/test_item_notifier.dart';
+import 'package:aba_analysis/provider/program_field_notifier.dart';
 import 'package:aba_analysis/screens/subject_management/sub_field_view_screen.dart';
 import 'package:aba_analysis/screens/subject_management/sub_field_input_screen.dart';
-import 'package:aba_analysis/services/firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:aba_analysis/constants.dart';
-import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:provider/provider.dart';
 
 class SelectSubfieldScreen extends StatefulWidget {
   final ProgramField program;
@@ -21,31 +22,27 @@ class SelectSubfieldScreen extends StatefulWidget {
 
 class _SelectSubfieldScreenState extends State<SelectSubfieldScreen> {
   _SelectSubfieldScreenState();
+  FireStoreService store = FireStoreService();
 
   @override
   Widget build(BuildContext context) {
-    FireStoreService store = FireStoreService();
-    List<SubField> subFieldList = widget.program.subFieldList;
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.add_rounded,
-          size: 40,
-        ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    SubFieldInputScreen(program: widget.program)),
-          );
-        },
-        backgroundColor: mainGreenColor,
-      ),
       appBar: AppBar(
         title: Text(
           widget.program.title,
-          style: TextStyle(fontFamily: 'KoreanGothic'),
+          style: TextStyle(
+            fontFamily: 'KoreanGothic',
+            color: Colors.black,
+          ),
+        ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_rounded,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         backgroundColor: mainGreenColor,
       ),
@@ -156,10 +153,21 @@ class _SelectSubfieldScreenState extends State<SelectSubfieldScreen> {
                             );
                           });
                     },
-                    icon: Icon(Icons.delete)),
+                    icon: Icon(
+                      Icons.delete_rounded,
+                      color: Colors.black,
+                    )),
               ));
         },
       ),
+      floatingActionButton: bulidFloatingActionButton(onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  SubFieldInputScreen(program: widget.program)),
+        );
+      }),
     );
   }
 }
