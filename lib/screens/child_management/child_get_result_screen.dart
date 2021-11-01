@@ -114,28 +114,41 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
       body: ListView.builder(
         itemCount: testItemList.length,
         itemBuilder: (BuildContext context, int index) {
-          return buildListTile(
-            titleText: testItemList[index].subItem,
-            trailing: buildToggleButtons(
-              text: ['+', '-', 'P'],
-              onPressed: (buttonIndex) {
-                if (buttonIndex == 0)
-                  result[index] = '+';
-                else if (buttonIndex == 1)
-                  result[index] = '-';
-                else if (buttonIndex == 2) result[index] = 'P';
-                setState(() {
-                  for (int i = 0; i < 3; i++) {
-                    resultSelected[index][i] = false;
-                    if (buttonIndex == i) {
-                      resultSelected[index][i] = true;
-                    }
-                  }
-                });
-              },
-              isSelected: resultSelected[index],
-              minWidth: 50,
-            ),
+          return Column(
+            children: [
+              buildListTile(
+                titleText: testItemList[index].subItem,
+                trailing: buildToggleButtons(
+                  text: ['+', '-', 'P'],
+                  onPressed: (buttonIndex) {
+                    if (buttonIndex == 0)
+                      result[index] = '+';
+                    else if (buttonIndex == 1)
+                      result[index] = '-';
+                    else if (buttonIndex == 2) result[index] = 'P';
+                    setState(() {
+                      for (int i = 0; i < 3; i++) {
+                        resultSelected[index][i] = false;
+                        if (buttonIndex == i) {
+                          resultSelected[index][i] = true;
+                        }
+                      }
+                    });
+                  },
+                  isSelected: resultSelected[index],
+                  minWidth: 50,
+                ),
+                bottom: 0,
+              ),
+              buildListTile(
+                titleText: '',
+                trailing: buildToggleButtons(
+                  text: ['110', '0', '0'],
+                  minWidth: 50,
+                ),
+                top: 0,
+              ),
+            ],
           );
         },
       ),

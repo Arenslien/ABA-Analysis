@@ -1,3 +1,4 @@
+import 'package:aba_analysis/constants.dart';
 import 'package:flutter/material.dart';
 
 ToggleButtons buildToggleButtons(
@@ -23,9 +24,9 @@ ToggleButtons buildToggleButtons(
     onPressed: onPressed,
     constraints: BoxConstraints(minWidth: minWidth, minHeight: minHeight),
     color: isSelected == null ? null : Colors.grey,
-    fillColor: Colors.white,
+    fillColor: mainGreenColor,
     borderColor: Colors.black,
-    splashColor: Colors.white,
+    splashColor: mainGreenColor,
     selectedColor: Colors.black,
     selectedBorderColor: Colors.black,
   );
