@@ -6,7 +6,7 @@ class TestItemNotifier extends ChangeNotifier {
   List<TestItem> _testItemList = [];
 
   // TestItem 리스트 초기화
-  void updateTestItem(List<TestItem> testItemList) {
+  void updateTestItemList(List<TestItem> testItemList) {
     _testItemList = testItemList;
     notifyListeners();
   }
@@ -15,6 +15,14 @@ class TestItemNotifier extends ChangeNotifier {
   void addTestItem(TestItem testItem) {
     _testItemList.add(testItem);
     notifyListeners();
+  }
+
+  void updateTestItem(int testItemId, String result) {
+    for (TestItem testItem in _testItemList) {
+      if (testItem.testItemId == testItemId) {
+        testItem.result = result;
+      }
+    }
   }
 
   // TestItem 삭제

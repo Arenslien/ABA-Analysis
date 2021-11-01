@@ -19,11 +19,12 @@ class TestNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateTest(int testId, String title, DateTime date) {
+  void updateTest(int testId, String title, DateTime date, bool isInput) {
     _testList.forEach((Test test) {
       if (test.testId == testId) {
         test.title = title;
         test.date = date;
+        test.isInput = isInput;
       }
     });
     notifyListeners();
