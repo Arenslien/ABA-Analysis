@@ -28,7 +28,7 @@ String? convertProgramFieldTitle(String title) {
 
 SnackBar makeSnackBar(String text, bool success) {
   final snackBar = SnackBar(
-    content: Text('$text'),
+    content: Text(text),
     backgroundColor: success? Colors.green[400] : Colors.red[400],
     duration: Duration(milliseconds: 1500),
   );
@@ -37,7 +37,7 @@ SnackBar makeSnackBar(String text, bool success) {
 
 void makeToast(String text) {
   Fluttertoast.showToast(
-    msg: '$text',
+    msg: text,
     toastLength: Toast.LENGTH_LONG,
     backgroundColor: Colors.green[400],
     fontSize: 16.0

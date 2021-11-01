@@ -116,7 +116,8 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
 
                 Navigator.pop(context);
               } else {
-                print('테스트 아이템 결과값을 다 체크해주세요.');
+                ScaffoldMessenger.of(context).showSnackBar(
+                    makeSnackBar('테스트 아이템 결과값을 다 체크해주세요.', false));
               }
             },
           ),
