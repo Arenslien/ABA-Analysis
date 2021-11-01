@@ -30,33 +30,23 @@ class AuthService {
   }
 
   // 3. 로그인
-  Future<ABAUser?> signIn(String email, String password) async {
+  Future<String> signIn(String email, String password) async {
     try {
       // 이메일 & 패스워드 정보를 기반으로 Auth 계정 로그인
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+      await auth.signInWithEmailAndPassword(
         email: email, 
         password: password
       );
 
-      // ABAUser 정보 가져오기
-      ABAUser? abaUser = await convertUserToABAUser(userCredential.user);
-      print('auth : ' + abaUser.toString());
-
-      // ABAUser 정보 반환
-      print('로그인 성공');
-      return abaUser;
+      return '로그인 성공';
 
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('존재하지 않는 이메일입니다.');
-        return null;
+        return '존재하지 않는 이메일입니다.';
       } else if (e.code == 'wrong-password') {
-        print('비밀번호가 틀립니다.');
-        return null;
+        return '비밀번호가 틀립니다.';
       }
-      print(e.code);
-      print('비밀번호가 틀립니다.');
-      return null;
+      return '비밀번호가 틀립니다.';
     }
   }
 

@@ -55,7 +55,7 @@ class _BodyState extends State<Body> {
                         }),
                         SettingDefaultButton(text: '비밀번호 변경', onTap: () {
                           // 비밀번호 변경 로직
-                          print('비밀번호 변경을 위한 메일이 전송되었습니다.');
+                          ScaffoldMessenger.of(context).showSnackBar(makeSnackBar('비밀번호 변경을 위한 메일이 전송되었습니다.', true));
                           auth.resetPassword(context.read<UserNotifier>().abaUser!.email);
                         }),
                         SettingDefaultButton(text: '로그아웃', onTap: () {
@@ -63,20 +63,6 @@ class _BodyState extends State<Body> {
                           auth.signOut();
                           context.read<UserNotifier>().updateUser(null);
                         }),
-                        Visibility(
-                          visible: context.watch<UserNotifier>().abaUser!.duty == '관리자'? true:false,
-                          child: SettingDefaultButton(text: '사용자 관리', onTap: () async {
-                            context.read<UserNotifier>().updateApprovedUsers(await store.readApprovedUser());
-                            Navigator.pushNamed(context, '/user_management');
-                          }),
-                        ),
-                        Visibility(
-                          visible: context.watch<UserNotifier>().abaUser!.duty == '관리자'? true:false,
-                          child: SettingDefaultButton(text: '회원가입 승인', onTap: () async {
-                            context.read<UserNotifier>().updateUnapprovedUsers(await store.readUnapprovedUser());
-                            Navigator.pushNamed(context, '/approve_registration');                            
-                          }),
-                        ),
                         SettingDefaultButton(text: '회원 탈퇴', onTap: () {
                           if (context.read<UserNotifier>().abaUser!.duty == '관리자') {
                             for (ProgramField pf in context.read<ProgramFieldNotifier>().programFieldList) {
@@ -101,7 +87,20 @@ class _BodyState extends State<Body> {
                             // auth.deleteAuthUser();
                           }
                         }),
-                        
+                        Visibility(
+                          visible: context.watch<UserNotifier>().abaUser!.duty == '관리자'? true:false,
+                          child: SettingDefaultButton(text: '사용자 관리', onTap: () async {
+                            context.read<UserNotifier>().updateApprovedUsers(await store.readApprovedUser());
+                            Navigator.pushNamed(context, '/user_management');
+                          }),
+                        ),
+                        Visibility(
+                          visible: context.watch<UserNotifier>().abaUser!.duty == '관리자'? true:false,
+                          child: SettingDefaultButton(text: '회원가입 승인', onTap: () async {
+                            context.read<UserNotifier>().updateUnapprovedUsers(await store.readUnapprovedUser());
+                            Navigator.pushNamed(context, '/approve_registration');                            
+                          }),
+                        ),
                       ],
                     ),
                   ),
