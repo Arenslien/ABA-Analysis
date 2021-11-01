@@ -155,7 +155,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
               Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.fromLTRB(100, 0, 100, 0),
+                    padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                     child: buildTextFormField(
                       text: '이름',
                       initialValue: name,
@@ -180,6 +180,8 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                         OutlinedButton(
                           onPressed: () async {
                             birth = await getDate(context);
+                            setState(() {
+                            });
                           },
                           child: Text(
                             DateFormat('yyyyMMdd').format(birth),

@@ -153,7 +153,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                                   return AlertDialog(
                                     title: Text('테스트 아이템 선택'),
                                     content: Container(
-                                      height: 150,
+                                      height: 180,
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
@@ -185,6 +185,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                                                         value == element.title);
                                               });
                                             },
+                                            isExpanded: true,
                                           ),
                                           DropdownButton(
                                             hint: Text('하위 영역 선택'),
@@ -220,6 +221,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                                                         element.subFieldName);
                                               });
                                             },
+                                            isExpanded: true,
                                           ),
                                           DropdownButton(
                                             hint: Text('하위 목록 선택'),
@@ -258,6 +260,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                                                         value == element);
                                               });
                                             },
+                                            isExpanded: true,
                                           ),
                                         ],
                                       ),
@@ -280,20 +283,26 @@ class _TestInputScreenState extends State<TestInputScreen> {
                                         onPressed: () {
                                           // 저장
                                           // 리스트에 테스트 아이템 담기
-                                          TestItemInfo testItemInfo = TestItemInfo(
+                                          TestItemInfo testItemInfo =
+                                              TestItemInfo(
                                             programField: context
                                                 .read<ProgramFieldNotifier>()
-                                                .programFieldList[selectedProgramFieldIndex]
+                                                .programFieldList[
+                                                    selectedProgramFieldIndex]
                                                 .title,
                                             subField: context
                                                 .read<ProgramFieldNotifier>()
-                                                .programFieldList[selectedProgramFieldIndex]
-                                                .subFieldList[selectedSubFieldIndex]
+                                                .programFieldList[
+                                                    selectedProgramFieldIndex]
+                                                .subFieldList[
+                                                    selectedSubFieldIndex]
                                                 .subFieldName,
                                             subItem: context
                                                 .read<ProgramFieldNotifier>()
-                                                .programFieldList[selectedProgramFieldIndex]
-                                                .subFieldList[selectedSubFieldIndex]
+                                                .programFieldList[
+                                                    selectedProgramFieldIndex]
+                                                .subFieldList[
+                                                    selectedSubFieldIndex]
                                                 .subItemList[selectedSubItemIndex],
                                           );
 
