@@ -1,3 +1,4 @@
+import 'package:aba_analysis/services/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
@@ -24,6 +25,18 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
   List<String?> result = [];
   List<List<bool>> resultSelected = [];
 
+  bool checkResultList() { // 참일 때 문제 없음
+    bool returnValue = true;
+
+    for (int i=0; i<result.length; i++) {
+      if (result[i] == null) {
+        return false;
+      }
+    }
+
+    return returnValue;    
+  }
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +57,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    FireStoreService store = FireStoreService();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -66,8 +80,15 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
               Icons.check_rounded,
               color: Colors.black,
             ),
-            onPressed: () {
-              Navigator.pop(context);
+            onPressed: () async {
+              if (checkResultList()) {
+                for (int i=0; i<testItemList.length; i++) {
+                  await store.updateTestItem(testItemList[i].testItemId, result[i]!);
+                }
+                Navigator.pop(context);
+              } else {
+                print('테스트 아이템 결과값을 다 체크해주세요.');
+              }
             },
           ),
         ],
@@ -102,5 +123,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
         },
       ),
     );
+
   }
+  
 }
