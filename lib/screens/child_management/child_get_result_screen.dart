@@ -1,3 +1,4 @@
+import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -84,7 +85,11 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
               if (checkResultList()) {
                 for (int i=0; i<testItemList.length; i++) {
                   await store.updateTestItem(testItemList[i].testItemId, result[i]!);
+                  context.read<TestItemNotifier>().updateTestItem(testItemList[i].testItemId, result[i]!);
                 }
+                await store.updateTest(widget.test.testId, widget.test.date, widget.test.title, true);
+                context.read<TestNotifier>().updateTest(widget.test.testId, widget.test.title, widget.test.date, true);
+
                 Navigator.pop(context);
               } else {
                 print('테스트 아이템 결과값을 다 체크해주세요.');

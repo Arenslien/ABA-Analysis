@@ -297,14 +297,35 @@ class FireStoreService {
     });
 
     // 변경된 sub-field DB에 저장
-    _programField.doc(title).set({'sub-field-list': newSubFieldList});
+    _programField
+        .doc(title)
+        .update({
+          'sub-field-list': newSubFieldList
+        })
+        .then((value) => print("하위 영역이 업데이트 되었습니다."))
+        .catchError((error) => print("하위 영역 업데이트를 실패했습니다. : $error"));
   }
 
-  Future readSubField() async {}
+  Future deleteSubField(String title, int index) async {
+    // 기존의 sub-field-list 가져오기
+    dynamic result = await _programField
+        .doc(title)
+        .get()
+        .then((DocumentSnapshot snapshot) => snapshot.data());
+    List<dynamic> newSubFieldList = result['sub-field-list'];
 
-  Future updateSubField() async {}
+    // 기존의 sub-field-list에 해당 인덱sub-field
+    newSubFieldList.removeAt(index);
 
-  Future deleteSubField() async {}
+     // 변경된 sub-field DB에 저장
+    _programField
+        .doc(title)
+        .update({
+          'sub-field-list': newSubFieldList
+        })
+        .then((value) => print("하위 영역이 업데이트 되었습니다."))
+        .catchError((error) => print("하위 영역 업데이트를 실패했습니다. : $error"));
+  }
 
   //=======================================================================================
   //                          Firebase 연동 - Test 관련 함수들
