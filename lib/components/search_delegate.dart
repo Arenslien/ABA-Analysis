@@ -1,11 +1,4 @@
-import 'package:aba_analysis/constants.dart';
-import 'package:aba_analysis/models/child.dart';
-import 'package:aba_analysis/models/program_field.dart';
-import 'package:aba_analysis/models/sub_field.dart';
-import 'package:aba_analysis/models/test.dart';
-import 'package:aba_analysis/screens/graph_management/item_graph_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class Search extends SearchDelegate {
   final List<String> toSearchList;
@@ -13,16 +6,17 @@ class Search extends SearchDelegate {
   late final List<String> resultList;
   Search(this.toSearchList);
   List<String> recentList = []; // 시간 되면 최근 검색목록 구현.
-
+  
   @override
   List<Widget> buildActions(BuildContext context) {
     // 취소버튼
     return <Widget>[
       IconButton(
-        icon: Icon(Icons.close),
+        icon: Icon(Icons.close_rounded),
         onPressed: () {
           query = "";
         },
+        color: Colors.black,
       ),
     ];
   }
@@ -31,10 +25,11 @@ class Search extends SearchDelegate {
   Widget buildLeading(BuildContext context) {
     // 뒤로가기 버튼
     return IconButton(
-      icon: Icon(Icons.arrow_back),
+      icon: Icon(Icons.arrow_back_rounded),
       onPressed: () {
         close(context, query); // pop과 비슷한 느낌. 결과인 query를 갖고 나갈 수 있다.
       },
+      color: Colors.black,
     );
   }
 

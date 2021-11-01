@@ -48,7 +48,7 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-          appBar: SelectAppBar(
+          appBar: selectAppBar(
               // 메인 화면의 디자인은 좀 달라야할텐데 고민.
               context,
               (widget.child.name + "의 프로그램 영역 선택"),

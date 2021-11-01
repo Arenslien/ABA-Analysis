@@ -1,4 +1,3 @@
-import 'package:aba_analysis/components/search_bar.dart';
 import 'package:aba_analysis/components/search_delegate.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/sub_field.dart';
@@ -65,7 +64,7 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
     );
 
     return Scaffold(
-        appBar: SelectAppBar(context, (widget.child.name + "의 하위목록 선택"),
+        appBar: selectAppBar(context, (widget.child.name + "의 하위목록 선택"),
             searchButton: searchButton),
         body: isNoTestData
             ? noTestData()

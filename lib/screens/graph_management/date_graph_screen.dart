@@ -79,7 +79,7 @@ class _DateGraphState extends State<DateGraph> {
     exportData = ExportData(context.read<UserNotifier>().abaUser!.name,
         _childName, _averageRate, '', '');
     return Scaffold(
-      appBar: SelectAppBar(context, _childName + "의 " + _graphType + "별 그래프"),
+      appBar: selectAppBar(context, _childName + "의 " + _graphType + "별 그래프"),
       body: Center(
         child: SingleChildScrollView(
           child: Column(

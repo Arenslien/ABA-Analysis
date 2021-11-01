@@ -48,7 +48,7 @@ class _SelectAreaScreenState extends State<SelectAreaScreen> {
       },
     );
     return Scaffold(
-        appBar: SelectAppBar(context, (widget.child.name + "의 하위영역 선택"),
+        appBar: selectAppBar(context, (widget.child.name + "의 하위영역 선택"),
             searchButton: searchButton),
         body: widget.programField.subFieldList.length == 0
             ? noTestData()

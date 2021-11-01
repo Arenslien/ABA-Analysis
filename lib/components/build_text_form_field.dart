@@ -47,10 +47,3 @@ Widget buildTextFormField({
     ),
   );
 }
-
-class ContentListTile {
-  int? tileId;
-  Widget? tileWidget;
-
-  ContentListTile({this.tileId, this.tileWidget});
-}

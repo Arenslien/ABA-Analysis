@@ -102,7 +102,7 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
         widget.subItemList[0].testItem.subField);
 
     return Scaffold(
-      appBar: SelectAppBar(
+      appBar: selectAppBar(
         context,
         widget.child.name + "의 " + _graphType + "별 그래프",
       ),

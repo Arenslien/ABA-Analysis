@@ -46,7 +46,7 @@ class _GraphScreenState extends State<GraphScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-          appBar: SelectAppBar(context, "아이 선택",
+          appBar: selectAppBar(context, "아이 선택",
               searchButton: searchButton, isMain: true),
           body: context.watch<ChildNotifier>().children.length == 0
               ? noChildData()

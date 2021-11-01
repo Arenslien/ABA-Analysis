@@ -1,11 +1,10 @@
-import 'package:aba_analysis/constants.dart';
-import 'package:aba_analysis/models/aba_user.dart';
-import 'package:aba_analysis/provider/user_notifier.dart';
-import 'package:aba_analysis/services/auth.dart';
-import 'package:aba_analysis/services/firestore.dart';
-import 'package:aba_analysis/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:aba_analysis/constants.dart';
+import 'package:aba_analysis/size_config.dart';
+import 'package:aba_analysis/models/aba_user.dart';
+import 'package:aba_analysis/services/firestore.dart';
+import 'package:aba_analysis/provider/user_notifier.dart';
 
 class Body extends StatefulWidget {
   const Body({ Key? key }) : super(key: key);

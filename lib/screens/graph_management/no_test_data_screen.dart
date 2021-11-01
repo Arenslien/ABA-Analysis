@@ -7,7 +7,7 @@ class NoTestData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SelectAppBar(context, "테스트 데이터가 없습니다."),
+      appBar: selectAppBar(context, "테스트 데이터가 없습니다."),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
