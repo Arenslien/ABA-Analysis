@@ -1,6 +1,7 @@
+import 'package:aba_analysis/models/aba_user.dart';
+import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
 import 'package:aba_analysis/size_config.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/screens/home/home_screen.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,7 @@ class _WrapperState extends State<Wrapper> {
     SizeConfig().init(context);
 
     // UserNotifier Provider 지속적으로 값 확인
-    User? user = context.watch<User?>();
+    ABAUser? user = context.watch<UserNotifier>().abaUser;
 
     // return 홈스크린 or 인증스크린
     return user == null? SignInScreen() : HomeScreen();

@@ -1,5 +1,5 @@
-// import 'package:commerce/size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 // 어플 테마 컬러
 const mainYellowColor = Color(0xFFFFE082);
@@ -8,13 +8,6 @@ const mainGreenColor = Color(0xFFA5D6A7);
 
 // ENUM 타입
 enum AutoID { child, test, testItem }
-
-String convertPhoneNumber(String phone) {
-  String phoneNumber;
-  phoneNumber =
-      '${phone.substring(0, 3)} - ${phone.substring(3, 7)} - ${phone.substring(7, 11)}';
-  return phoneNumber;
-}
 
 final Map<String, String> korToEngAboutPF = {
   "수용 언어": "acceptance",
@@ -33,39 +26,23 @@ String? convertProgramFieldTitle(String title) {
   return docTitle;
 }
 
-// // 그라데이션 컬러 -> box decoration에서 gradient같은 곳에 사용됨
-// const kPrimaryGradientColor = LinearGradient(
-//   begin: Alignment.topLeft,
-//   end: Alignment.bottomRight,
-//   colors: [Color(0xFFFFA53E), Color(0xFFFF7643)],
-// );
-// const kSecondaryColor = Color(0xFF979797);
-// const kTextColor = Color(0xFF757575);
+SnackBar makeSnackBar(String text, bool success) {
+  final snackBar = SnackBar(
+    content: Text('$text'),
+    backgroundColor: success? Colors.green[400] : Colors.red[400],
+    duration: Duration(milliseconds: 1500),
+  );
+  return snackBar;
+}
 
-// const kAnimationDuration = Duration(milliseconds: 200);
-
-// // Heading Style
-// final headingStyle = TextStyle(
-//   color: Colors.black,
-//   fontWeight: FontWeight.bold,
-//   fontSize: getProportionateScreenWidth(28),
-//   height: 1.5
-// );
-
-// // OTP Decoration
-// final otpInputDecoration = InputDecoration(
-//   contentPadding: EdgeInsets.symmetric(vertical: getProportionateScreenWidth(15)),
-//   enabledBorder: outlineInputBorder(),
-//   focusedBorder: outlineInputBorder(),
-//   border: outlineInputBorder(),
-// );
-
-// OutlineInputBorder outlineInputBorder() {
-//   return OutlineInputBorder(
-//   borderRadius: BorderRadius.circular(18),
-//   borderSide: BorderSide(color: kTextColor),
-// );
-// }
+void makeToast(String text) {
+  Fluttertoast.showToast(
+    msg: '$text',
+    toastLength: Toast.LENGTH_LONG,
+    backgroundColor: Colors.green[400],
+    fontSize: 16.0
+  );
+}
 
 // 폼 에러
 final RegExp emailValidatorRegExp =

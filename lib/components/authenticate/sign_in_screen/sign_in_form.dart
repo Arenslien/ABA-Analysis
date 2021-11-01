@@ -97,22 +97,28 @@ class _SignInFormState extends State<SignInForm> {
             AuthDefaultButton(
               text: '로그인',
               onPress: () async {
-                if (checkEmailForm() && checkPasswordForm() && await checkEmailAndPasswordForm()) {
-                  // Provider 업데이트
-                  context.read<UserNotifier>().updateUser(await _store.readUser(email));
-                  context.read<ChildNotifier>().updateChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
-                  context.read<ProgramFieldNotifier>().updateProgramFieldList(await _store.readProgramField());
-                  context.read<TestNotifier>().updateTestList(await _store.readAllTest());
-                  context.read<TestItemNotifier>().updateTestItemList(await _store.readAllTestItem());
-                  // 로그인
-                  await _auth.signIn(email, password);
-                } else {
-                  final snackBar = SnackBar(
-                    content: Text('로그인 실패!'),
-                    backgroundColor: Colors.red,
-                    duration: Duration(milliseconds: 800),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                if (checkEmailForm() && checkPasswordForm()) {
+                  // 로그인 시도
+                  String result = await _auth.signIn(email, password);
+                  if (result != '로그인 성공') {
+                    final snackBar = SnackBar(
+                      content: Text('$result'),
+                      backgroundColor: Colors.red,
+                      duration: Duration(milliseconds: 800),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(makeSnackBar(result, false));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(makeSnackBar(result, true));
+
+                    // Provider 업데이트
+                    ABAUser? abaUser = await _store.readUser(email);
+                    context.read<ChildNotifier>().updateChildren(await _store.readAllChild(email));
+                    context.read<ProgramFieldNotifier>().updateProgramFieldList(await _store.readProgramField());
+                    context.read<TestNotifier>().updateTestList(await _store.readAllTest());
+                    context.read<TestItemNotifier>().updateTestItemList(await _store.readAllTestItem());
+                    context.read<UserNotifier>().updateUser(abaUser);
+                  }
+                  
                 }
               },
             ),
@@ -151,14 +157,5 @@ class _SignInFormState extends State<SignInForm> {
       result = false;
     }    
     return result;
-  }
-
-  Future<bool> checkEmailAndPasswordForm() async {
-    ABAUser? abaUser = await _store.readUser(email);
-    if (abaUser != null && abaUser.password == password) {
-      return true;
-    } else {
-      return false;
-    }
   }
 }
