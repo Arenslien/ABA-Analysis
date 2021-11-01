@@ -118,13 +118,9 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                 onPressed: () async {
                   // 완료 버튼 누르면 실행
                   if (formkey.currentState!.validate()) {
-                    // 수정되는 테스트의 테스트 아이템들의 값이 모두 null이 아닐 경우 -> true
-                    // bool isInput = true;
-                    // bool isInput = false;
-
                     // 테스트의 날짜와 테스트 제목 수정
-                    store.updateTest(widget.test.testId, date, title, false);
-                    context.read<TestNotifier>().updateTest(widget.test.testId, title, date);
+                    store.updateTest(widget.test.testId, date, title, widget.test.isInput);
+                    context.read<TestNotifier>().updateTest(widget.test.testId, widget.test.title, widget.test.date, widget.test.isInput);
 
                     // 기존의 테스트에 대한 테스트 아이템 모두 제거
                     List<TestItem> testItemList1 = context

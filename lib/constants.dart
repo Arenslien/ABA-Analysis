@@ -11,8 +11,26 @@ enum AutoID { child, test, testItem }
 
 String convertPhoneNumber(String phone) {
   String phoneNumber;
-  phoneNumber = '${phone.substring(0, 3)} - ${phone.substring(3, 7)} - ${phone.substring(7, 11)}';
+  phoneNumber =
+      '${phone.substring(0, 3)} - ${phone.substring(3, 7)} - ${phone.substring(7, 11)}';
   return phoneNumber;
+}
+
+final Map<String, String> korToEngAboutPF = {
+  "수용 언어": "acceptance",
+  "동적 모방": "dynamic-imitation",
+  "표현 언어": "expression",
+  "매칭": "match",
+  "수학": "math",
+  "놀이 기술": "play-skills",
+  "자조 기술": "self-help-skills",
+  "사회성 기술": "social-skills",
+  "쓰기": "write",
+};
+
+String? convertProgramFieldTitle(String title) {
+  String? docTitle = korToEngAboutPF[title];
+  return docTitle;
 }
 
 // // 그라데이션 컬러 -> box decoration에서 gradient같은 곳에 사용됨

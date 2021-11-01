@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
       context.read<TestNotifier>().updateTestList(await _store.readAllTest());
       context
           .read<TestItemNotifier>()
-          .updateTestItem(await _store.readAllTestItem());
+          .updateTestItemList(await _store.readAllTestItem());
     });
   }
 
