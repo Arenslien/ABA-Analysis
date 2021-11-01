@@ -1,19 +1,7 @@
-import 'package:aba_analysis/models/program_field.dart';
-import 'package:aba_analysis/models/sub_field.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
-import 'package:aba_analysis/models/test.dart';
-import 'package:aba_analysis/models/child.dart';
-import 'package:aba_analysis/models/test_item.dart';
+import 'package:aba_analysis/models/sub_field.dart';
 import 'package:aba_analysis/services/firestore.dart';
-import 'package:aba_analysis/provider/test_notifier.dart';
-import 'package:aba_analysis/components/show_date_picker.dart';
-import 'package:aba_analysis/provider/test_item_notifier.dart';
-import 'package:aba_analysis/provider/program_field_notifier.dart';
-import 'package:aba_analysis/components/build_text_form_field.dart';
-import 'package:provider/provider.dart';
 
 class SelectSubitemScreen extends StatefulWidget {
   final SubField subField;
@@ -58,7 +46,7 @@ class _SelectSubitemScreenState extends State<SelectSubitemScreen> {
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back_rounded,
-              color: Colors.white,
+              color: Colors.black,
             ),
             onPressed: () {
               Navigator.pop(context);
@@ -66,39 +54,28 @@ class _SelectSubitemScreenState extends State<SelectSubitemScreen> {
           ),
           backgroundColor: mainGreenColor,
         ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              // 하위 목록 아래부분 실제 하위목록들을 그려준다.
-              Flexible(
-                child: ListView.builder(
-                  itemCount: subitemList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                      title: Text(
-                        "${index + 1}. " + subitemList[index],
-                        style:
-                            TextStyle(fontSize: 20, fontFamily: 'KoreanGothic'),
+        body: Column(
+          children: [
+            // 하위 목록 아래부분 실제 하위목록들을 그려준다.
+            Flexible(
+              child: ListView.builder(
+                itemCount: subitemList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    title: Text(
+                      "${index + 1}. " + subitemList[index],
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'KoreanGothic',
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
-}
-
-class TestItemInfo {
-  final String programField;
-  final String subField;
-  final String subItem;
-
-  TestItemInfo(
-      {required this.programField,
-      required this.subField,
-      required this.subItem});
 }
