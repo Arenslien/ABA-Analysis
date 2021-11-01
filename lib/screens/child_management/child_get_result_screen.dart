@@ -88,7 +88,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
                   context.read<TestItemNotifier>().updateTestItem(testItemList[i].testItemId, result[i]!);
                 }
                 await store.updateTest(widget.test.testId, widget.test.date, widget.test.title, true);
-                context.read<TestNotifier>().updateTest(widget.test.testId, widget.test.title, widget.test.date, true);
+                context.read<TestNotifier>().updateTest(widget.test.testId, widget.test.date, widget.test.title, true);
 
                 Navigator.pop(context);
               } else {

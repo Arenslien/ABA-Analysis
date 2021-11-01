@@ -1,6 +1,4 @@
 import 'package:aba_analysis/models/test.dart';
-import 'package:aba_analysis/models/test_item.dart';
-import 'package:aba_analysis/services/firestore.dart';
 import 'package:flutter/foundation.dart';
 
 class TestNotifier extends ChangeNotifier {
@@ -19,7 +17,7 @@ class TestNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateTest(int testId, String title, DateTime date, bool isInput) {
+  void updateTest(int testId, DateTime date, String title, bool isInput) {
     _testList.forEach((Test test) {
       if (test.testId == testId) {
         test.title = title;

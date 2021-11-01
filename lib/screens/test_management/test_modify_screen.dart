@@ -120,7 +120,7 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                   if (formkey.currentState!.validate()) {
                     // 테스트의 날짜와 테스트 제목 수정
                     store.updateTest(widget.test.testId, date, title, widget.test.isInput);
-                    context.read<TestNotifier>().updateTest(widget.test.testId, widget.test.title, widget.test.date, widget.test.isInput);
+                    context.read<TestNotifier>().updateTest(widget.test.testId, date, title, widget.test.isInput);
 
                     // 기존의 테스트에 대한 테스트 아이템 모두 제거
                     List<TestItem> testItemList1 = context
