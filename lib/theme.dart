@@ -12,7 +12,7 @@ ThemeData theme() {
       textTheme: TextTheme(
         headline6: TextStyle(
           color: Colors.black,
-          fontSize: getProportionateScreenWidth(0.05),
+          fontSize: 20,
         )
       ),
     ),
