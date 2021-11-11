@@ -12,6 +12,7 @@ import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:aba_analysis/provider/test_item_notifier.dart';
 import 'package:aba_analysis/provider/program_field_notifier.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -39,9 +40,9 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
     // 로그인 유지일 경우 사용자 정보를 DB에서 가져옴
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+      await _auth.signIn('admin@gmail.com', 'test1234');
       context.read<UserNotifier>().updateUser(await _auth.abaUser);
       if(context.read<UserNotifier>().abaUser != null) {
         context.read<ChildNotifier>().updateChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
