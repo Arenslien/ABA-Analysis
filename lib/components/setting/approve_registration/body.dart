@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Body extends StatefulWidget {
-  const Body({ Key? key }) : super(key: key);
+  const Body({Key? key}) : super(key: key);
 
   @override
   _BodyState createState() => _BodyState();
@@ -32,26 +32,33 @@ class _BodyState extends State<Body> {
               children: [
                 // 카드 배경
                 Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.only(top: getProportionateScreenHeight(0.1)),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40),
-                    )
-                  ),
-                  child: ListView.separated(
-                    padding: EdgeInsets.fromLTRB(getProportionateScreenWidth(padding/2), getProportionateScreenHeight(0.04), getProportionateScreenWidth(padding/2), getProportionateScreenHeight(0.04)),
-                    itemCount: context.watch<UserNotifier>().unapprovedUsers.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return UnapprovedUserTile(abaUser: context.watch<UserNotifier>().unapprovedUsers[index]);
-                    },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const Divider();
-                    },
-                  )
-                ),
+                    width: double.infinity,
+                    margin:
+                        EdgeInsets.only(top: getProportionateScreenHeight(0.1)),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(40),
+                          topRight: Radius.circular(40),
+                        )),
+                    child: ListView.separated(
+                      padding: EdgeInsets.fromLTRB(
+                          getProportionateScreenWidth(padding / 2),
+                          getProportionateScreenHeight(0.04),
+                          getProportionateScreenWidth(padding / 2),
+                          getProportionateScreenHeight(0.04)),
+                      itemCount:
+                          context.watch<UserNotifier>().unapprovedUsers.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return UnapprovedUserTile(
+                            abaUser: context
+                                .watch<UserNotifier>()
+                                .unapprovedUsers[index]);
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return const Divider();
+                      },
+                    )),
               ],
             ),
           ),
@@ -63,9 +70,7 @@ class _BodyState extends State<Body> {
 
 class UnapprovedUserTile extends StatelessWidget {
   final ABAUser abaUser;
-  const UnapprovedUserTile({
-    Key? key, required this.abaUser
-  }) : super(key: key);
+  const UnapprovedUserTile({Key? key, required this.abaUser}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -77,43 +82,40 @@ class UnapprovedUserTile extends StatelessWidget {
       child: InkWell(
         onTap: () {},
         child: ListTile(
-            title: Text(abaUser.nickname),
-            subtitle: Text(abaUser.email),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ElevatedButton(
-                  child: Text('승인'),
-                  style: ElevatedButton.styleFrom(primary: Colors.blue[400]),
-                  onPressed: () async {
-                    // 회원가입 승인
-                    await store.updateUser(abaUser.email, abaUser.nickname, abaUser.duty, true, false);
-                    context.read<UserNotifier>().deleteUnapprovedUser(abaUser.email);
-                    auth.register(abaUser.email, abaUser.password);
-                  }, 
-                ),
-                SizedBox(width: getProportionateScreenWidth(0.02)),
-                ElevatedButton(
-                  child: Text('거부'),
-                  style: ElevatedButton.styleFrom(primary: Colors.red[400]),
-                  onPressed: () async {
-                    // 회원가입 거절
-                    await store.deleteUser(abaUser.email);
-                    context.read<UserNotifier>().deleteUnapprovedUser(abaUser.email);
-                  }, 
-                ),
-              ],
-            ),
+          title: Text(abaUser.nickname),
+          subtitle: Text(abaUser.email),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(
+                child: Text('승인'),
+                style: ElevatedButton.styleFrom(primary: Colors.blue[400]),
+                onPressed: () async {
+                  // 회원가입 승인
+                  await store.updateUser(abaUser.email, abaUser.nickname,
+                      abaUser.duty, true, false);
+                  context
+                      .read<UserNotifier>()
+                      .deleteUnapprovedUser(abaUser.email);
+                  auth.register(abaUser.email, abaUser.password!);
+                },
+              ),
+              SizedBox(width: getProportionateScreenWidth(0.02)),
+              ElevatedButton(
+                child: Text('거부'),
+                style: ElevatedButton.styleFrom(primary: Colors.red[400]),
+                onPressed: () async {
+                  // 회원가입 거절
+                  await store.deleteUser(abaUser.email);
+                  context
+                      .read<UserNotifier>()
+                      .deleteUnapprovedUser(abaUser.email);
+                },
+              ),
+            ],
           ),
+        ),
       ),
     );
   }
 }
-
-
-
-
-
-
-
-                      

@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:aba_analysis/components/authenticate/auth_google_button.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/aba_user.dart';
 import 'package:aba_analysis/provider/child_notifier.dart';
@@ -10,6 +11,7 @@ import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/size_config.dart';
+import 'package:async/async.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,13 @@ class SignInForm extends StatefulWidget {
 
 class _SignInFormState extends State<SignInForm> {
   AuthService _auth = AuthService();
+  late AsyncMemoizer _memoizer;
+  @override
+  void initState() {
+    super.initState();
+    _memoizer = AsyncMemoizer();
+  }
+
   FireStoreService _store = FireStoreService();
 
   bool _initialized = false;
@@ -103,16 +112,15 @@ class _SignInFormState extends State<SignInForm> {
               height: getProportionateScreenHeight(0.01),
             ),
             ForgotPasswordText(),
-            SizedBox(height: getProportionateScreenHeight(0.05)),
+            SizedBox(height: getProportionateScreenHeight(0.01)),
             Column(
               children: errors.map((e) => FormErrorText(error: e)).toList(),
             ),
-            AuthDefaultButton(text: '구글 로그인', onPress: signInWithGoogle),
             SizedBox(height: getProportionateScreenHeight(0.02)),
             AuthDefaultButton(
               text: '로그인',
               onPress: () async {
-                if (checkEmailForm() && checkPasswordForm()) {
+                if (await checkEmailForm() && checkPasswordForm()) {
                   // 로그인 시도
                   String result = await _auth.signIn(email, password);
                   if (result != '로그인 성공') {
@@ -143,6 +151,14 @@ class _SignInFormState extends State<SignInForm> {
             SizedBox(
               height: getProportionateScreenHeight(0.01),
             ),
+            AuthGoogleButton(
+              text: 'Sign in with Google',
+              onPress: signInWithGoogle,
+              //   this._memoizer.runOnce(() async {
+              //     await signInWithGoogle();
+              //   });
+              // },
+            ),
             RegisterText(),
             Spacer(),
           ],
@@ -151,7 +167,7 @@ class _SignInFormState extends State<SignInForm> {
     );
   }
 
-  bool checkEmailForm() {
+  Future<bool> checkEmailForm() async {
     bool result = true;
     if (email.isEmpty) {
       setState(() => errors.add(kEmailNullError));
@@ -159,6 +175,8 @@ class _SignInFormState extends State<SignInForm> {
     } else if (!emailValidatorRegExp.hasMatch(email)) {
       setState(() => errors.add(kInvalidEmailError));
       result = false;
+    } else if ((await _store.readUser(email))!.password == null) {
+      setState(() => errors.add(kExistGoogleEmailError));
     }
     return result;
   }
@@ -183,96 +201,39 @@ class _SignInFormState extends State<SignInForm> {
     GoogleSignIn googleSignIn = GoogleSignIn();
 
     GoogleSignInAccount? account = await googleSignIn.signIn();
-    if (account == null) {
-      print("account가 null입니다.");
-      return null;
+    if (account != null) {
+      GoogleSignInAuthentication authentication = await account.authentication;
+      AuthCredential authCredential = GoogleAuthProvider.credential(
+        idToken: authentication.idToken,
+        accessToken: authentication.accessToken,
+      );
+      UserCredential authResult =
+          await auth.signInWithCredential(authCredential);
+      User? user = authResult.user;
+      ABAUser? abaUser = await _store.readUser(user!.email!);
+      if (abaUser == null) {
+        abaUser = ABAUser(
+            email: user.email!,
+            password: null,
+            nickname:
+                user.displayName == null ? "nickname1" : user.displayName!,
+            duty: "치료사",
+            approvalStatus: true,
+            deleteRequest: false);
+        _store.createUser(abaUser);
+      }
+      abaUser = await _store.readUser(user.email!);
+      context
+          .read<ChildNotifier>()
+          .updateChildren(await _store.readAllChild(user.email!));
+      context
+          .read<ProgramFieldNotifier>()
+          .updateProgramFieldList(await _store.readProgramField());
+      context.read<TestNotifier>().updateTestList(await _store.readAllTest());
+      context
+          .read<TestItemNotifier>()
+          .updateTestItemList(await _store.readAllTestItem());
+      context.read<UserNotifier>().updateUser(abaUser);
     }
-    GoogleSignInAuthentication authentication = await account.authentication;
-    AuthCredential authCredential = GoogleAuthProvider.credential(
-      idToken: authentication.idToken,
-      accessToken: authentication.accessToken,
-    );
-    UserCredential authResult = await auth.signInWithCredential(authCredential);
-    User? user = authResult.user;
-    ABAUser? abaUser = await _store.readUser(user!.email!);
-    if (abaUser == null) {
-      abaUser = ABAUser(
-          email: user.email!,
-          password: "1234",
-          nickname: user.displayName == null ? "nickname1" : user.displayName!,
-          duty: "치료사",
-          approvalStatus: true,
-          deleteRequest: false);
-      _store.createUser(abaUser);
-    }
-    abaUser = await _store.readUser(user.email!);
-    context
-        .read<ChildNotifier>()
-        .updateChildren(await _store.readAllChild(user.email!));
-    context
-        .read<ProgramFieldNotifier>()
-        .updateProgramFieldList(await _store.readProgramField());
-    context.read<TestNotifier>().updateTestList(await _store.readAllTest());
-    context
-        .read<TestItemNotifier>()
-        .updateTestItemList(await _store.readAllTestItem());
-    context.read<UserNotifier>().updateUser(abaUser);
-
-    // final GoogleSignInAccount? googleUser = await GoogleSignIn(
-    //   scopes: ['email'],
-    // ).signIn();
-    // // print("email: " + googleUser!.email);
-    // final GoogleSignInAuthentication? googleAuth =
-    //     await googleUser?.authentication;
-    // // print("id: " + googleUser.id);
-
-    // final credential = GoogleAuthProvider.credential(
-    //   accessToken: googleAuth?.accessToken,
-    //   idToken: googleAuth?.idToken,
-    // );
-    // if (FirebaseAuth.instance.currentUser != null) {
-    //   // FirebaseAuth.instance.currentUser!
-    //   //     .reauthenticateWithCredential(credential);
-    // }
-    // // print("displayName: " + googleUser.displayName!);
-    // ABAUser? abaUser = await _store.readUser(googleUser!.email);
-    // if (abaUser == null) {
-    //   abaUser = ABAUser(
-    //       email: googleUser.email,
-    //       password: "1234",
-    //       nickname: googleUser.displayName == null
-    //           ? "nickname1"
-    //           : googleUser.displayName!,
-    //       duty: "치료사",
-    //       approvalStatus: true,
-    //       deleteRequest: false);
-    //   _store.createUser(abaUser);
-    //   abaUser = await _store.readUser(googleUser.email);
-    //   context
-    //       .read<ChildNotifier>()
-    //       .updateChildren(await _store.readAllChild(googleUser.email));
-    //   context
-    //       .read<ProgramFieldNotifier>()
-    //       .updateProgramFieldList(await _store.readProgramField());
-    //   context.read<TestNotifier>().updateTestList(await _store.readAllTest());
-    //   context
-    //       .read<TestItemNotifier>()
-    //       .updateTestItemList(await _store.readAllTestItem());
-    //   context.read<UserNotifier>().updateUser(abaUser);
-    // } else {
-    //   context
-    //       .read<ChildNotifier>()
-    //       .updateChildren(await _store.readAllChild(googleUser.email));
-    //   context
-    //       .read<ProgramFieldNotifier>()
-    //       .updateProgramFieldList(await _store.readProgramField());
-    //   context.read<TestNotifier>().updateTestList(await _store.readAllTest());
-    //   context
-    //       .read<TestItemNotifier>()
-    //       .updateTestItemList(await _store.readAllTestItem());
-    //   context.read<UserNotifier>().updateUser(abaUser);
-    // }
-
-    // return await FirebaseAuth.instance.signInWithCredential(authCredential);
   }
 }
