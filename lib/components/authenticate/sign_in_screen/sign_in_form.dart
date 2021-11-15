@@ -11,9 +11,7 @@ import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/size_config.dart';
-import 'package:async/async.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +19,6 @@ import 'package:provider/provider.dart';
 import '../auth_default_button.dart';
 import '../auth_input_decoration.dart';
 import '../form_error_text.dart';
-import 'forgot_password_text.dart';
 import 'register_text.dart';
 
 class SignInForm extends StatefulWidget {
@@ -33,30 +30,8 @@ class SignInForm extends StatefulWidget {
 
 class _SignInFormState extends State<SignInForm> {
   AuthService _auth = AuthService();
-  late AsyncMemoizer _memoizer;
-  @override
-  void initState() {
-    super.initState();
-    _memoizer = AsyncMemoizer();
-  }
 
   FireStoreService _store = FireStoreService();
-
-  bool _initialized = false;
-  bool _error = false;
-
-  void initializeFlutterFire() async {
-    try {
-      await Firebase.initializeApp();
-      setState(() {
-        _initialized = true;
-      });
-    } catch (e) {
-      setState(() {
-        _error = true;
-      });
-    }
-  }
 
   final _formKey = GlobalKey<FormState>();
   // 텍스트 필드 값
@@ -111,7 +86,6 @@ class _SignInFormState extends State<SignInForm> {
             SizedBox(
               height: getProportionateScreenHeight(0.01),
             ),
-            ForgotPasswordText(),
             SizedBox(height: getProportionateScreenHeight(0.01)),
             Column(
               children: errors.map((e) => FormErrorText(error: e)).toList(),
@@ -154,10 +128,6 @@ class _SignInFormState extends State<SignInForm> {
             AuthGoogleButton(
               text: 'Sign in with Google',
               onPress: signInWithGoogle,
-              //   this._memoizer.runOnce(() async {
-              //     await signInWithGoogle();
-              //   });
-              // },
             ),
             RegisterText(),
             Spacer(),

@@ -55,9 +55,10 @@ class AuthService {
   }
 
   // 5. 비밀번호 변경 이메일 전송
-  Future resetPassword(String email) async {
-    await auth.sendPasswordResetEmail(email: email);
-  }
+  // Future resetPassword(String email) async {
+  //   await FireStoreService().read
+  //   await auth.sendPasswordResetEmail(email: email);
+  // }
 
   // 6. 사용자 삭제
   Future deleteAuthUser() async {

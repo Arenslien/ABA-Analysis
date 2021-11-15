@@ -1,5 +1,4 @@
 import 'package:aba_analysis/screens/home/home_screen.dart';
-import 'package:aba_analysis/screens/authenticate/find_password_screen.dart';
 import 'package:aba_analysis/screens/authenticate/register_screen.dart';
 import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
 import 'package:aba_analysis/screens/setting/approve_registration_screen.dart';
@@ -13,7 +12,6 @@ final Map<String, WidgetBuilder> routes = {
   HomeScreen.routeName: (context) => HomeScreen(),
   SignInScreen.routeName: (context) => SignInScreen(),
   RegisterScreen.routeName: (context) => RegisterScreen(),
-  FindPasswordScreen.routeName: (context) => FindPasswordScreen(),
   EditInfoScreen.routeName: (context) => EditInfoScreen(),
   ApproveRegistrationScreen.routeName: (context) => ApproveRegistrationScreen(),
   UserManagementScreen.routeName: (context) => UserManagementScreen(),

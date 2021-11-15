@@ -59,16 +59,6 @@ class _BodyState extends State<Body> {
                               Navigator.pushNamed(context, '/edit_info');
                             }),
                         SettingDefaultButton(
-                            text: '비밀번호 변경',
-                            onTap: () {
-                              // 비밀번호 변경 로직
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  makeSnackBar(
-                                      '비밀번호 변경을 위한 메일이 전송되었습니다.', true));
-                              auth.resetPassword(
-                                  context.read<UserNotifier>().abaUser!.email);
-                            }),
-                        SettingDefaultButton(
                             text: '로그아웃',
                             onTap: () {
                               // Firebase Authentication 로그아웃
