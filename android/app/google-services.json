@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "992950691620-6948k10q7tpd3rl63ef96ei9cdsibqoi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.annodomini.aba_analysis",
+            "certificate_hash": "a6234eeca837871a3c66a658bf55bb849e13232f"
+          }
+        },
+        {
           "client_id": "992950691620-ef1hp6rsnviptj3u9hjru0ej65tbu63k.apps.googleusercontent.com",
           "client_type": 3
         }

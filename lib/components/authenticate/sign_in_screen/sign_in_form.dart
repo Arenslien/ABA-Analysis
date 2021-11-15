@@ -10,7 +10,10 @@ import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/size_config.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 import '../auth_default_button.dart';
@@ -20,23 +23,38 @@ import 'forgot_password_text.dart';
 import 'register_text.dart';
 
 class SignInForm extends StatefulWidget {
-  const SignInForm({ Key? key }) : super(key: key);
+  const SignInForm({Key? key}) : super(key: key);
 
   @override
   _SignInFormState createState() => _SignInFormState();
 }
 
 class _SignInFormState extends State<SignInForm> {
-
   AuthService _auth = AuthService();
   FireStoreService _store = FireStoreService();
+
+  bool _initialized = false;
+  bool _error = false;
+
+  void initializeFlutterFire() async {
+    try {
+      await Firebase.initializeApp();
+      setState(() {
+        _initialized = true;
+      });
+    } catch (e) {
+      setState(() {
+        _error = true;
+      });
+    }
+  }
 
   final _formKey = GlobalKey<FormState>();
   // 텍스트 필드 값
   String email = '';
   String password = '';
 
-  HashSet<String> errors = new HashSet(); 
+  HashSet<String> errors = new HashSet();
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +62,7 @@ class _SignInFormState extends State<SignInForm> {
       key: _formKey,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: getProportionateScreenWidth(padding)
-        ),
+            horizontal: getProportionateScreenWidth(padding)),
         child: Column(
           children: [
             SizedBox(height: getProportionateScreenHeight(0.1)),
@@ -90,6 +107,7 @@ class _SignInFormState extends State<SignInForm> {
             Column(
               children: errors.map((e) => FormErrorText(error: e)).toList(),
             ),
+            AuthDefaultButton(text: '구글 로그인', onPress: signInWithGoogle),
             SizedBox(height: getProportionateScreenHeight(0.02)),
             AuthDefaultButton(
               text: '로그인',
@@ -98,19 +116,27 @@ class _SignInFormState extends State<SignInForm> {
                   // 로그인 시도
                   String result = await _auth.signIn(email, password);
                   if (result != '로그인 성공') {
-                    ScaffoldMessenger.of(context).showSnackBar(makeSnackBar(result, false));
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(makeSnackBar(result, false));
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(makeSnackBar(result, true));
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(makeSnackBar(result, true));
 
                     // Provider 업데이트
                     ABAUser? abaUser = await _store.readUser(email);
-                    context.read<ChildNotifier>().updateChildren(await _store.readAllChild(email));
-                    context.read<ProgramFieldNotifier>().updateProgramFieldList(await _store.readProgramField());
-                    context.read<TestNotifier>().updateTestList(await _store.readAllTest());
-                    context.read<TestItemNotifier>().updateTestItemList(await _store.readAllTestItem());
+                    context
+                        .read<ChildNotifier>()
+                        .updateChildren(await _store.readAllChild(email));
+                    context.read<ProgramFieldNotifier>().updateProgramFieldList(
+                        await _store.readProgramField());
+                    context
+                        .read<TestNotifier>()
+                        .updateTestList(await _store.readAllTest());
+                    context
+                        .read<TestItemNotifier>()
+                        .updateTestItemList(await _store.readAllTestItem());
                     context.read<UserNotifier>().updateUser(abaUser);
                   }
-                  
                 }
               },
             ),
@@ -130,24 +156,123 @@ class _SignInFormState extends State<SignInForm> {
     if (email.isEmpty) {
       setState(() => errors.add(kEmailNullError));
       result = false;
-    }
-    else if (!emailValidatorRegExp.hasMatch(email)) {
+    } else if (!emailValidatorRegExp.hasMatch(email)) {
       setState(() => errors.add(kInvalidEmailError));
       result = false;
-    } 
+    }
     return result;
   }
 
   bool checkPasswordForm() {
     bool result = true;
-    if(password.isEmpty) {
+    if (password.isEmpty) {
       setState(() => errors.add(kPassNullError));
       result = false;
-    }
-    else if(password.length < 8) {
+    } else if (password.length < 8) {
       setState(() => errors.add(kShortPassError));
       result = false;
-    }    
+    }
     return result;
+  }
+
+  Future<void> signInWithGoogle() async {
+    FirebaseAuth.instance.signOut();
+
+    // FirebaseAuth 싱클턴 객체를 갖고오고 GoogleSignIn 객체를 할당한다.
+    FirebaseAuth auth = FirebaseAuth.instance;
+    GoogleSignIn googleSignIn = GoogleSignIn();
+
+    GoogleSignInAccount? account = await googleSignIn.signIn();
+    if (account == null) {
+      print("account가 null입니다.");
+      return null;
+    }
+    GoogleSignInAuthentication authentication = await account.authentication;
+    AuthCredential authCredential = GoogleAuthProvider.credential(
+      idToken: authentication.idToken,
+      accessToken: authentication.accessToken,
+    );
+    UserCredential authResult = await auth.signInWithCredential(authCredential);
+    User? user = authResult.user;
+    ABAUser? abaUser = await _store.readUser(user!.email!);
+    if (abaUser == null) {
+      abaUser = ABAUser(
+          email: user.email!,
+          password: "1234",
+          nickname: user.displayName == null ? "nickname1" : user.displayName!,
+          duty: "치료사",
+          approvalStatus: true,
+          deleteRequest: false);
+      _store.createUser(abaUser);
+    }
+    abaUser = await _store.readUser(user.email!);
+    context
+        .read<ChildNotifier>()
+        .updateChildren(await _store.readAllChild(user.email!));
+    context
+        .read<ProgramFieldNotifier>()
+        .updateProgramFieldList(await _store.readProgramField());
+    context.read<TestNotifier>().updateTestList(await _store.readAllTest());
+    context
+        .read<TestItemNotifier>()
+        .updateTestItemList(await _store.readAllTestItem());
+    context.read<UserNotifier>().updateUser(abaUser);
+
+    // final GoogleSignInAccount? googleUser = await GoogleSignIn(
+    //   scopes: ['email'],
+    // ).signIn();
+    // // print("email: " + googleUser!.email);
+    // final GoogleSignInAuthentication? googleAuth =
+    //     await googleUser?.authentication;
+    // // print("id: " + googleUser.id);
+
+    // final credential = GoogleAuthProvider.credential(
+    //   accessToken: googleAuth?.accessToken,
+    //   idToken: googleAuth?.idToken,
+    // );
+    // if (FirebaseAuth.instance.currentUser != null) {
+    //   // FirebaseAuth.instance.currentUser!
+    //   //     .reauthenticateWithCredential(credential);
+    // }
+    // // print("displayName: " + googleUser.displayName!);
+    // ABAUser? abaUser = await _store.readUser(googleUser!.email);
+    // if (abaUser == null) {
+    //   abaUser = ABAUser(
+    //       email: googleUser.email,
+    //       password: "1234",
+    //       nickname: googleUser.displayName == null
+    //           ? "nickname1"
+    //           : googleUser.displayName!,
+    //       duty: "치료사",
+    //       approvalStatus: true,
+    //       deleteRequest: false);
+    //   _store.createUser(abaUser);
+    //   abaUser = await _store.readUser(googleUser.email);
+    //   context
+    //       .read<ChildNotifier>()
+    //       .updateChildren(await _store.readAllChild(googleUser.email));
+    //   context
+    //       .read<ProgramFieldNotifier>()
+    //       .updateProgramFieldList(await _store.readProgramField());
+    //   context.read<TestNotifier>().updateTestList(await _store.readAllTest());
+    //   context
+    //       .read<TestItemNotifier>()
+    //       .updateTestItemList(await _store.readAllTestItem());
+    //   context.read<UserNotifier>().updateUser(abaUser);
+    // } else {
+    //   context
+    //       .read<ChildNotifier>()
+    //       .updateChildren(await _store.readAllChild(googleUser.email));
+    //   context
+    //       .read<ProgramFieldNotifier>()
+    //       .updateProgramFieldList(await _store.readProgramField());
+    //   context.read<TestNotifier>().updateTestList(await _store.readAllTest());
+    //   context
+    //       .read<TestItemNotifier>()
+    //       .updateTestItemList(await _store.readAllTestItem());
+    //   context.read<UserNotifier>().updateUser(abaUser);
+    // }
+
+    // return await FirebaseAuth.instance.signInWithCredential(authCredential);
   }
 }

@@ -32,8 +32,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   # Firebase 관련 Library
+  firebase_core: ^1.10.0
   firebase_auth: ^3.0.1
   cloud_firestore: ^2.4.0
+  google_sign_in: ^5.0.0
 
   # 전역 변수 관리 -> 모든 위젯에서 접근 가능
   provider: ^5.0.0
