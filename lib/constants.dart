@@ -29,7 +29,7 @@ String? convertProgramFieldTitle(String title) {
 SnackBar makeSnackBar(String text, bool success) {
   final snackBar = SnackBar(
     content: Text(text),
-    backgroundColor: success? Colors.green[400] : Colors.red[400],
+    backgroundColor: success ? Colors.green[400] : Colors.red[400],
     duration: Duration(milliseconds: 1500),
   );
   return snackBar;
@@ -37,16 +37,13 @@ SnackBar makeSnackBar(String text, bool success) {
 
 void makeToast(String text) {
   Fluttertoast.showToast(
-    msg: text,
-    toastLength: Toast.LENGTH_LONG,
-    backgroundColor: Colors.green[400],
-    fontSize: 16.0
-  );
+      msg: text,
+      toastLength: Toast.LENGTH_LONG,
+      backgroundColor: Colors.green[400],
+      fontSize: 16.0);
 }
 
 double padding = 0.1;
-
-
 
 // 폼 에러
 final RegExp emailValidatorRegExp =
@@ -60,6 +57,7 @@ const String kShortPassError = "비밀번호를 8자리 이상 입력해 주세�
 const String kMatchPassError = "비밀번호가 일치하지 않습니다";
 const String kNameNullError = "이름을 입력해 주세요";
 const String kPhoneNumberNullError = "전화 번호를 입력해 주세요";
+const String kExistGoogleEmailError = "구글 로그인으로 로그인해주세요.";
 
 // 그래프 관련
 const String graphDateFormat = "yyyy년MM월dd일H시";

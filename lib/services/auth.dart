@@ -3,7 +3,6 @@ import 'package:aba_analysis/services/firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
-  
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FireStoreService store = FireStoreService();
 
@@ -15,7 +14,6 @@ class AuthService {
         email: email,
         password: password,
       );
-
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('비밀번호의 보안이 너무 약합니다');
@@ -33,13 +31,9 @@ class AuthService {
   Future<String> signIn(String email, String password) async {
     try {
       // 이메일 & 패스워드 정보를 기반으로 Auth 계정 로그인
-      await auth.signInWithEmailAndPassword(
-        email: email, 
-        password: password
-      );
+      await auth.signInWithEmailAndPassword(email: email, password: password);
 
       return '로그인 성공';
-
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         return '존재하지 않는 이메일입니다.';
@@ -54,7 +48,7 @@ class AuthService {
   Future signOut() async {
     try {
       return await auth.signOut();
-    } catch(e) {
+    } catch (e) {
       print(e.toString());
       return null;
     }
@@ -69,7 +63,6 @@ class AuthService {
   Future deleteAuthUser() async {
     await auth.currentUser!.delete();
   }
-
 
   // User 객체를 ABAUser로 Convert -> 해당 User의 정보가 DB에 담겨있음을 가정
   Future<ABAUser?> convertUserToABAUser(User? user) async {
@@ -88,9 +81,9 @@ class AuthService {
   // Getter 함수 현재 유저의 ABAUser 객체 정보 반환
   Future<ABAUser?> get abaUser async {
     return await convertUserToABAUser(user);
-  } 
+  }
 
-  Stream<User?> getChange () {
+  Stream<User?> getChange() {
     return auth.authStateChanges();
-  }  
+  }
 }
