@@ -47,21 +47,21 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
-    signingConfigs {
-        // keystore 디렉토리를 통해 keystore 참조하는 방법
-       release {
-           storeFile file('../keystore/key.jks')
-            storePassword file('../keystore/keystore.password').text.trim()
-            keyPassword file('../keystore/keystore.password').text.trim()
-            keyAlias 'key'
-       }
-   }
+//     signingConfigs {
+//         // keystore 디렉토리를 통해 keystore 참조하는 방법
+//        release {
+//            storeFile file('../keystore/key.jks')
+//             storePassword file('../keystore/keystore.password').text.trim()
+//             keyPassword file('../keystore/keystore.password').text.trim()
+//             keyAlias 'key'
+//        }
+//    }
    
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.release
+            // signingConfig signingConfigs.release
             // storeFile file('../keystore/key.jks')
             // storePassword file('../keystore/keystore.password').text.trim()
             // keyPassword file('../keystore/keystore.password').text.trim()

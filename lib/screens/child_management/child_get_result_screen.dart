@@ -13,9 +13,7 @@ import 'package:aba_analysis/components/build_toggle_buttons.dart';
 class ChildGetResultScreen extends StatefulWidget {
   final Child child;
   final Test test;
-  const ChildGetResultScreen(
-      {Key? key, required this.child, required this.test})
-      : super(key: key);
+  const ChildGetResultScreen({Key? key, required this.child, required this.test}) : super(key: key);
 
   @override
   _ChildGetResultScreenState createState() => _ChildGetResultScreenState();
@@ -28,6 +26,8 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
   List<List<bool>> resultSelected = [];
   List<List<int>> countResult = [];
 
+  bool flag = false;
+
   bool checkResultList() {
     // 참일 때 문제 없음
     bool returnValue = true;
@@ -38,12 +38,8 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
   @override
   void initState() {
     super.initState();
-    testItemList = context
-        .read<TestItemNotifier>()
-        .getTestItemList(widget.test.testId, true);
-    childTestItemList = context
-        .read<TestItemNotifier>()
-        .getTestItemListFromChildId(widget.child.childId, false);
+    testItemList = context.read<TestItemNotifier>().getTestItemList(widget.test.testId, true);
+    childTestItemList = context.read<TestItemNotifier>().getTestItemListFromChildId(widget.child.childId, false);
     for (TestItem testItem in testItemList) {
       countResult.add([0, 0, 0]);
       for (TestItem temp in childTestItemList) {
@@ -101,23 +97,20 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
               color: Colors.black,
             ),
             onPressed: () async {
-              if (checkResultList()) {
-                for (int i = 0; i < testItemList.length; i++) {
-                  await store.updateTestItem(
-                      testItemList[i].testItemId, result[i]!);
-                  context
-                      .read<TestItemNotifier>()
-                      .updateTestItem(testItemList[i].testItemId, result[i]!);
-                }
-                await store.updateTest(widget.test.testId, widget.test.date,
-                    widget.test.title, true);
-                context.read<TestNotifier>().updateTest(widget.test.testId,
-                    widget.test.date, widget.test.title, true);
+              if (!flag) {
+                flag = true;
+                if (checkResultList()) {
+                  for (int i = 0; i < testItemList.length; i++) {
+                    await store.updateTestItem(testItemList[i].testItemId, result[i]!);
+                    context.read<TestItemNotifier>().updateTestItem(testItemList[i].testItemId, result[i]!);
+                  }
+                  await store.updateTest(widget.test.testId, widget.test.date, widget.test.title, true);
+                  context.read<TestNotifier>().updateTest(widget.test.testId, widget.test.date, widget.test.title, true);
 
-                Navigator.pop(context);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    makeSnackBar('테스트 아이템 결과값을 다 체크해주세요.', false));
+                  Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(makeSnackBar('테스트 아이템 결과값을 다 체크해주세요.', false));
+                }
               }
             },
           ),
