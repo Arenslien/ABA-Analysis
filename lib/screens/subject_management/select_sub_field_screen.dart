@@ -14,8 +14,7 @@ import 'package:aba_analysis/screens/subject_management/sub_field_input_screen.d
 
 class SelectSubfieldScreen extends StatefulWidget {
   final ProgramField program;
-  const SelectSubfieldScreen({Key? key, required this.program})
-      : super(key: key);
+  const SelectSubfieldScreen({Key? key, required this.program}) : super(key: key);
   @override
   _SelectSubfieldScreenState createState() => _SelectSubfieldScreenState();
 }
@@ -23,6 +22,8 @@ class SelectSubfieldScreen extends StatefulWidget {
 class _SelectSubfieldScreenState extends State<SelectSubfieldScreen> {
   _SelectSubfieldScreenState();
   FireStoreService store = FireStoreService();
+
+  bool flag = false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,25 +48,16 @@ class _SelectSubfieldScreenState extends State<SelectSubfieldScreen> {
         backgroundColor: mainGreenColor,
       ),
       body: ListView.builder(
-        itemCount: context
-            .watch<ProgramFieldNotifier>()
-            .readSubFieldList(widget.program.title)
-            .length,
+        itemCount: context.watch<ProgramFieldNotifier>().readSubFieldList(widget.program.title).length,
         itemBuilder: (BuildContext context, int index) {
           return buildListTile(
-              titleText: context
-                  .watch<ProgramFieldNotifier>()
-                  .readSubFieldList(widget.program.title)[index]
-                  .subFieldName,
+              titleText: context.watch<ProgramFieldNotifier>().readSubFieldList(widget.program.title)[index].subFieldName,
               titleSize: 20,
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SelectSubitemScreen(
-                        subField: context
-                            .watch<ProgramFieldNotifier>()
-                            .readSubFieldList(widget.program.title)[index]),
+                    builder: (context) => SelectSubitemScreen(subField: context.watch<ProgramFieldNotifier>().readSubFieldList(widget.program.title)[index]),
                   ),
                 );
               },
@@ -80,36 +72,27 @@ class _SelectSubfieldScreenState extends State<SelectSubfieldScreen> {
                           title: '하위영역 삭제',
                           text: '정말 삭제하시겠습니까?',
                           onPressed: () async {
-                            String subFieldNameForDel = context
-                                .read<ProgramFieldNotifier>()
-                                .readSubFieldList(widget.program.title)[index]
-                                .subFieldName;
+                            if (!flag) {
+                              flag = true;
+                              String subFieldNameForDel = context.read<ProgramFieldNotifier>().readSubFieldList(widget.program.title)[index].subFieldName;
 
-                            // DB에서 서브필드를 삭제한다.
-                            await store.deleteSubField(
-                                convertProgramFieldTitle(widget.program.title)!,
-                                index);
+                              // DB에서 서브필드를 삭제한다.
+                              await store.deleteSubField(convertProgramFieldTitle(widget.program.title)!, index);
 
-                            // 해당 서브필드를 삭제한다.
-                            context
-                                .read<ProgramFieldNotifier>()
-                                .updateProgramFieldList(
-                                    await store.readProgramField());
+                              // 해당 서브필드를 삭제한다.
+                              context.read<ProgramFieldNotifier>().updateProgramFieldList(await store.readProgramField());
 
-                            // setState로 삭제한거 업데이트.
-                            // DB에서 삭제한 서브필드의 테스트 아이템 삭제
-                            List<TestItem> testItemList =
-                                context.read<TestItemNotifier>().testItemList;
-                            for (TestItem testItem in testItemList) {
-                              if (testItem.subField == subFieldNameForDel) {
-                                await store.deleteTestItem(testItem.testItemId);
-                                context
-                                    .read<TestItemNotifier>()
-                                    .updateTestItemList(
-                                        await store.readAllTestItem());
+                              // setState로 삭제한거 업데이트.
+                              // DB에서 삭제한 서브필드의 테스트 아이템 삭제
+                              List<TestItem> testItemList = context.read<TestItemNotifier>().testItemList;
+                              for (TestItem testItem in testItemList) {
+                                if (testItem.subField == subFieldNameForDel) {
+                                  await store.deleteTestItem(testItem.testItemId);
+                                  context.read<TestItemNotifier>().updateTestItemList(await store.readAllTestItem());
+                                }
                               }
+                              Navigator.pop(context);
                             }
-                            Navigator.pop(context);
                           });
                     },
                     icon: Icon(
@@ -122,9 +105,7 @@ class _SelectSubfieldScreenState extends State<SelectSubfieldScreen> {
       floatingActionButton: bulidFloatingActionButton(onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  SubFieldInputScreen(program: widget.program)),
+          MaterialPageRoute(builder: (context) => SubFieldInputScreen(program: widget.program)),
         );
       }),
     );

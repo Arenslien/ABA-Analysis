@@ -37,12 +37,19 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                 setState(() {
                   searchResult.clear();
                 });
-                for (int i = 0; i < context.read<ChildNotifier>().children.length; i++) {
+                for (int i = 0;
+                    i < context.read<ChildNotifier>().children.length;
+                    i++) {
                   bool flag = false;
-                  if (context.read<ChildNotifier>().children[i].name.contains(str)) flag = true;
+                  if (context
+                      .read<ChildNotifier>()
+                      .children[i]
+                      .name
+                      .contains(str)) flag = true;
                   if (flag) {
                     setState(() {
-                      searchResult.add(context.read<ChildNotifier>().children[i]);
+                      searchResult
+                          .add(context.read<ChildNotifier>().children[i]);
                     });
                   }
                 }
