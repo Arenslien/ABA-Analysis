@@ -9,8 +9,7 @@ import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class SubFieldInputScreen extends StatefulWidget {
   final ProgramField program;
-  const SubFieldInputScreen({Key? key, required this.program})
-      : super(key: key);
+  const SubFieldInputScreen({Key? key, required this.program}) : super(key: key);
 
   @override
   _SubFieldInputScreenState createState() => _SubFieldInputScreenState();
@@ -27,14 +26,16 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
   final formkey = GlobalKey<FormState>();
   FireStoreService store = FireStoreService();
   final textController = TextEditingController();
+
+  bool flag = false;
+
   @override
   void initState() {
     super.initState();
   }
 
   bool isCheckDup(String checkDup) {
-    List<String> s =
-        context.read<ProgramFieldNotifier>().readAllSubFieldItemList();
+    List<String> s = context.read<ProgramFieldNotifier>().readAllSubFieldItemList();
     if (s.contains(checkDup)) {
       return true;
     } else {
@@ -72,20 +73,17 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                 ),
                 onPressed: () async {
                   print(subitemList);
-                  if (formkey.currentState!.validate()) {
+                  if (formkey.currentState!.validate() && !flag) {
+                    flag = true;
                     SubField addSub = SubField(
                       subFieldName: subFieldName,
                       subItemList: subitemList,
                     );
                     // DB에 서브필드 추가
 //                    await store.create
-                    await store.addSubField(
-                        convertProgramFieldTitle(widget.program.title)!,
-                        addSub);
+                    await store.addSubField(convertProgramFieldTitle(widget.program.title)!, addSub);
                     // Subfield를 Notifier에 추가
-                    context
-                        .read<ProgramFieldNotifier>()
-                        .updateProgramFieldList(await store.readProgramField());
+                    context.read<ProgramFieldNotifier>().updateProgramFieldList(await store.readProgramField());
                     subitemList = List<String>.generate(10, (index) => "");
                     Navigator.pop(context);
                   }
@@ -109,9 +107,7 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                       return '하위영역 이름을 입력해주세요.';
                     }
 
-                    for (String subFieldName in context
-                        .read<ProgramFieldNotifier>()
-                        .readAllSubFieldName()) {
+                    for (String subFieldName in context.read<ProgramFieldNotifier>().readAllSubFieldName()) {
                       if (subFieldName == val) {
                         return '중복된 하위영역 이름입니다.';
                       }
