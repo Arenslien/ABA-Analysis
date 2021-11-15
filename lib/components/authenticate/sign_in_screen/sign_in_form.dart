@@ -11,9 +11,7 @@ import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/size_config.dart';
-import 'package:async/async.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +19,6 @@ import 'package:provider/provider.dart';
 import '../auth_default_button.dart';
 import '../auth_input_decoration.dart';
 import '../form_error_text.dart';
-import 'forgot_password_text.dart';
 import 'register_text.dart';
 
 class SignInForm extends StatefulWidget {
@@ -33,30 +30,8 @@ class SignInForm extends StatefulWidget {
 
 class _SignInFormState extends State<SignInForm> {
   AuthService _auth = AuthService();
-  late AsyncMemoizer _memoizer;
-  @override
-  void initState() {
-    super.initState();
-    _memoizer = AsyncMemoizer();
-  }
 
   FireStoreService _store = FireStoreService();
-
-  bool _initialized = false;
-  bool _error = false;
-
-  void initializeFlutterFire() async {
-    try {
-      await Firebase.initializeApp();
-      setState(() {
-        _initialized = true;
-      });
-    } catch (e) {
-      setState(() {
-        _error = true;
-      });
-    }
-  }
 
   final _formKey = GlobalKey<FormState>();
   // 텍스트 필드 값
@@ -111,7 +86,6 @@ class _SignInFormState extends State<SignInForm> {
             SizedBox(
               height: getProportionateScreenHeight(0.01),
             ),
-            ForgotPasswordText(),
             SizedBox(height: getProportionateScreenHeight(0.01)),
             Column(
               children: errors.map((e) => FormErrorText(error: e)).toList(),
@@ -154,10 +128,6 @@ class _SignInFormState extends State<SignInForm> {
             AuthGoogleButton(
               text: 'Sign in with Google',
               onPress: signInWithGoogle,
-              //   this._memoizer.runOnce(() async {
-              //     await signInWithGoogle();
-              //   });
-              // },
             ),
             RegisterText(),
             Spacer(),
@@ -175,8 +145,12 @@ class _SignInFormState extends State<SignInForm> {
     } else if (!emailValidatorRegExp.hasMatch(email)) {
       setState(() => errors.add(kInvalidEmailError));
       result = false;
+    } else if ((await _store.readUser(email)) == null) {
+      setState(() => errors.add(kNotExistEmailError));
+      result = false;
     } else if ((await _store.readUser(email))!.password == null) {
       setState(() => errors.add(kExistGoogleEmailError));
+      result = false;
     }
     return result;
   }
@@ -194,12 +168,18 @@ class _SignInFormState extends State<SignInForm> {
   }
 
   Future<void> signInWithGoogle() async {
-    FirebaseAuth.instance.signOut();
+    // 만약 로그인되어있으면 로그아웃시키기
 
     // FirebaseAuth 싱클턴 객체를 갖고오고 GoogleSignIn 객체를 할당한다.
-    FirebaseAuth auth = FirebaseAuth.instance;
     GoogleSignIn googleSignIn = GoogleSignIn();
-
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print("User is currently signed out!");
+      } else {
+        print("User is signed in!");
+      }
+    });
+    FirebaseAuth auth = FirebaseAuth.instance;
     GoogleSignInAccount? account = await googleSignIn.signIn();
     if (account != null) {
       GoogleSignInAuthentication authentication = await account.authentication;
@@ -207,33 +187,47 @@ class _SignInFormState extends State<SignInForm> {
         idToken: authentication.idToken,
         accessToken: authentication.accessToken,
       );
+
       UserCredential authResult =
           await auth.signInWithCredential(authCredential);
+
       User? user = authResult.user;
       ABAUser? abaUser = await _store.readUser(user!.email!);
       if (abaUser == null) {
+        // 등록도 안되어있는 경우
         abaUser = ABAUser(
             email: user.email!,
             password: null,
             nickname:
                 user.displayName == null ? "nickname1" : user.displayName!,
             duty: "치료사",
-            approvalStatus: true,
+            approvalStatus: false,
             deleteRequest: false);
-        _store.createUser(abaUser);
+        await _store.createUser(abaUser);
+
+        // 토스트 메시지
+        makeToast('회원가입 승인 요청이 되었습니다.');
+        FirebaseAuth.instance.signOut();
+        GoogleSignIn().signOut();
+      } else if (abaUser.approvalStatus == false) {
+        // 아직 승인이 안된 회원인 경우
+        makeToast('이미 승인 요청이 되어져 있습니다.');
+        FirebaseAuth.instance.signOut();
+        GoogleSignIn().signOut();
+      } else {
+        abaUser = await _store.readUser(user.email!);
+        context
+            .read<ChildNotifier>()
+            .updateChildren(await _store.readAllChild(user.email!));
+        context
+            .read<ProgramFieldNotifier>()
+            .updateProgramFieldList(await _store.readProgramField());
+        context.read<TestNotifier>().updateTestList(await _store.readAllTest());
+        context
+            .read<TestItemNotifier>()
+            .updateTestItemList(await _store.readAllTestItem());
+        context.read<UserNotifier>().updateUser(abaUser);
       }
-      abaUser = await _store.readUser(user.email!);
-      context
-          .read<ChildNotifier>()
-          .updateChildren(await _store.readAllChild(user.email!));
-      context
-          .read<ProgramFieldNotifier>()
-          .updateProgramFieldList(await _store.readProgramField());
-      context.read<TestNotifier>().updateTestList(await _store.readAllTest());
-      context
-          .read<TestItemNotifier>()
-          .updateTestItemList(await _store.readAllTestItem());
-      context.read<UserNotifier>().updateUser(abaUser);
     }
   }
 }

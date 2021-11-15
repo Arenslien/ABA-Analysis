@@ -1,4 +1,3 @@
-import 'package:aba_analysis/constants.dart';
 import 'package:flutter/material.dart';
 
 class AuthGoogleButton extends StatelessWidget {
@@ -41,55 +40,5 @@ class AuthGoogleButton extends StatelessWidget {
       ),
       onPressed: onPress,
     );
-    return GestureDetector(
-      onTap: onPress,
-      child: Container(
-        color: Colors.grey,
-        width: 200,
-        height: 50,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(40),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image(
-              image: AssetImage('asset/icon_google.png'),
-              width: 30,
-              height: 30,
-            ),
-            Text(
-              text,
-              style: TextStyle(fontSize: 20),
-            ),
-          ],
-        ),
-      ),
-    );
-    //   return ElevatedButton(
-    //     style: ElevatedButton.styleFrom(
-    //       primary: Colors.grey[300],
-    //       minimumSize: Size(double.infinity, 50),
-    //       shape: RoundedRectangleBorder(
-    //         borderRadius: BorderRadius.circular(40),
-    //       ),
-    //     ),
-    //     child: Image(
-    //       fit: BoxFit.fill,
-    //       image: AssetImage('asset/icon_google.png'),
-    //       width: 20,
-    //       height: 20,
-    //     ),
-    //     //   Text(
-    //     //     text,
-    //     //     style: TextStyle(
-    //     //       fontSize: 20.0,
-    //     //     ),
-    //     //   ),
-    //     // ],
-
-    //     onPressed: onPress,
-    //   );
-    // }
   }
 }

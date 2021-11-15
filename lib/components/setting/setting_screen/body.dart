@@ -1,13 +1,16 @@
 import 'package:aba_analysis/components/setting/setting_default_button.dart';
 import 'package:aba_analysis/components/show_dialog_delete.dart';
 import 'package:aba_analysis/constants.dart';
+import 'package:aba_analysis/models/aba_user.dart';
 import 'package:aba_analysis/models/program_field.dart';
 import 'package:aba_analysis/models/sub_field.dart';
 import 'package:aba_analysis/provider/program_field_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
+import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/size_config.dart';
+import 'package:aba_analysis/wrapper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -59,22 +62,12 @@ class _BodyState extends State<Body> {
                               Navigator.pushNamed(context, '/edit_info');
                             }),
                         SettingDefaultButton(
-                            text: '비밀번호 변경',
-                            onTap: () {
-                              // 비밀번호 변경 로직
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  makeSnackBar(
-                                      '비밀번호 변경을 위한 메일이 전송되었습니다.', true));
-                              auth.resetPassword(
-                                  context.read<UserNotifier>().abaUser!.email);
-                            }),
-                        SettingDefaultButton(
                             text: '로그아웃',
                             onTap: () {
                               // Firebase Authentication 로그아웃
                               auth.signOut();
                               GoogleSignIn().signOut();
-                              FirebaseAuth.instance.signOut();
+                              // FirebaseAuth.instance.signOut();
                               context.read<UserNotifier>().updateUser(null);
                             }),
                         SettingDefaultButton(
@@ -89,6 +82,7 @@ class _BodyState extends State<Body> {
                                     title: '회원 탈퇴 요청',
                                     text: '회원 탈퇴 요청을 하시겠습니까?',
                                     onPressed: () async {
+                                      // 데이터 삭제
                                       await store.updateUser(
                                           context
                                               .read<UserNotifier>()
@@ -107,10 +101,38 @@ class _BodyState extends State<Body> {
                                               .abaUser!
                                               .approvalStatus,
                                           true);
-                                      makeToast('회원 탈퇴 요청이 되었습니다.');
+
+                                      // 유저 삭제
+                                      context
+                                          .read<UserNotifier>()
+                                          .deleteApprovedUser(context
+                                              .read<UserNotifier>()
+                                              .abaUser!
+                                              .email);
+                                      await store.deleteUser(context
+                                          .read<UserNotifier>()
+                                          .abaUser!
+                                          .email);
+
+                                      try {
+                                        await auth.deleteAuthUser();
+                                      } on FirebaseAuthException catch (e) {
+                                        if (e.code == 'requires-recent-login') {
+                                          print(
+                                              'The user must reauthenticate before this operation can be executed.');
+                                        }
+                                      }
+                                      makeToast('회원 탈퇴가 완료되었습니다.');
+                                      context
+                                          .read<UserNotifier>()
+                                          .updateUser(null);
+                                      await auth.signOut();
                                       Navigator.pop(context);
+                                      Navigator.pop(context);
+                                      GoogleSignIn().signOut();
+                                      Navigator.pushNamed(
+                                          context, Wrapper.routeName);
                                     });
-                                auth.signOut();
                               }
                             }),
                         Visibility(

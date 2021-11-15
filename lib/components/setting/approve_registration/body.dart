@@ -97,7 +97,9 @@ class UnapprovedUserTile extends StatelessWidget {
                   context
                       .read<UserNotifier>()
                       .deleteUnapprovedUser(abaUser.email);
-                  auth.register(abaUser.email, abaUser.password!);
+                  if (abaUser.password != null) {
+                    auth.register(abaUser.email, abaUser.password!);
+                  }
                 },
               ),
               SizedBox(width: getProportionateScreenWidth(0.02)),
