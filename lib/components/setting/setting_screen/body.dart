@@ -79,8 +79,8 @@ class _BodyState extends State<Body> {
                               } else {
                                 showDialogYesOrNo(
                                     context: context,
-                                    title: '회원 탈퇴 요청',
-                                    text: '회원 탈퇴 요청을 하시겠습니까?',
+                                    title: '회원 탈퇴',
+                                    text: '정말로 회원 탈퇴를 하시겠습니까?',
                                     onPressed: () async {
                                       // 데이터 삭제
                                       await store.updateUser(
