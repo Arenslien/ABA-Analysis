@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "992950691620-fqo3nuo0phv6unnp21j1b2eufbc6g92d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.annodomini.aba_analysis",
+            "certificate_hash": "da260574419ebbdc36134ac438b6bb4c14ebf9a7"
+          }
+        },
+        {
           "client_id": "992950691620-ef1hp6rsnviptj3u9hjru0ej65tbu63k.apps.googleusercontent.com",
           "client_type": 3
         }
