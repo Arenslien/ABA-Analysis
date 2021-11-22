@@ -68,7 +68,7 @@ class _MyAppState extends State<MyApp> {
         title: 'ABA Analysis',
         theme: theme(),
         routes: routes,
-        initialRoute: '/wrapper',
+        initialRoute: '/splash_screen',
       ),
     );
   }
