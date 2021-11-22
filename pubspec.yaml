@@ -86,6 +86,12 @@ flutter:
     - asset/icon_excel.png
     - asset/icon_pdf.png
     - asset/icon_google.png
+    - asset/add_icon.png
+    - asset/basic_icon.png
+    - asset/program_field_icon.png
+    - asset/sub_field_icon.png
+    - asset/sub_list_icon.png
+    
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
