@@ -110,9 +110,35 @@ class _SelectAreaScreenState extends State<SelectAreaScreen> {
                 builder: (context) => SelectItemScreen(
                       child: widget.child,
                       subField: subField,
+                      index: index,
                     )));
       },
-      trailing: Icon(Icons.keyboard_arrow_right),
+      trailing: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 10,
+        children: <Widget>[
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: 44,
+              minHeight: 48,
+              maxWidth: 64,
+              maxHeight: 64,
+            ),
+            child: Image.asset('asset/sub_field_icon.png', fit: BoxFit.fill),
+          ),
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: 44,
+              minHeight: 48,
+              maxWidth: 44,
+              maxHeight: 48,
+            ),
+            child: index == 0
+                ? Image.asset('asset/basic_icon.png', fit: BoxFit.fill)
+                : Image.asset('asset/add_icon.png', fit: BoxFit.fill),
+          ),
+        ],
+      ),
     );
   }
 }

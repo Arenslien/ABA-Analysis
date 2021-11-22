@@ -168,7 +168,7 @@ class _SignInFormState extends State<SignInForm> {
   }
 
   Future<void> signInWithGoogle() async {
-    // 만약 로그인되어있으면 로그아웃시키기
+    // 구글로그인 클릭시
 
     // FirebaseAuth 싱클턴 객체를 갖고오고 GoogleSignIn 객체를 할당한다.
     GoogleSignIn googleSignIn = GoogleSignIn();
@@ -190,8 +190,10 @@ class _SignInFormState extends State<SignInForm> {
 
       UserCredential authResult =
           await auth.signInWithCredential(authCredential);
-
+      // 로그인 결과에 따라 구글 로그인 정보를 받아온다.
       User? user = authResult.user;
+
+      // 이메일로 유저를 읽어온다.
       ABAUser? abaUser = await _store.readUser(user!.email!);
       if (abaUser == null) {
         // 등록도 안되어있는 경우
@@ -214,7 +216,15 @@ class _SignInFormState extends State<SignInForm> {
         makeToast('이미 승인 요청이 되어져 있습니다.');
         FirebaseAuth.instance.signOut();
         GoogleSignIn().signOut();
+      } else if (abaUser.password != null) {
+        // 일반 회원가입으로 가입한 경우
+        makeToast('이메일이 이미 존재합니다. 일반 로그인으로 로그인해주세요.');
+        FirebaseAuth.instance.signOut();
+        GoogleSignIn().signOut();
       } else {
+        // 로그인 성공. 데이터 읽기
+        ScaffoldMessenger.of(context)
+            .showSnackBar(makeSnackBar('로그인 성공', true));
         abaUser = await _store.readUser(user.email!);
         context
             .read<ChildNotifier>()
