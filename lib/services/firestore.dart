@@ -233,6 +233,26 @@ class FireStoreService {
   //                          Firebase 연동 - 하위 영역 관련 함수들
   //=======================================================================================
 
+  Future addProgramField(String title) async {
+    ProgramField programField = new ProgramField(title: title);
+
+    // 변경된 새로운 programField 추가
+    _programField
+        .doc((await updateId(AutoID.programField)).toString())
+        .set(programField.toMap())
+        .then((value) => print("프로그램 영역이 추가 되었습니다."))
+        .catchError((error) => print("프로그램 영역 추가를 실패했습니다. : $error"));
+  }
+
+  Future deleteProgramField(int index) async {
+    await _programField
+        .doc(index.toString())
+        .delete()
+        .then((value) => print('프로그램 영역 삭제 완료'))
+        .catchError((error) => print('프로그램 영역 삭제 실패\n에러 내용: $error'));
+  }
+
+
   Future readProgramField() async {
     // return result
     List<ProgramField> result = [];
@@ -272,8 +292,10 @@ class FireStoreService {
       });
 
       // Program Field 인스턴스 생성 & 추가
+      ProgramField programField = ProgramField(title: data['title']);
+      programField.setSubFieldList(subFieldList);
       result
-          .add(ProgramField(title: data['title'], subFieldList: subFieldList));
+          .add(programField);
     });
 
     return result;
@@ -576,6 +598,9 @@ class FireStoreService {
       case AutoID.testItem:
         autoId = data['test-item-id'];
         break;
+      case AutoID.programField:
+        autoId = data['program-field-id'];
+        break;
     }
 
     // autoId 반환
@@ -597,6 +622,8 @@ class FireStoreService {
       case AutoID.testItem:
         _autoId.doc('AutoID').update({'test-item-id': id + 1});
         break;
+      case AutoID.programField:
+        _autoId.doc('AutoId').update({'program-field-id': id + 1});
     }
 
     // update 된 ID 값 반환
