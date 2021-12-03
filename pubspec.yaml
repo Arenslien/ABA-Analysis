@@ -1,5 +1,5 @@
 name: aba_analysis
-description: A new Flutter project.
+description: ABA Analysis application.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.0+4
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -32,8 +32,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   # Firebase 관련 Library
+  firebase_core: ^1.10.0
   firebase_auth: ^3.0.1
   cloud_firestore: ^2.4.0
+  google_sign_in: ^5.0.0
 
   # 전역 변수 관리 -> 모든 위젯에서 접근 가능
   provider: ^5.0.0
@@ -47,11 +49,15 @@ dependencies:
   google_fonts: ^2.1.0
   # 그래프excel,pdf export -> 파일 접근 권한 필요
   permission_handler: ^8.1.4+2
-  
+
+  # Splash Screen 라이브러리
+  animated_splash_screen: ^1.1.0
+
   downloads_path_provider_28: ^0.1.2
   fluttertoast: ^8.0.8
   intl: ^0.17.0
   flutter_launcher_icons: ^0.9.2
+  async: ^2.6.1
   
 
 dev_dependencies:
@@ -77,9 +83,16 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - assets/icon_excel.png
-  #   - assets/icon_pdf.png
+  assets:
+    - asset/icon_excel.png
+    - asset/icon_pdf.png
+    - asset/icon_google.png
+    - asset/add_icon.png
+    - asset/basic_icon.png
+    - asset/program_field_icon.png
+    - asset/sub_field_icon.png
+    - asset/sub_list_icon.png
+    - asset/splash_image.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

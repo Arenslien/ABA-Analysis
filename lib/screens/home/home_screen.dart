@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -24,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     //Firebase.initializeApp().then((_) {
+
     setState(() {
       firebaseInitialized = true;
     });
@@ -61,6 +63,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    if (auth.currentUser != null) {
+      print(auth.currentUser);
+    }
     return Scaffold(
       body: PageView(
         children: [

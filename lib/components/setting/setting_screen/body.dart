@@ -1,18 +1,23 @@
 import 'package:aba_analysis/components/setting/setting_default_button.dart';
 import 'package:aba_analysis/components/show_dialog_delete.dart';
 import 'package:aba_analysis/constants.dart';
+import 'package:aba_analysis/models/aba_user.dart';
 import 'package:aba_analysis/models/program_field.dart';
 import 'package:aba_analysis/models/sub_field.dart';
 import 'package:aba_analysis/provider/program_field_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
+import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/size_config.dart';
+import 'package:aba_analysis/wrapper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 class Body extends StatefulWidget {
-  const Body({ Key? key }) : super(key: key);
+  const Body({Key? key}) : super(key: key);
 
   @override
   _BodyState createState() => _BodyState();
@@ -33,14 +38,14 @@ class _BodyState extends State<Body> {
                 // 백그라운드 배경
                 Container(
                   width: double.infinity,
-                  margin: EdgeInsets.only(top: getProportionateScreenHeight(0.15)),
+                  margin:
+                      EdgeInsets.only(top: getProportionateScreenHeight(0.15)),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40),
-                    )
-                  ),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(40),
+                      )),
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(
                       getProportionateScreenWidth(padding),
@@ -50,51 +55,119 @@ class _BodyState extends State<Body> {
                     ),
                     child: SettingButtonListView(
                       settingButtons: [
-                        SettingDefaultButton(text: '내정보 수정', onTap: () {
-                          // 내정보 수정 페이지로 이동
-                          Navigator.pushNamed(context, '/edit_info');
-                        }),
-                        SettingDefaultButton(text: '비밀번호 변경', onTap: () {
-                          // 비밀번호 변경 로직
-                          ScaffoldMessenger.of(context).showSnackBar(makeSnackBar('비밀번호 변경을 위한 메일이 전송되었습니다.', true));
-                          auth.resetPassword(context.read<UserNotifier>().abaUser!.email);
-                        }),
-                        SettingDefaultButton(text: '로그아웃', onTap: () {
-                          // Firebase Authentication 로그아웃
-                          auth.signOut();
-                          context.read<UserNotifier>().updateUser(null);
-                        }),
-                        SettingDefaultButton(text: '회원 탈퇴', onTap: () {
-                          if (context.read<UserNotifier>().abaUser!.duty == '관리자') {
-                            makeToast('관리자는 회원 탈퇴할 수 없습니다.');
-                          } else {
-                            showDialogYesOrNo(context: context, title: '회원 탈퇴 요청', text: '회원 탈퇴 요청을 하시겠습니까?', onPressed: () async {
-                              await store.updateUser(
-                                context.read<UserNotifier>().abaUser!.email, 
-                                context.read<UserNotifier>().abaUser!.nickname, 
-                                context.read<UserNotifier>().abaUser!.duty, 
-                                context.read<UserNotifier>().abaUser!.approvalStatus, 
-                                true
-                              );
-                              makeToast('회원 탈퇴 요청이 되었습니다.');
-                              Navigator.pop(context);
-                            });
-                            auth.signOut();
-                          }
-                        }),
+                        SettingDefaultButton(
+                            text: '내정보 수정',
+                            onTap: () {
+                              // 내정보 수정 페이지로 이동
+                              Navigator.pushNamed(context, '/edit_info');
+                            }),
+                        SettingDefaultButton(
+                            text: '로그아웃',
+                            onTap: () {
+                              // Firebase Authentication 로그아웃
+                              auth.signOut();
+                              GoogleSignIn().signOut();
+                              // FirebaseAuth.instance.signOut();
+                              context.read<UserNotifier>().updateUser(null);
+                            }),
+                        SettingDefaultButton(
+                            text: '회원 탈퇴',
+                            onTap: () {
+                              if (context.read<UserNotifier>().abaUser!.duty ==
+                                  '관리자') {
+                                makeToast('관리자는 회원 탈퇴할 수 없습니다.');
+                              } else {
+                                showDialogYesOrNo(
+                                    context: context,
+                                    title: '회원 탈퇴 요청',
+                                    text: '회원 탈퇴 요청을 하시겠습니까?',
+                                    onPressed: () async {
+                                      // 데이터 삭제
+                                      await store.updateUser(
+                                          context
+                                              .read<UserNotifier>()
+                                              .abaUser!
+                                              .email,
+                                          context
+                                              .read<UserNotifier>()
+                                              .abaUser!
+                                              .nickname,
+                                          context
+                                              .read<UserNotifier>()
+                                              .abaUser!
+                                              .duty,
+                                          context
+                                              .read<UserNotifier>()
+                                              .abaUser!
+                                              .approvalStatus,
+                                          true);
+
+                                      // 유저 삭제
+                                      context
+                                          .read<UserNotifier>()
+                                          .deleteApprovedUser(context
+                                              .read<UserNotifier>()
+                                              .abaUser!
+                                              .email);
+                                      await store.deleteUser(context
+                                          .read<UserNotifier>()
+                                          .abaUser!
+                                          .email);
+
+                                      try {
+                                        await auth.deleteAuthUser();
+                                      } on FirebaseAuthException catch (e) {
+                                        if (e.code == 'requires-recent-login') {
+                                          print(
+                                              'The user must reauthenticate before this operation can be executed.');
+                                        }
+                                      }
+                                      makeToast('회원 탈퇴가 완료되었습니다.');
+                                      context
+                                          .read<UserNotifier>()
+                                          .updateUser(null);
+                                      await auth.signOut();
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                      GoogleSignIn().signOut();
+                                      Navigator.pushNamed(
+                                          context, Wrapper.routeName);
+                                    });
+                              }
+                            }),
                         Visibility(
-                          visible: context.watch<UserNotifier>().abaUser!.duty == '관리자'? true:false,
-                          child: SettingDefaultButton(text: '사용자 관리', onTap: () async {
-                            context.read<UserNotifier>().updateApprovedUsers(await store.readApprovedUser());
-                            Navigator.pushNamed(context, '/user_management');
-                          }),
+                          visible:
+                              context.watch<UserNotifier>().abaUser!.duty ==
+                                      '관리자'
+                                  ? true
+                                  : false,
+                          child: SettingDefaultButton(
+                              text: '사용자 관리',
+                              onTap: () async {
+                                context
+                                    .read<UserNotifier>()
+                                    .updateApprovedUsers(
+                                        await store.readApprovedUser());
+                                Navigator.pushNamed(
+                                    context, '/user_management');
+                              }),
                         ),
                         Visibility(
-                          visible: context.watch<UserNotifier>().abaUser!.duty == '관리자'? true:false,
-                          child: SettingDefaultButton(text: '회원가입 승인', onTap: () async {
-                            context.read<UserNotifier>().updateUnapprovedUsers(await store.readUnapprovedUser());
-                            Navigator.pushNamed(context, '/approve_registration');                            
-                          }),
+                          visible:
+                              context.watch<UserNotifier>().abaUser!.duty ==
+                                      '관리자'
+                                  ? true
+                                  : false,
+                          child: SettingDefaultButton(
+                              text: '회원가입 승인',
+                              onTap: () async {
+                                context
+                                    .read<UserNotifier>()
+                                    .updateUnapprovedUsers(
+                                        await store.readUnapprovedUser());
+                                Navigator.pushNamed(
+                                    context, '/approve_registration');
+                              }),
                         ),
                       ],
                     ),
@@ -124,16 +197,15 @@ class UserInfoCard extends StatelessWidget {
       ),
       height: getProportionateScreenHeight(0.2),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.0),
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0, 15),
-            blurRadius: 23,
-            color: Colors.black26,
-          )
-        ]
-      ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              offset: Offset(0, 15),
+              blurRadius: 23,
+              color: Colors.black26,
+            )
+          ]),
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: getProportionateScreenWidth(0.04),
@@ -148,27 +220,24 @@ class UserInfoCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      '닉네임: ${context.watch<UserNotifier>().abaUser!.nickname} ${context.watch<UserNotifier>().abaUser!.duty}', 
+                      '닉네임: ${context.watch<UserNotifier>().abaUser!.nickname} ${context.watch<UserNotifier>().abaUser!.duty}',
                       style: TextStyle(
-                        fontSize: getProportionateScreenWidth(0.045),
-                        fontWeight: FontWeight.bold
-                      ),
+                          fontSize: getProportionateScreenWidth(0.045),
+                          fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: getProportionateScreenHeight(0.01)),
                     Text(
-                      '직   책: ${context.watch<UserNotifier>().abaUser!.duty}', 
+                      '직   책: ${context.watch<UserNotifier>().abaUser!.duty}',
                       style: TextStyle(
-                        fontSize: getProportionateScreenWidth(0.045),
-                        fontWeight: FontWeight.bold
-                      ),
+                          fontSize: getProportionateScreenWidth(0.045),
+                          fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: getProportionateScreenHeight(0.01)),
                     Text(
-                      '이메일: ${context.watch<UserNotifier>().abaUser!.email}', 
+                      '이메일: ${context.watch<UserNotifier>().abaUser!.email}',
                       style: TextStyle(
-                        fontSize: getProportionateScreenWidth(0.045),
-                        fontWeight: FontWeight.bold
-                      ),
+                          fontSize: getProportionateScreenWidth(0.045),
+                          fontWeight: FontWeight.bold),
                     ),
                   ],
                 )
@@ -184,7 +253,8 @@ class UserInfoCard extends StatelessWidget {
 class SettingButtonListView extends StatelessWidget {
   final List<Widget> settingButtons;
   const SettingButtonListView({
-    Key? key, required this.settingButtons,
+    Key? key,
+    required this.settingButtons,
   }) : super(key: key);
 
   @override

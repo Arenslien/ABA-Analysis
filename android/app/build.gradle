@@ -46,27 +46,37 @@ android {
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
     }
-//     signingConfigs {
-//        release {
-//            storeFile file('../keystore/key.jks')
-//             storePassword file('../keystore/keystore.password').text.trim()
-//             keyPassword file('../keystore/keystore.password').text.trim()
-//             keyAlias 'key'
-//        }
-//    }
+    signingConfigs {
+        // keystore 디렉토리를 통해 keystore 참조하는 방법
+       release {
+           storeFile file('../keystore/key.jks')
+            storePassword file('../keystore/keystore.password').text.trim()
+            keyPassword file('../keystore/keystore.password').text.trim()
+            keyAlias 'key'
+       }
+   }
    
-//     buildTypes {
-//         release {
-//             // TODO: Add your own signing config for the release build.
-//             // Signing with the debug keys for now, so `flutter run --release` works.
-//             signingConfig signingConfigs.release
-//             // storeFile file('../keystore/key.jks')
-//             // storePassword file('../keystore/keystore.password').text.trim()
-//             // keyPassword file('../keystore/keystore.password').text.trim()
-//             // keyAlias 'key'
-//         }
-//     }
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            // storeFile file('../keystore/key.jks')
+            // storePassword file('../keystore/keystore.password').text.trim()
+            // keyPassword file('../keystore/keystore.password').text.trim()
+            // keyAlias 'key'
+            
+            // 키 인증
+            signingConfig signingConfigs.release
+
+            // 코드난독화 및 사이즈 축소
+            minifyEnabled true
+            useProguard true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+           
+        }
+    }
 }
 
 flutter {
@@ -75,5 +85,11 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "com.android.support:multidex:1.0.3"
 }
 
+rootProject.ext {
+  set('FlutterFire', [
+    FirebaseSDKVersion: '29.0.0'
+  ])
+}

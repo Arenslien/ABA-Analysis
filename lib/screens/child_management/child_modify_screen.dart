@@ -25,11 +25,12 @@ class ChildModifyScreen extends StatefulWidget {
 class _ChildModifyScreenState extends State<ChildModifyScreen> {
   _ChildModifyScreenState();
   late String name;
-  late DateTime birth;
+  late DateTime? birth;
   late String gender;
   List<bool> genderSelected = [];
   final formkey = GlobalKey<FormState>();
   FireStoreService store = FireStoreService();
+  bool flag = false;
 
   @override
   void initState() {
@@ -80,38 +81,41 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                     title: '아동 삭제',
                     text: '해당 아동에 데이터를 삭제 하시겠습니까?',
                     onPressed: () async {
-                      // 아이에 대한 test
-                      List<Test> testList = context
-                          .read<TestNotifier>()
-                          .getAllTestListOf(widget.child.childId, false);
+                      if (!flag) {
+                        flag = true;
+                        // 아이에 대한 test
+                        List<Test> testList = context
+                            .read<TestNotifier>()
+                            .getAllTestListOf(widget.child.childId, false);
 
-                      for (Test test in testList) {
-                        // Child의 TestItem 제거
-                        List<TestItem> testItemList = context
-                            .read<TestItemNotifier>()
-                            .getTestItemList(test.testId, true);
-                        for (TestItem testItem in testItemList) {
-                          // DB에서 TestItem 제거
-                          await store.deleteTestItem(testItem.testItemId);
-                          // Provider에서 TestItem 제거
-                          context
+                        for (Test test in testList) {
+                          // Child의 TestItem 제거
+                          List<TestItem> testItemList = context
                               .read<TestItemNotifier>()
-                              .removeTestItem(testItem);
+                              .getTestItemList(test.testId, true);
+                          for (TestItem testItem in testItemList) {
+                            // DB에서 TestItem 제거
+                            await store.deleteTestItem(testItem.testItemId);
+                            // Provider에서 TestItem 제거
+                            context
+                                .read<TestItemNotifier>()
+                                .removeTestItem(testItem);
+                          }
+
+                          // DB에서 TestItem 제거
+                          await store.deleteTest(test.testId);
+                          // Provider에서 테스트 제거
+                          context.read<TestNotifier>().removeTest(test);
                         }
 
-                        // DB에서 TestItem 제거
-                        await store.deleteTest(test.testId);
-                        // Provider에서 테스트 제거
-                        context.read<TestNotifier>().removeTest(test);
+                        // DB 에서 Child 제거
+                        await store.deleteChild(widget.child.childId);
+                        // Provider에서 Child 제거
+                        context.read<ChildNotifier>().removeChild(widget.child);
+
+                        Navigator.pop(context);
+                        Navigator.pop(context);
                       }
-
-                      // DB 에서 Child 제거
-                      await store.deleteChild(widget.child.childId);
-                      // Provider에서 Child 제거
-                      context.read<ChildNotifier>().removeChild(widget.child);
-
-                      Navigator.pop(context);
-                      Navigator.pop(context);
                     },
                   );
                 },
@@ -123,27 +127,30 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                 ),
                 onPressed: () async {
                   if (formkey.currentState!.validate()) {
-                    // 기존의 child 제거
-                    context.read<ChildNotifier>().removeChild(widget.child);
+                    if (!flag) {
+                      flag = true;
+                      // 기존의 child 제거
+                      context.read<ChildNotifier>().removeChild(widget.child);
 
-                    // child 생성
-                    Child updatedChild = Child(
-                        childId: widget.child.childId,
-                        teacherEmail:
-                            context.read<UserNotifier>().abaUser!.email,
-                        name: name,
-                        birthday: birth,
-                        gender: gender);
+                      // child 생성
+                      Child updatedChild = Child(
+                          childId: widget.child.childId,
+                          teacherEmail:
+                              context.read<UserNotifier>().abaUser!.email,
+                          name: name,
+                          birthday: birth!,
+                          gender: gender);
 
-                    // ChildNotifier 수정
-                    context.read<ChildNotifier>().addChild(updatedChild);
+                      // ChildNotifier 수정
+                      context.read<ChildNotifier>().addChild(updatedChild);
 
-                    // DB 수정
-                    await store.updateChild(
-                        widget.child.childId, name, birth, gender);
+                      // DB 수정
+                      await store.updateChild(
+                          widget.child.childId, name, birth!, gender);
 
-                    // 화면 전환
-                    Navigator.pop(context);
+                      // 화면 전환
+                      Navigator.pop(context);
+                    }
                   }
                 },
               ),
@@ -179,14 +186,15 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                       children: [
                         OutlinedButton(
                           onPressed: () async {
-                            birth = await getDate(
+                            DateTime? temp = await getDate(
                               context: context,
                               initialDate: birth,
                             );
+                            birth = temp == null ? birth : temp;
                             setState(() {});
                           },
                           child: Text(
-                            DateFormat('yyyyMMdd').format(birth),
+                            DateFormat('yyyyMMdd').format(birth!),
                             style: TextStyle(color: Colors.black),
                           ),
                           style: OutlinedButton.styleFrom(

@@ -27,6 +27,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
   bool? isBirthSelected;
   FireStoreService _store = FireStoreService();
   final formkey = GlobalKey<FormState>();
+  bool flag = false;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +68,9 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                     });
                   if (formkey.currentState!.validate() &&
                       isGenderSelected! &&
-                      isBirthSelected!) {
+                      isBirthSelected! &&
+                      !flag) {
+                    flag = true;
                     Child child = Child(
                         childId: await _store.updateId(AutoID.child),
                         teacherEmail:
@@ -119,10 +122,11 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                           children: [
                             OutlinedButton(
                               onPressed: () async {
-                                birth = await getDate(
+                                DateTime? temp = await getDate(
                                   context: context,
                                   initialDate: birth,
                                 );
+                                birth = temp == null ? birth : temp;
                                 setState(() {
                                   isBirthSelected = true;
                                 });
