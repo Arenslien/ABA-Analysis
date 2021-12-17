@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/test_item.dart';
@@ -339,32 +341,70 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
         });
   }
 
+  // GraphData를 가져온다.
+  // SubItemAndDate를 통해 가져온다.
   List<GraphData> getItemGraphData(
       String _noChange, List<SubItemAndDate> subItemList) {
-    List<GraphData> chartData = [];
-    int cnt = 0;
+    // 날짜, 하위목록 이름, 평균 성공률
+    List<GraphData> itemChartData = [];
+
+    // 날짜 리스트
+    List<String> dateStringList = [];
+    // 날짜에 따른 총 성공률 맵.
+    Map<String, int> successRateMap = Map();
+    // 날짜에 따른 테스트횟수 맵
+    Map<String, int> testCountMap = Map();
+    // 위의 두 맵을 사용하여 선택된 테스트 아이템의 각 날짜의 평균 성공률을 계산한다.
 
     for (SubItemAndDate subItemAndDate in subItemList) {
-      if (subItemAndDate.testItem.result == '+') {
-        cnt += 1;
+      // 날짜 리스트를 추가해준다.
+      if (!dateStringList.contains(subItemAndDate.dateString)) {
+        dateStringList.add(subItemAndDate.dateString);
       }
     }
+    // 날짜 리스트를 정렬해준다.
+    dateStringList.sort((a, b) => a.compareTo(b));
 
     for (SubItemAndDate subItemAndDate in subItemList) {
-      chartData.add(GraphData(
-          DateFormat(graphDateFormat).format(subItemAndDate.date),
-          _noChange,
-          subItemAndDate.testItem.result!,
-          (cnt / subItemList.length * 100).toInt()));
+      // 성공률
+      int success = 0;
+      // 현재 날짜
+      String dateString = subItemAndDate.dateString;
+      if (subItemAndDate.testItem.result == "+") {
+        success = 100;
+      }
+      // 맵에 이미 추가되어있다면 기존 값 업데이트
+      if (successRateMap.containsKey(dateString)) {
+        // 총 성공률은 이전까지의 성공률 + 현재성공률
+        successRateMap.update(dateString, (value) => value + success);
+        // 개수는 1개 추가
+        testCountMap.update(dateString, (value) => value += 1);
+      } else {
+        // 성공률 맵에 키가 없다면 새로 추가
+        // 총 성공률은 현재 성공률
+        successRateMap.addAll({dateString: success});
+        // 개수는 1로 시작
+        testCountMap.addAll({dateString: 1});
+      }
     }
-
-    return chartData;
+    for (String date in dateStringList) {
+      if (successRateMap[date] == null || testCountMap[date] == null) {
+        print("해당 날짜에 선택된 테스트 아이템이 없습니다.");
+      } else {
+        // 날짜에 따른 총 성공률 맵과 테스트 횟수 맵을 갖고 그날의 선택된 해당 테스트 아이템의 평균 성공률을 게산한다.
+        int averageRate = (successRateMap[date]! / testCountMap[date]!).toInt();
+        itemChartData.add(GraphData(date, _noChange, "+", averageRate));
+      }
+    }
+    return itemChartData;
   }
 }
 
 class SubItemAndDate {
   final TestItem testItem;
+  List<TestItem>? testItemList;
   DateTime date;
-
-  SubItemAndDate({required this.testItem, required this.date});
+  final String dateString;
+  SubItemAndDate(
+      {required this.testItem, required this.date, required this.dateString});
 }

@@ -18,6 +18,7 @@ Widget genChart(
     tooltipBehavior: _tooltipBehavior,
     series: _isDate
         ? <ChartSeries>[
+            // 날짜별 그래프일 때
             ScatterSeries<GraphData, String>(
                 name: "성공률",
                 dataSource: _chartData,
@@ -44,31 +45,26 @@ Widget genChart(
             //     yValueMapper: (GraphData exp, _) => exp.averageRate),
           ]
         : <ChartSeries>[
+            // 아이템 그래프일 때
             LineSeries<GraphData, String>(
               name: '성공률',
               dataSource: _chartData,
-              xValueMapper: (GraphData exp, _) {
-                if (_isDate) {
-                  return exp.subItem;
-                } else {
-                  return exp.testDate;
-                }
-              },
-              yValueMapper: (GraphData exp, _) => exp.successRate,
+              xValueMapper: (GraphData exp, _) => exp.testDate,
+              yValueMapper: (GraphData exp, _) => exp.averageRate,
               markerSettings: MarkerSettings(isVisible: true),
             ),
-            LineSeries<GraphData, String>(
-                name: '평균 성공률',
-                dashArray: <double>[5, 5],
-                dataSource: _chartData,
-                xValueMapper: (GraphData exp, _) {
-                  if (_isDate) {
-                    return exp.subItem;
-                  } else {
-                    return exp.testDate;
-                  }
-                },
-                yValueMapper: (GraphData exp, _) => exp.averageRate)
+            // LineSeries<GraphData, String>(
+            //     name: '평균 성공률',
+            //     dashArray: <double>[5, 5],
+            //     dataSource: _chartData,
+            //     xValueMapper: (GraphData exp, _) {
+            //       if (_isDate) {
+            //         return exp.subItem;
+            //       } else {
+            //         return exp.testDate;
+            //       }
+            //     },
+            //     yValueMapper: (GraphData exp, _) => exp.averageRate)
           ],
     primaryXAxis: CategoryAxis(
         rangePadding: ChartRangePadding.auto,
@@ -102,4 +98,13 @@ class GraphData {
       this.successRate = 0;
     }
   }
+}
+
+class ItemGraphData {
+  final String testDate; // 선택한 하위목록을 테스트한 날짜 또는 테스트한 회차
+  final String subItem; // 하위목록 이름
+  final num averageRate; // 평균 성공률
+
+  // 통일된거
+  ItemGraphData(this.testDate, this.subItem, this.averageRate);
 }
