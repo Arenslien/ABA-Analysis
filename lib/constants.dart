@@ -62,3 +62,4 @@ const String kNotExistEmailError = "존재하지 않는 이메일입니다.";
 
 // 그래프 관련
 const String graphDateFormat = "yyyy년MM월dd일H시";
+const String graphDateFormatNoTime = "yyyy년MM월dd일";

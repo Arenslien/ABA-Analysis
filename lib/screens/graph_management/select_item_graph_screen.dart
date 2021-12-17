@@ -1,4 +1,5 @@
 import 'package:aba_analysis/components/search_delegate.dart';
+import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/sub_field.dart';
 import 'package:aba_analysis/models/test.dart';
@@ -9,6 +10,7 @@ import 'package:aba_analysis/screens/graph_management/item_graph_screen.dart';
 import 'package:aba_analysis/components/select_appbar.dart';
 import 'package:aba_analysis/screens/graph_management/no_test_data_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 
@@ -97,19 +99,32 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
       // subtitleText: "평균성공률: $average%",
       onTap: () {
         List<SubItemAndDate> subItemList = [];
+        Set<String> dateSet = Set();
         // SubItemList 만들기
         // List<Test> allTest = context
         //     .read<TestNotifier>()
         //     .getAllTestListOf(widget.child.childId);
+        // 모든 테스트를 가져온다.
 
         for (Test test in allTest) {
+          // 한 테스트마다 테스트에 속한 테스트 아이템을 가져온다.
           List<TestItem> testItemList = context
               .read<TestItemNotifier>()
               .getTestItemList(test.testId, false);
+
+          Map<DateTime, List<TestItem>> dateAndItemMap;
+          // 모든 테스트 아이템 리스트를 돌면서, 해당 서브아이템이라면 추가해준다.
           for (TestItem testItem in testItemList) {
+            // 선택된 테스트 아이템 이름으로 테스트 아이템을 DB에서 찾는다.
             if (testItem.subItem == subItem && testItem.result != null) {
-              subItemList
-                  .add(SubItemAndDate(testItem: testItem, date: test.date));
+              // 테스트 날짜 추가
+              String testDate =
+                  DateFormat(graphDateFormatNoTime).format(test.date);
+              // 만약 테스트날짜가 이미 추가되어있으면
+              if (dateSet.contains(testDate)) {}
+              subItemList.add(SubItemAndDate(
+                  testItem: testItem, date: test.date, dateString: testDate));
+
               break;
             }
           }
