@@ -47,7 +47,7 @@ Widget genChart(
         : <ChartSeries>[
             // 아이템 그래프일 때
             LineSeries<GraphData, String>(
-              name: '성공률',
+              name: '평균 성공률',
               dataSource: _chartData,
               xValueMapper: (GraphData exp, _) => exp.testDate,
               yValueMapper: (GraphData exp, _) => exp.averageRate,
