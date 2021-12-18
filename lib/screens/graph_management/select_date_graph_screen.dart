@@ -77,11 +77,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 50),
                       itemCount: widget.testList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return dataTile(
-                          widget.testList[index],
-                          index,
-                          context
-                        );
+                        return dataTile(widget.testList[index], index, context);
                       },
                     )
                   : ListView.builder(
@@ -90,10 +86,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
                       itemCount: 1,
                       itemBuilder: (BuildContext context, int index) {
                         return dataTile(
-                          testAndDateMap[selectedDate]!,
-                          index,
-                          context
-                        );
+                            testAndDateMap[selectedDate]!, index, context);
                       },
                     ),
         ));
@@ -125,14 +118,16 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
   Widget dataTile(Test test, int index, BuildContext context) {
     return buildListTile(
       titleText: DateFormat(graphDateFormat).format(test.date),
-      subtitleText: "평균성공률: ${context.read<TestItemNotifier>().getAverage(test.testId)}%",
+      // subtitleText: "평균성공률: ${context.read<TestItemNotifier>().getAverage(test.testId)}%", 평균 성공률 삭제
       onTap: () {
         setState(() {
           selectedDate = "";
         });
         bool notNull = true;
 
-        List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(test.testId, false);
+        List<TestItem> testItemList = context
+            .read<TestItemNotifier>()
+            .getTestItemList(test.testId, false);
         for (TestItem ti in testItemList) {
           if (ti.result == null) {
             notNull = false;
