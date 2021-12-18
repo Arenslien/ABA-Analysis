@@ -26,21 +26,20 @@ pw.Document genPDF(
   List<String> extraData = [];
   if (isDate) {
     // 날짜그래프
-    extraColumns = ['담당 선생님', '아동', '평균 성공률'];
+    extraColumns = ['담당 선생님', '아동'];
     extraData = [
       exportData.teacherName,
       exportData.childName,
-      exportData.averageRate.toString() + '%',
     ];
   } else if (isDate == false) {
     // 아이템그래프
-    extraColumns = ['담당 선생님', '아동', '프로그램 영역', '하위 영역', '평균 성공률'];
+    extraColumns = ['담당 선생님', '아동', '프로그램 영역', '하위 영역', '전체 평균 성공률'];
     extraData = [
       exportData.teacherName,
       exportData.childName,
-      exportData.programField!,
-      exportData.subArea!,
-      exportData.averageRate.toString() + '%',
+      exportData.programField,
+      exportData.subArea,
+      exportData.allSuccessRate.toInt().toString() + '%',
     ];
   }
 
@@ -57,6 +56,7 @@ pw.Document genPDF(
             level: 2,
           ),
           pw.Image(chartImg),
+          pw.SizedBox(height: 10),
           pw.Table.fromTextArray(
             context: context,
             border: null,
@@ -206,7 +206,6 @@ pw.PageTheme _myPageTheme(PdfPageFormat format) {
 //pdf header body
 pw.Widget pdfHeader(
     ByteData ttf, String graphType, String graphTypeValue, String _childName) {
-  print(ttf);
   return pw.Container(
       decoration: pw.BoxDecoration(
         color: PdfColor.fromInt(0xffffffff),
@@ -221,7 +220,7 @@ pw.Widget pdfHeader(
             pw.Text(
               "< " + _childName + "의 " + graphType + "별 그래프 >",
               style: pw.TextStyle(
-                fontSize: 32,
+                fontSize: 28,
                 color: _darkColor,
                 fontWeight: pw.FontWeight.bold,
                 font: pw.TtfFont(ttf),

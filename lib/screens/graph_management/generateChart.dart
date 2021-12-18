@@ -69,7 +69,6 @@ Widget genChart(
     primaryYAxis: NumericAxis(
       labelStyle: TextStyle(fontFamily: 'KoreanGothic'),
       labelFormat: '{value}%',
-      plotOffset: 20,
       maximum: 100,
       minimum: 0,
       visibleMaximum: 100,
@@ -84,17 +83,15 @@ class GraphData {
   final String subItem; // Date Graph에서 하위목록 이름
   final String result; // Date Graph에서의 날짜 또는 회차에따른 +, -, P
   late num successRate; // Date Graph에서 +, -, P에 따른 성공률
-  final num averageRate; // 평균 성공률
 
   final String dateString; // Item Graph에서의 날짜 (x축)
-  final num daySuccessRate; // Item Graph에서 그날의 평균 성공률
-  final num allSuccessRate; // Item Graph에서의 전체 성공률
+  final num daySuccessRate; // Item Graph에서 그날의 평균 성공률(Y축1)
+  final num allSuccessRate; // Item Graph에서의 전체 성공률(Y축2)
   // 통일된거
   GraphData({
     this.testDate = "",
     this.subItem = "",
     this.result = "",
-    this.averageRate = -1,
     this.allSuccessRate = -1,
     this.daySuccessRate = -1,
     this.dateString = "",

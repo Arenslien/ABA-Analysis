@@ -44,7 +44,7 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
   late List<String> _tableColumn; // 내보내기할 때 테이블의 컬럼 이름들
   late String _graphType; // 날짜별 그래프인지 하위목록별 그래프인지
   late String _charTitleName; // 차트의 제목
-  late num _averageRate; // 평균 성공률
+  late num _allSuccessRate; // 평균 성공률
   final GlobalKey<SfCartesianChartState> _cartesianKey = GlobalKey();
   String _fileName = ""; // 저장할 파일의 이름
   String valueText = ""; // Dialog에서 사용
@@ -59,11 +59,11 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
 
     _graphType = '하위목록';
     _charTitleName = widget.subItemList[0].testItem.subItem;
-    _tableColumn = ['하위목록', '날짜', '성공여부'];
+    _tableColumn = ['하위목록', '날짜', '하루 평균 성공률'];
 
     _chartData = getItemGraphData(_charTitleName, widget.subItemList);
 
-    _averageRate = _chartData[0].averageRate;
+    _allSuccessRate = _chartData[0].allSuccessRate;
   }
 
   Widget noTestData() {
@@ -97,11 +97,10 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
     // _chartData = getItemGraphData(_charTitleName, widget.subItemList);
 
     exportData = ExportData(
-        context.watch<UserNotifier>().abaUser!.nickname,
-        widget.child.name,
-        _averageRate,
-        widget.subItemList[0].testItem.programField,
-        widget.subItemList[0].testItem.subField);
+        context.watch<UserNotifier>().abaUser!.nickname, widget.child.name,
+        allSuccessRate: _allSuccessRate,
+        programField: widget.subItemList[0].testItem.programField,
+        subArea: widget.subItemList[0].testItem.subField);
 
     return Scaffold(
       appBar: selectAppBar(
@@ -208,9 +207,10 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
   List<List<String>> genTableData(List<GraphData> chartData) {
     List<List<String>> tableData = [];
 
-    // 아이템그래프라면 하위목록, 날짜, 성공여부 순으로
+    // 아이템그래프라면 하위목록, 날짜, 하루 평균 성공률 순으로
     for (GraphData d in chartData) {
-      tableData.add(<String>[d.subItem, d.testDate, d.result.toString()]);
+      tableData.add(
+          <String>[d.subItem, d.dateString, d.daySuccessRate.toString() + "%"]);
     }
 
     print(tableData);
@@ -406,6 +406,7 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
         int daySuccessRate =
             (successRateMap[date]! / testCountMap[date]!).toInt();
         itemChartData.add(GraphData(
+          subItem: _noChange,
           dateString: date,
           allSuccessRate: allSuccess,
           daySuccessRate: daySuccessRate,
