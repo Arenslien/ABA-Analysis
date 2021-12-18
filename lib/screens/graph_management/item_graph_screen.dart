@@ -364,11 +364,15 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
     }
     // 날짜 리스트를 정렬해준다.
     dateStringList.sort((a, b) => a.compareTo(b));
-
+    // 전체 성공률 합
+    num allSuccessRate = 0;
+    // 전체 테스트횟수 합
+    num allTestCount = 0;
+    // 두개를 통해 전체 평균 성공률을 구한다.
     for (SubItemAndDate subItemAndDate in subItemList) {
       // 성공률
       int success = 0;
-      // 현재 날짜
+      // 현재 날짜(Datetime => String)
       String dateString = subItemAndDate.dateString;
       if (subItemAndDate.testItem.result == "+") {
         success = 100;
@@ -379,21 +383,33 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
         successRateMap.update(dateString, (value) => value + success);
         // 개수는 1개 추가
         testCountMap.update(dateString, (value) => value += 1);
+        allSuccessRate += success;
+        allTestCount++;
       } else {
         // 성공률 맵에 키가 없다면 새로 추가
         // 총 성공률은 현재 성공률
         successRateMap.addAll({dateString: success});
         // 개수는 1로 시작
         testCountMap.addAll({dateString: 1});
+        allSuccessRate += success;
+        allTestCount++;
       }
     }
+    // 전체 평균 성공률
+    num allSuccess = allSuccessRate / allTestCount;
+
     for (String date in dateStringList) {
       if (successRateMap[date] == null || testCountMap[date] == null) {
         print("해당 날짜에 선택된 테스트 아이템이 없습니다.");
       } else {
         // 날짜에 따른 총 성공률 맵과 테스트 횟수 맵을 갖고 그날의 선택된 해당 테스트 아이템의 평균 성공률을 게산한다.
-        int averageRate = (successRateMap[date]! / testCountMap[date]!).toInt();
-        itemChartData.add(GraphData(date, _noChange, "+", averageRate));
+        int daySuccessRate =
+            (successRateMap[date]! / testCountMap[date]!).toInt();
+        itemChartData.add(GraphData(
+          dateString: date,
+          allSuccessRate: allSuccess,
+          daySuccessRate: daySuccessRate,
+        ));
       }
     }
     return itemChartData;

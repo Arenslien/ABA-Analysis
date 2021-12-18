@@ -47,24 +47,20 @@ Widget genChart(
         : <ChartSeries>[
             // 아이템 그래프일 때
             LineSeries<GraphData, String>(
-              name: '평균 성공률',
+              name: '하루 평균 성공률',
               dataSource: _chartData,
-              xValueMapper: (GraphData exp, _) => exp.testDate,
-              yValueMapper: (GraphData exp, _) => exp.averageRate,
+              xValueMapper: (GraphData exp, _) => exp.dateString,
+              yValueMapper: (GraphData exp, _) => exp.daySuccessRate,
               markerSettings: MarkerSettings(isVisible: true),
             ),
-            // LineSeries<GraphData, String>(
-            //     name: '평균 성공률',
-            //     dashArray: <double>[5, 5],
-            //     dataSource: _chartData,
-            //     xValueMapper: (GraphData exp, _) {
-            //       if (_isDate) {
-            //         return exp.subItem;
-            //       } else {
-            //         return exp.testDate;
-            //       }
-            //     },
-            //     yValueMapper: (GraphData exp, _) => exp.averageRate)
+            LineSeries<GraphData, String>(
+              name: '전체 평균 성공률',
+              dashArray: <double>[5, 5],
+              dataSource: _chartData,
+              xValueMapper: (GraphData exp, _) => exp.dateString,
+              yValueMapper: (GraphData exp, _) => exp.allSuccessRate,
+              markerSettings: MarkerSettings(isVisible: true),
+            ),
           ],
     primaryXAxis: CategoryAxis(
         rangePadding: ChartRangePadding.auto,
@@ -85,13 +81,24 @@ Widget genChart(
 
 class GraphData {
   final String testDate; // 선택한 하위목록을 테스트한 날짜 또는 테스트한 회차
-  final String subItem; // 하위목록 이름
-  final String result; // 날짜 또는 회차에따른 +, -, P
-  late num successRate; // +, -, P에 따른 성공률
+  final String subItem; // Date Graph에서 하위목록 이름
+  final String result; // Date Graph에서의 날짜 또는 회차에따른 +, -, P
+  late num successRate; // Date Graph에서 +, -, P에 따른 성공률
   final num averageRate; // 평균 성공률
 
+  final String dateString; // Item Graph에서의 날짜 (x축)
+  final num daySuccessRate; // Item Graph에서 그날의 평균 성공률
+  final num allSuccessRate; // Item Graph에서의 전체 성공률
   // 통일된거
-  GraphData(this.testDate, this.subItem, this.result, this.averageRate) {
+  GraphData({
+    this.testDate = "",
+    this.subItem = "",
+    this.result = "",
+    this.averageRate = -1,
+    this.allSuccessRate = -1,
+    this.daySuccessRate = -1,
+    this.dateString = "",
+  }) {
     if (this.result == '+') {
       this.successRate = 100;
     } else if (this.result == '-' || this.result == 'P') {

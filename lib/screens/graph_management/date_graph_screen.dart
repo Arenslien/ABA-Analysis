@@ -318,8 +318,11 @@ class _DateGraphState extends State<DateGraph> {
 
     for (TestItem testItem in testItemList) {
       print(testItem.toString());
-      chartData.add(
-          GraphData(_noChange, testItem.subItem, testItem.result!, average));
+      chartData.add(GraphData(
+          testDate: _noChange,
+          subItem: testItem.subItem,
+          result: testItem.result!,
+          averageRate: average));
     }
 
     return chartData;
