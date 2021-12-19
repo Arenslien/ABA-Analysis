@@ -1,9 +1,9 @@
-import 'package:aba_analysis/provider/program_field_notifier.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/test.dart';
+import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/test_item.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/provider/test_notifier.dart';
@@ -11,9 +11,11 @@ import 'package:aba_analysis/provider/test_item_notifier.dart';
 import 'package:aba_analysis/components/show_date_picker.dart';
 import 'package:aba_analysis/components/show_dialog_delete.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
+import 'package:aba_analysis/provider/field_management_notifier.dart';
 
 class TestModifyScreen extends StatefulWidget {
-  const TestModifyScreen({required this.test, Key? key}) : super(key: key);
+  const TestModifyScreen({required this.test, required this.child, Key? key}) : super(key: key);
+  final Child child;
   final Test test;
 
   @override
@@ -58,7 +60,7 @@ class _TestInputScreenState extends State<TestModifyScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              '테스트 수정',
+              '${widget.child.name} 테스트 수정',
               style: TextStyle(color: Colors.black),
             ),
             centerTitle: true,
@@ -129,7 +131,14 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                       }
                       // 테스트 만들기
                       for (TestItemInfo testItemInfo in testItemInfoList) {
-                        TestItem testItem = TestItem(testItemId: await store.updateId(AutoID.testItem), testId: widget.test.testId, childId: widget.test.childId, programField: testItemInfo.programField, subField: testItemInfo.subField, subItem: testItemInfo.subItem, result: null);
+                        TestItem testItem = TestItem(
+                          testItemId: await store.updateId(AutoID.testItem),
+                          testId: widget.test.testId,
+                          childId: widget.test.childId,
+                          programField: testItemInfo.programField,
+                          subField: testItemInfo.subField,
+                          subItem: testItemInfo.subItem,
+                        );
                         await store.createTestItem(testItem);
                         context.read<TestItemNotifier>().addTestItem(testItem);
                       }
@@ -208,9 +217,6 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                               IconButton(
                                 icon: Icon(Icons.add_rounded),
                                 onPressed: () {
-                                  late int selectedProgramFieldIndex;
-                                  late int selectedSubFieldIndex;
-                                  late int selectedSubItemIndex;
                                   String? selectedProgramField;
                                   String? selectedSubField;
                                   String? selectedSubItem;
@@ -233,14 +239,13 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                                                   DropdownButton(
                                                     hint: Text('프로그램 영역 선택'),
                                                     value: selectedProgramField,
-                                                    items: context.read<ProgramFieldNotifier>().programFieldList.map((value) {
+                                                    items: context.read<FieldManagementNotifier>().programFieldList.map((value) {
                                                       return DropdownMenuItem(
                                                         value: value.title,
                                                         child: Text(value.title),
                                                       );
                                                     }).toList(),
                                                     onChanged: (String? value) {
-                                                      selectedProgramFieldIndex = context.read<ProgramFieldNotifier>().programFieldList.indexWhere((element) => value == element.title);
                                                       setState1(() {
                                                         selectedProgramField = value;
                                                         selectedSubField = null;
@@ -254,11 +259,10 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                                                     value: selectedSubField,
                                                     items: selectedProgramField == null
                                                         ? null
-                                                        : context.read<ProgramFieldNotifier>().programFieldList[selectedProgramFieldIndex].subFieldList.map((value) {
+                                                        : context.read<FieldManagementNotifier>().readSubFieldList(selectedProgramField!).map((value) {
                                                             return DropdownMenuItem(value: value.subFieldName, child: Text(value.subFieldName));
                                                           }).toList(),
                                                     onChanged: (String? value) {
-                                                      selectedSubFieldIndex = context.read<ProgramFieldNotifier>().programFieldList[selectedProgramFieldIndex].subFieldList.indexWhere((element) => value == element.subFieldName);
                                                       setState1(() {
                                                         selectedSubField = value;
                                                         selectedSubItem = null;
@@ -271,14 +275,13 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                                                     value: selectedSubItem,
                                                     items: selectedProgramField == null || selectedSubField == null
                                                         ? null
-                                                        : context.read<ProgramFieldNotifier>().programFieldList[selectedProgramFieldIndex].subFieldList[selectedSubFieldIndex].subItemList.map((value) {
+                                                        : context.read<FieldManagementNotifier>().readSubItem(selectedSubField!).subItemList.map((value) {
                                                             return DropdownMenuItem(
                                                               value: value,
                                                               child: Text(value),
                                                             );
                                                           }).toList(),
                                                     onChanged: (String? value) {
-                                                      selectedSubItemIndex = context.read<ProgramFieldNotifier>().programFieldList[selectedProgramFieldIndex].subFieldList[selectedSubFieldIndex].subItemList.indexWhere((element) => value == element);
                                                       setState1(() {
                                                         selectedSubItem = value;
                                                       });
@@ -308,9 +311,9 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                                                     // 저장
                                                     // 리스트에 테스트 아이템 담기
                                                     TestItemInfo testItemInfo = TestItemInfo(
-                                                      programField: context.read<ProgramFieldNotifier>().programFieldList[selectedProgramFieldIndex].title,
-                                                      subField: context.read<ProgramFieldNotifier>().programFieldList[selectedProgramFieldIndex].subFieldList[selectedSubFieldIndex].subFieldName,
-                                                      subItem: context.read<ProgramFieldNotifier>().programFieldList[selectedProgramFieldIndex].subFieldList[selectedSubFieldIndex].subItemList[selectedSubItemIndex],
+                                                      programField: selectedProgramField!,
+                                                      subField: selectedSubField!,
+                                                      subItem: selectedSubItem!,
                                                     );
 
                                                     // 리스트에 추가

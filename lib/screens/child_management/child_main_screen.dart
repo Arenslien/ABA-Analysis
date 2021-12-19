@@ -1,10 +1,9 @@
-import 'package:aba_analysis/components/search_delegate.dart';
-import 'package:aba_analysis/components/select_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/models/child.dart';
-import 'package:aba_analysis/components/search_bar.dart';
 import 'package:aba_analysis/provider/child_notifier.dart';
+import 'package:aba_analysis/components/select_appbar.dart';
+import 'package:aba_analysis/components/search_delegate.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/components/build_no_list_widget.dart';
 import 'package:aba_analysis/components/build_floating_action_button.dart';
@@ -30,7 +29,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    for (Child c in context.watch<ChildNotifier>().children) {
+    for (Child c in context.read<ChildNotifier>().children) {
       childNameAndChildMap.addAll({c.name: c});
     }
     IconButton searchButton = IconButton(
@@ -38,8 +37,9 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
       icon: Icon(Icons.search),
       onPressed: () async {
         final finalResult = await showSearch(
-            context: context,
-            delegate: Search(childNameAndChildMap.keys.toList()));
+          context: context,
+          delegate: Search(childNameAndChildMap.keys.toList()),
+        );
         setState(() {
           if (childNameAndChildMap.containsKey(finalResult)) {
             selectedChildName = finalResult;
@@ -53,8 +53,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-          appBar: selectAppBar(context, "아동관리",
-              searchButton: searchButton, isMain: true),
+          appBar: selectAppBar(context, "아동관리", searchButton: searchButton, isMain: true),
           // searchBar(
           //     controller: searchTextEditingController,
           //     onChanged: (str) {
@@ -83,16 +82,13 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
           //         searchTextEditingController.clear();
           //       });
           //     }),
-          body: context.read<ChildNotifier>().children.length == 0
+          body: context.watch<ChildNotifier>().children.length == 0
               ? noListData(Icons.group, '아동 추가')
               : selectedChildName == ""
                   ? ListView.separated(
                       itemCount: childNameAndChildMap.keys.toList().length + 1,
                       itemBuilder: (BuildContext context, int index) {
-                        return index < childNameAndChildMap.keys.toList().length
-                            ? bulidChildListTile(
-                                childNameAndChildMap.values.toList()[index])
-                            : buildListTile(titleText: '');
+                        return index < childNameAndChildMap.keys.toList().length ? bulidChildListTile(childNameAndChildMap.values.toList()[index]) : buildListTile(titleText: '');
                       },
                       separatorBuilder: (BuildContext context, int index) {
                         return const Divider(color: Colors.black);
@@ -101,9 +97,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                   : ListView.separated(
                       itemCount: 2,
                       itemBuilder: (BuildContext context, int index) {
-                        return index < 1
-                            ? bulidChildListTile(selectedChild)
-                            : buildListTile(titleText: '');
+                        return index < 1 ? bulidChildListTile(selectedChild) : buildListTile(titleText: '');
                       },
                       separatorBuilder: (BuildContext context, int index) {
                         return const Divider(color: Colors.black);
@@ -127,8 +121,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => ChildTestScreen(child: child)),
+            MaterialPageRoute(builder: (context) => ChildTestScreen(child: child)),
           );
         },
         trailing: IconButton(
@@ -136,8 +129,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => ChildModifyScreen(child: child)),
+              MaterialPageRoute(builder: (context) => ChildModifyScreen(child: child)),
             );
           },
           color: Colors.black,

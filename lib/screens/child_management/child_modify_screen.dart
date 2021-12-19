@@ -56,7 +56,7 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              '아동 설정',
+              '${widget.child.name} 설정',
               style: TextStyle(color: Colors.black),
             ),
             centerTitle: true,

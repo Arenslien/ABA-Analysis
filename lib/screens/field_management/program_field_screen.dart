@@ -1,25 +1,22 @@
+import 'package:aba_analysis/provider/field_management_notifier.dart';
+import 'package:aba_analysis/screens/field_management/select_sub_field_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
-import 'package:aba_analysis/models/program_field.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/provider/program_field_notifier.dart';
-import 'package:aba_analysis/screens/subject_management/select_sub_field_screen.dart';
 
-class SubjectMainScreen extends StatefulWidget {
-  const SubjectMainScreen({Key? key}) : super(key: key);
+class ProgramFieldScreen extends StatefulWidget {
+  const ProgramFieldScreen({Key? key}) : super(key: key);
 
   @override
-  _SubjectMainScreenState createState() => _SubjectMainScreenState();
+  _ProgramFieldScreenState createState() => _ProgramFieldScreenState();
 }
 
-class _SubjectMainScreenState extends State<SubjectMainScreen> {
-  _SubjectMainScreenState();
+class _ProgramFieldScreenState extends State<ProgramFieldScreen> {
+  _ProgramFieldScreenState();
 
   @override
   Widget build(BuildContext context) {
-    List<ProgramField> programList =
-        context.read<ProgramFieldNotifier>().programFieldList;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -29,16 +26,15 @@ class _SubjectMainScreenState extends State<SubjectMainScreen> {
         backgroundColor: mainGreenColor,
       ),
       body: ListView.builder(
-        itemCount: programList.length,
+        itemCount: context.watch<FieldManagementNotifier>().programFieldList.length,
         itemBuilder: (BuildContext context, int index) {
           return buildListTile(
-            titleText: programList[index].title,
+            titleText: context.read<FieldManagementNotifier>().programFieldList[index].title,
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      SelectSubfieldScreen(program: programList[index]),
+                  builder: (context) => SelectSubfieldScreen(program: context.read<FieldManagementNotifier>().programFieldList[index]),
                 ),
               );
             },
@@ -53,8 +49,7 @@ class _SubjectMainScreenState extends State<SubjectMainScreen> {
                     maxWidth: 64,
                     maxHeight: 64,
                   ),
-                  child: Image.asset('asset/program_field_icon.png',
-                      fit: BoxFit.fill),
+                  child: Image.asset('asset/program_field_icon.png', fit: BoxFit.fill),
                 ),
                 ConstrainedBox(
                   constraints: BoxConstraints(

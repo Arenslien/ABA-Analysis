@@ -76,14 +76,14 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                   if (formkey.currentState!.validate() && !flag) {
                     flag = true;
                     SubField addSub = SubField(
+                      id: await store.updateId(AutoID.subField),
+                      programFieldId: widget.program.id,
                       subFieldName: subFieldName,
-                      subItemList: subitemList,
                     );
                     // DB에 서브필드 추가
-//                    await store.create
-                    await store.addSubField(convertProgramFieldTitle(widget.program.title)!, addSub);
+                    await store.addSubField(addSub);
                     // Subfield를 Notifier에 추가
-                    context.read<FieldManagementNotifier>().updateProgramFieldList(await store.readProgramField());
+                    context.read<FieldManagementNotifier>().updateSubFieldList(await store.readAllSubField());
                     subitemList = List<String>.generate(10, (index) => "");
                     Navigator.pop(context);
                   }
