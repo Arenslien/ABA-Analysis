@@ -26,7 +26,7 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
-  
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -50,6 +50,13 @@ class _MyAppState extends State<MyApp> {
       context
           .read<FieldManagementNotifier>()
           .updateProgramFieldList(await _store.readAllProgramField());
+      context
+          .read<FieldManagementNotifier>()
+          .updateSubFieldList(await _store.readAllSubField());
+      context
+          .read<FieldManagementNotifier>()
+          .updateSubItemList(await _store.readAllSubItem());
+
       context.read<TestNotifier>().updateTestList(await _store.readAllTest());
       context
           .read<TestItemNotifier>()
