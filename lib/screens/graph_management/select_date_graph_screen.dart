@@ -26,7 +26,8 @@ class SelectDateScreen extends StatefulWidget {
 }
 
 class _SelectDateScreenState extends State<SelectDateScreen> {
-  late Map<String, Test> testAndDateMap = {};
+  // late Map<String, Test> testAndDateMap = {};
+  late Map<String, List<Test>> testListAndDateMap = {};
   String selectedDate = "";
   // 검색 관련 변수
 
@@ -36,14 +37,31 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     for (Test test in widget.testList) {
       print(test.toString());
     }
-    genTestAndDateMap();
+    // genTestAndDateMap();
+    genTestListAndDateMap();
   }
 
-  // Search관련해서 쓰일 Test와 Test날짜 Map을 만들어준다.
-  void genTestAndDateMap() {
+  // // Search관련해서 쓰일 Test와 Test날짜 Map을 만들어준다.
+  // void genTestAndDateMap() {
+  //   for (Test t in widget.testList) {
+  //     testAndDateMap
+  //         .addAll({DateFormat(graphDateFormat).format(t.date).toString(): t});
+  //   }
+  // }
+
+  void genTestListAndDateMap() {
     for (Test t in widget.testList) {
-      testAndDateMap
-          .addAll({DateFormat(graphDateFormat).format(t.date).toString(): t});
+      String nowDate = DateFormat(graphDateFormatNoTime).format(t.date);
+      // 만약 맵에 날짜가 없으면 날짜랑 같이 테스트리스트에 추가
+      if (!testListAndDateMap.containsKey(nowDate)) {
+        testListAndDateMap.addAll({
+          nowDate: [t]
+        });
+
+        // 만약 맵에 날짜가 있으면 해당 날짜의 테스트리스트에만 추가
+      } else {
+        testListAndDateMap[nowDate]!.add(t);
+      }
     }
   }
 
@@ -58,7 +76,8 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
       icon: Icon(Icons.search),
       onPressed: () async {
         final finalResult = await showSearch(
-            context: context, delegate: Search(testAndDateMap.keys.toList()));
+            context: context,
+            delegate: Search(testListAndDateMap.keys.toList()));
         setState(() {
           selectedDate = finalResult;
         });
@@ -69,15 +88,16 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
         child: Scaffold(
           appBar: selectAppBar(context, (widget.child.name + "의 테스트 날짜 선택"),
               searchButton: searchButton),
-          body: widget.testList.length == 0
+          body: testListAndDateMap.length == 0
               ? noTestData()
               : selectedDate == ""
                   ? ListView.builder(
                       // 검색된게 없으면
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 50),
-                      itemCount: widget.testList.length,
+                      itemCount: testListAndDateMap.keys.toList().length,
                       itemBuilder: (BuildContext context, int index) {
-                        return dataTile(widget.testList[index], index, context);
+                        return dataTile(testListAndDateMap.keys.toList()[index],
+                            index, context);
                       },
                     )
                   : ListView.builder(
@@ -85,8 +105,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 50),
                       itemCount: 1,
                       itemBuilder: (BuildContext context, int index) {
-                        return dataTile(
-                            testAndDateMap[selectedDate]!, index, context);
+                        return dataTile(selectedDate, index, context);
                       },
                     ),
         ));
@@ -115,19 +134,21 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     );
   }
 
-  Widget dataTile(Test test, int index, BuildContext context) {
+  Widget dataTile(String dateString, int index, BuildContext context) {
     return buildListTile(
-      titleText: DateFormat(graphDateFormat).format(test.date),
+      titleText: dateString,
       // subtitleText: "평균성공률: ${context.read<TestItemNotifier>().getAverage(test.testId)}%", 평균 성공률 삭제
       onTap: () {
         setState(() {
           selectedDate = "";
         });
         bool notNull = true;
-
-        List<TestItem> testItemList = context
-            .read<TestItemNotifier>()
-            .getTestItemList(test.testId, false);
+        List<TestItem> testItemList = [];
+        for (Test test in testListAndDateMap[dateString]!) {
+          testItemList.addAll(context
+              .read<TestItemNotifier>()
+              .getTestItemList(test.testId, false));
+        }
         for (TestItem ti in testItemList) {
           if (ti.result == null) {
             notNull = false;
@@ -138,7 +159,9 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
               context,
               MaterialPageRoute(
                   builder: (context) => DateGraph(
-                        test: test,
+                        testList: testListAndDateMap[dateString]!,
+                        dateString: dateString,
+                        testItemList: testItemList,
                       )));
         } else {
           Navigator.push(
