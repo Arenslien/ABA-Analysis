@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
@@ -45,7 +46,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            widget.child.name,
+            '${widget.child.name}의 테스트 목록',
             style: TextStyle(color: Colors.black),
           ),
           centerTitle: true,
@@ -153,6 +154,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
   Widget buildTestListTile(Test test) {
     return buildListTile(
       titleText: test.title,
+      subtitleText: DateFormat('yyyy년 MM월 d일').format(test.date),
       onTap: () {
         Navigator.push(
           context,
@@ -178,8 +180,8 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
 
             for (TestItem testItem in testItemList) {
               // DB에 TestItem 추가
-              TestItem copiedTestItem =
-                  await store.copyTestItem(copiedTest.testId, copiedTest.childId, testItem);
+              TestItem copiedTestItem = await store.copyTestItem(
+                  copiedTest.testId, copiedTest.childId, testItem);
               // 복사된 테스트 아이템 TestItem Notifier에 추가
               context.read<TestItemNotifier>().addTestItem(copiedTestItem);
             }
