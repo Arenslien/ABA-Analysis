@@ -36,7 +36,6 @@ class TestNotifier extends ChangeNotifier {
 
   List<Test> getAllTestListOf(int childId, bool isInput) {
     List<Test> testListOfChild = [];
-
     if (isInput) {
       _testList.forEach((test) {
         if (test.childId == childId && test.isInput) {

@@ -26,7 +26,6 @@ class SelectDateScreen extends StatefulWidget {
 }
 
 class _SelectDateScreenState extends State<SelectDateScreen> {
-  // late Map<String, Test> testAndDateMap = {};
   late Map<String, List<Test>> testListAndDateMap = {};
   String selectedDate = "";
   // 검색 관련 변수
@@ -37,20 +36,15 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
     for (Test test in widget.testList) {
       print(test.toString());
     }
-    // genTestAndDateMap();
+
     genTestListAndDateMap();
   }
 
-  // // Search관련해서 쓰일 Test와 Test날짜 Map을 만들어준다.
-  // void genTestAndDateMap() {
-  //   for (Test t in widget.testList) {
-  //     testAndDateMap
-  //         .addAll({DateFormat(graphDateFormat).format(t.date).toString(): t});
-  //   }
-  // }
-
   void genTestListAndDateMap() {
-    for (Test t in widget.testList) {
+    List<Test> testList = widget.testList;
+    // 테스트 리스트를 날짜별로 정렬
+    testList.sort((a, b) => a.date.compareTo(b.date));
+    for (Test t in testList) {
       String nowDate = DateFormat(graphDateFormatNoTime).format(t.date);
       // 만약 맵에 날짜가 없으면 날짜랑 같이 테스트리스트에 추가
       if (!testListAndDateMap.containsKey(nowDate)) {
@@ -137,7 +131,6 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
   Widget dataTile(String dateString, int index, BuildContext context) {
     return buildListTile(
       titleText: dateString,
-      // subtitleText: "평균성공률: ${context.read<TestItemNotifier>().getAverage(test.testId)}%", 평균 성공률 삭제
       onTap: () {
         setState(() {
           selectedDate = "";
@@ -150,6 +143,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
               .getTestItemList(test.testId, false));
         }
         for (TestItem ti in testItemList) {
+          print(ti.toString());
           if (ti.p == 0 && ti.minus == 0 && ti.plus == 0) {
             notNull = false;
           }
