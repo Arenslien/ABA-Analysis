@@ -13,9 +13,7 @@ import 'package:aba_analysis/components/build_toggle_buttons.dart';
 class ChildGetResultScreen extends StatefulWidget {
   final Child child;
   final Test test;
-  const ChildGetResultScreen(
-      {Key? key, required this.child, required this.test})
-      : super(key: key);
+  const ChildGetResultScreen({Key? key, required this.child, required this.test}) : super(key: key);
 
   @override
   _ChildGetResultScreenState createState() => _ChildGetResultScreenState();
@@ -39,9 +37,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
   @override
   void initState() {
     super.initState();
-    testItemList = context
-        .read<TestItemNotifier>()
-        .getTestItemList(widget.test.testId, true);
+    testItemList = context.read<TestItemNotifier>().getTestItemList(widget.test.testId, true);
     for (TestItem testItem in testItemList) {
       countResult.add([0, 0, 0]);
 
@@ -56,7 +52,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          '${widget.child.name} : ${widget.test.title}',
+          '${widget.child.name}의 ${widget.test.title}테스트',
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -78,10 +74,8 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
             onPressed: () async {
               if (!flag) {
                 flag = true;
-                await store.updateTest(widget.test.testId, widget.test.date,
-                    widget.test.title, true);
-                context.read<TestNotifier>().updateTest(widget.test.testId,
-                    widget.test.date, widget.test.title, true);
+                await store.updateTest(widget.test.testId, widget.test.date, widget.test.title, true);
+                context.read<TestNotifier>().updateTest(widget.test.testId, widget.test.date, widget.test.title, true);
 
                 Navigator.pop(context);
               }
@@ -108,7 +102,6 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
                       else if (buttonIndex == 2) countResult[index][2]++;
                     });
                   },
-                  isSelected: resultSelected[index],
                   minWidth: 50,
                 ),
                 bottom: 0,
