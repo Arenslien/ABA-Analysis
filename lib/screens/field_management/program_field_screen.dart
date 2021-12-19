@@ -1,5 +1,4 @@
 import 'package:aba_analysis/provider/field_management_notifier.dart';
-import 'package:aba_analysis/screens/field_management/select_sub_field_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
@@ -26,17 +25,22 @@ class _ProgramFieldScreenState extends State<ProgramFieldScreen> {
         backgroundColor: mainGreenColor,
       ),
       body: ListView.builder(
-        itemCount: context.watch<FieldManagementNotifier>().programFieldList.length,
+        itemCount:
+            context.watch<FieldManagementNotifier>().programFieldList.length,
         itemBuilder: (BuildContext context, int index) {
           return buildListTile(
-            titleText: context.read<FieldManagementNotifier>().programFieldList[index].title,
+            titleText: context
+                .read<FieldManagementNotifier>()
+                .programFieldList[index]
+                .title,
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SelectSubfieldScreen(program: context.read<FieldManagementNotifier>().programFieldList[index]),
-                ),
-              );
+              // 오류부분 주석처리
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => SelectSubfieldScreen(program: context.read<FieldManagementNotifier>().programFieldList[index]),
+              //   ),
+              // );
             },
             trailing: Wrap(
               alignment: WrapAlignment.center,
@@ -49,7 +53,8 @@ class _ProgramFieldScreenState extends State<ProgramFieldScreen> {
                     maxWidth: 64,
                     maxHeight: 64,
                   ),
-                  child: Image.asset('asset/program_field_icon.png', fit: BoxFit.fill),
+                  child: Image.asset('asset/program_field_icon.png',
+                      fit: BoxFit.fill),
                 ),
                 ConstrainedBox(
                   constraints: BoxConstraints(
