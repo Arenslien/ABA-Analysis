@@ -36,7 +36,7 @@ class FieldManagementNotifier extends ChangeNotifier {
     for (SubField subField in _subFieldList) {
       allSubFieldNameList.add(subField.subFieldName);
     }
-    
+
     return allSubFieldNameList;
   }
 
@@ -71,5 +71,23 @@ class FieldManagementNotifier extends ChangeNotifier {
     }
 
     return subFieldList;
+  }
+
+  // 해당 title을 하위영역으로 가지고 있는 SubItemList 가져오기
+  SubItem readSubItem(String title) {
+    SubItem? subItem;
+    int subFieldId = 0;
+    for (SubField subField in _subFieldList) {
+      if (subField.subFieldName == title) {
+        subFieldId = subField.id;
+        break;
+      }
+    }
+    for (SubItem sI in _subItemList) {
+      if (sI.subFieldId == subFieldId) {
+        subItem = sI;
+      }
+    }
+    return subItem!;
   }
 }

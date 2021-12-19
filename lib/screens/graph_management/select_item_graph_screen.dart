@@ -2,6 +2,7 @@ import 'package:aba_analysis/components/search_delegate.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/sub_field.dart';
+import 'package:aba_analysis/models/sub_item.dart';
 import 'package:aba_analysis/models/test.dart';
 import 'package:aba_analysis/models/test_item.dart';
 import 'package:aba_analysis/provider/test_item_notifier.dart';
@@ -17,12 +18,12 @@ import 'package:aba_analysis/components/build_list_tile.dart';
 // select_date 복붙한거라 select_item버전으로 다시 코딩 필요
 class SelectItemScreen extends StatefulWidget {
   final Child child;
-  final SubField subField;
+  final SubItem subItem;
   final int index;
   const SelectItemScreen(
       {Key? key,
       required this.child,
-      required this.subField,
+      required this.subItem,
       required this.index})
       : super(key: key);
   static String routeName = '/select_item';
@@ -62,7 +63,7 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
       icon: Icon(Icons.search),
       onPressed: () async {
         final finalResult = await showSearch(
-            context: context, delegate: Search(widget.subField.subItemList));
+            context: context, delegate: Search(widget.subItem.subItemList));
         setState(() {
           selectedSubItem = finalResult;
         });
@@ -77,10 +78,10 @@ class _SelectItemScreenState extends State<SelectItemScreen> {
             : selectedSubItem == ""
                 ? ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    itemCount: widget.subField.subItemList.length,
+                    itemCount: widget.subItem.subItemList.length,
                     itemBuilder: (BuildContext context, int index) {
                       return dataTile(
-                          widget.subField.subItemList[index], index, context);
+                          widget.subItem.subItemList[index], index, context);
                     },
                   )
                 : ListView.builder(
