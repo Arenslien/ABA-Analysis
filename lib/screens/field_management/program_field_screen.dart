@@ -37,18 +37,50 @@ class _ProgramFieldScreenState extends State<ProgramFieldScreen> {
         backgroundColor: mainGreenColor,
       ),
       body: ListView.builder(
-        itemCount: context.watch<FieldManagementNotifier>().programFieldList.length,
+        itemCount:
+            context.watch<FieldManagementNotifier>().programFieldList.length,
         itemBuilder: (BuildContext context, int index) {
           return buildListTile(
-            titleText: context.read<FieldManagementNotifier>().programFieldList[index].title,
+            titleText: context
+                .read<FieldManagementNotifier>()
+                .programFieldList[index]
+                .title,
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SubFieldScreen(program: context.read<FieldManagementNotifier>().programFieldList[index]),
+                  builder: (context) => SubFieldScreen(
+                      program: context
+                          .read<FieldManagementNotifier>()
+                          .programFieldList[index]),
                 ),
               );
             },
+            trailing: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 10,
+              children: <Widget>[
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: 44,
+                    minHeight: 48,
+                    maxWidth: 64,
+                    maxHeight: 64,
+                  ),
+                  child: Image.asset('asset/program_field_icon.png',
+                      fit: BoxFit.fill),
+                ),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: 44,
+                    minHeight: 48,
+                    maxWidth: 44,
+                    maxHeight: 48,
+                  ),
+                  child: Image.asset('asset/basic_icon.png', fit: BoxFit.fill),
+                ),
+              ],
+            ),
           );
         },
       ),
@@ -98,7 +130,10 @@ class _ProgramFieldScreenState extends State<ProgramFieldScreen> {
 
                           //DB추가
                           await store.addProgramField(title!);
-                          context.read<FieldManagementNotifier>().updateProgramFieldList(await store.readAllProgramField());
+                          context
+                              .read<FieldManagementNotifier>()
+                              .updateProgramFieldList(
+                                  await store.readAllProgramField());
 
                           Navigator.pop(context);
                           title = null;

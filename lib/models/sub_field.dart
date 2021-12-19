@@ -1,8 +1,11 @@
 class SubField {
   final int id; // PK
   final int programFieldId; // FK
-  final String subFieldName; 
-  SubField({ required this.id, required this.programFieldId, required this.subFieldName });
+  final String subFieldName;
+  SubField(
+      {required this.id,
+      required this.programFieldId,
+      required this.subFieldName});
 
   Map<String, dynamic> toMap() {
     return {
@@ -13,6 +16,6 @@ class SubField {
   }
 
   String toString() {
-    return '[프로그램 영역] - ID:$id & SubFieldName: $subFieldName';
+    return '[하위 영역] - ID:$id & SubFieldName: $subFieldName';
   }
 }
