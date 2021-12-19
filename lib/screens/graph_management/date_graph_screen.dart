@@ -27,8 +27,15 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' as xio;
 import 'generateChart.dart';
 
 class DateGraph extends StatefulWidget {
-  final Test test;
-  const DateGraph({Key? key, required this.test}) : super(key: key);
+  final List<Test> testList;
+  final String dateString;
+  final List<TestItem> testItemList;
+  const DateGraph(
+      {Key? key,
+      required this.testList,
+      required this.testItemList,
+      required this.dateString})
+      : super(key: key);
 
   @override
   _DateGraphState createState() => _DateGraphState();
@@ -44,7 +51,6 @@ class _DateGraphState extends State<DateGraph> {
   late List<String> _tableColumn; // 내보내기할 때 테이블의 컬럼 이름들
   late String _graphType; // 날짜 그래프인지 하위목록 그래프인지
   late String _charTitleName; // test_date 이거나 subItem
-  late num _averageRate; // 그래프의 평균 성공률
   final GlobalKey<SfCartesianChartState> _cartesianKey = GlobalKey();
   String? _fileName; // 저장할 파일의 이름
   String? valueText; // Dialog에서 사용
@@ -58,9 +64,10 @@ class _DateGraphState extends State<DateGraph> {
     super.initState();
 
     _graphType = '날짜';
-    _charTitleName = DateFormat(graphDateFormat).format(widget.test.date);
-    _tableColumn = ['날짜', '하위목록', '성공여부'];
-    _chartData = getDateGraphData(_charTitleName, widget.test, context);
+    _charTitleName = widget.dateString;
+    _tableColumn = ['날짜', '하위목록', '하루 평균 성공률'];
+    _chartData = getDateGraphData(
+        _charTitleName, widget.testList, context, widget.testItemList);
 
     _fileName = null;
     valueText = null;
@@ -68,12 +75,13 @@ class _DateGraphState extends State<DateGraph> {
 
   @override
   Widget build(BuildContext context) {
-    _child = context.read<ChildNotifier>().getChild(widget.test.childId)!;
+    _child =
+        context.read<ChildNotifier>().getChild(widget.testList[0].childId)!;
     _childName = _child.name;
-    _graphType = '날짜';
-    _charTitleName = DateFormat(graphDateFormat).format(widget.test.date);
-    _tableColumn = ['날짜', '하위목록', '성공여부'];
-    _chartData = getDateGraphData(_charTitleName, widget.test, context);
+    // _graphType = '날짜';
+
+    // _tableColumn = ['날짜', '하위목록', '성공여부'];
+    // _chartData = getDateGraphData(_charTitleName, widget.testList[0], context);
     exportData = ExportData(
       context.read<UserNotifier>().abaUser!.nickname,
       _childName,
@@ -179,9 +187,10 @@ class _DateGraphState extends State<DateGraph> {
   List<List<String>> genTableData(List<GraphData> chartData) {
     List<List<String>> tableData = [];
 
-    // 날짜그래프라면 날짜, 하위목록, 성공여부 순으로
+    // 날짜그래프라면 날짜, 하위목록, 하루평균 성공률 순으로
     for (GraphData d in chartData) {
-      tableData.add(<String>[d.testDate, d.subItem, d.result.toString()]);
+      tableData.add(
+          <String>[d.testDate, d.subItem, d.itemSuccessRate.toString() + "%"]);
     }
 
     print(tableData);
@@ -304,24 +313,56 @@ class _DateGraphState extends State<DateGraph> {
         });
   }
 
-  List<GraphData> getDateGraphData(
-      String _noChange, Test test, BuildContext context) {
+  List<GraphData> getDateGraphData(String _noChange, List<Test> testList,
+      BuildContext context, List<TestItem> testItemList) {
     // 통일된거
     List<GraphData> chartData = []; // 선택한 하위목록과 테스트한 날짜 리스트
     // get testItemList
-    List<TestItem> testItemList =
-        context.read<TestItemNotifier>().getTestItemList(test.testId, false);
+    // List<TestItem> testItemList =
+    //     context.read<TestItemNotifier>().getTestItemList(test.testId, false);
 
-    num average = context
-        .read<TestItemNotifier>()
-        .getAverage(test.testId); // 선택한 하위목록의 전체 날짜 평균 성공률
+    // 한 테스트 아이템의 총 성공률 맵
+    Map<String, int> testItemAllSuccessRate = {};
+    // 한 테스트 아이템의 테스트횟수 맵
+    Map<String, int> testItemAllCount = {};
+    // 위의 두 맵으로 각 테스트 아이템의 평균 성공률을 계산한다.
+    List<String> testItemStringList = [];
+    // 테스트아이템 리스트를 돌면서 각 테스트 아이템들의 총 성공률 및 총 횟수를 추가한다.
+    for (TestItem ti in testItemList) {
+      String nowItem = ti.subItem;
+      int nowResult = -1;
+      // 테스트아이템 이름 리스트에 현재 서브아이템이 있다면 패스(중복X)
+      if (!testItemStringList.contains(nowItem)) {
+        testItemStringList.add(nowItem);
+      }
+      // +라면 성공
+      if (ti.result == "+") {
+        nowResult = 100;
+        // -나 P라면 0이다
+      } else {
+        nowResult = 0;
+      }
 
-    for (TestItem testItem in testItemList) {
-      print(testItem.toString());
+      // 만약 맵의 키에 서브아이템이 없다면 키,밸류를 다 추가한다.
+      if (!testItemAllSuccessRate.containsKey(nowItem)) {
+        testItemAllSuccessRate.addAll({nowItem: nowResult});
+        testItemAllCount.addAll({nowItem: 1});
+      } else {
+        // 만약 맵의 키에 서브아이템이 있다면, 성공률은 더하고 카운트는 +1 한다.
+        testItemAllSuccessRate.update(nowItem, (value) => value + nowResult);
+        testItemAllCount.update(nowItem, (value) => value + 1);
+      }
+    }
+
+    for (String testItemString in testItemStringList) {
+      // 각 서브아이템 별 평균 성공률을
+      num averageRate = testItemAllSuccessRate[testItemString]! /
+          testItemAllCount[testItemString]!;
+      print(testItemString.toString());
       chartData.add(GraphData(
         testDate: _noChange,
-        subItem: testItem.subItem,
-        result: testItem.result!,
+        subItem: testItemString,
+        itemSuccessRate: averageRate,
       ));
     }
 

@@ -1,12 +1,7 @@
 import 'package:aba_analysis/components/setting/setting_default_button.dart';
 import 'package:aba_analysis/components/show_dialog_delete.dart';
 import 'package:aba_analysis/constants.dart';
-import 'package:aba_analysis/models/aba_user.dart';
-import 'package:aba_analysis/models/program_field.dart';
-import 'package:aba_analysis/models/sub_field.dart';
-import 'package:aba_analysis/provider/program_field_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
-import 'package:aba_analysis/screens/authenticate/sign_in_screen.dart';
 import 'package:aba_analysis/services/auth.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/size_config.dart';

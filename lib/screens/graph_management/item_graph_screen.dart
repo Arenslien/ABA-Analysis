@@ -419,7 +419,6 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
 
 class SubItemAndDate {
   final TestItem testItem;
-  List<TestItem>? testItemList;
   DateTime date;
   final String dateString;
   SubItemAndDate(
