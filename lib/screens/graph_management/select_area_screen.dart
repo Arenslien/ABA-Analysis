@@ -1,18 +1,19 @@
 import 'package:aba_analysis/components/search_delegate.dart';
 import 'package:aba_analysis/models/child.dart';
-import 'package:aba_analysis/models/program_field.dart';
 import 'package:aba_analysis/models/sub_field.dart';
 import 'package:aba_analysis/components/select_appbar.dart';
+import 'package:aba_analysis/provider/field_management_notifier.dart';
 import 'package:aba_analysis/screens/graph_management/select_item_graph_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
+import 'package:provider/provider.dart';
 
 // 선택한 프로그램 영역의 하위영역을 선택하는 스크린
 class SelectAreaScreen extends StatefulWidget {
   final Child child;
-  final ProgramField programField;
+  final List<SubField> subFieldList;
   const SelectAreaScreen(
-      {Key? key, required this.child, required this.programField})
+      {Key? key, required this.child, required this.subFieldList})
       : super(key: key);
   static String routeName = '/select_area';
 
@@ -28,7 +29,7 @@ class _SelectAreaScreenState extends State<SelectAreaScreen> {
 
   void initState() {
     super.initState();
-    for (SubField s in widget.programField.subFieldList) {
+    for (SubField s in widget.subFieldList) {
       subFieldAndNameMap.addAll({s.subFieldName: s});
     }
   }
@@ -50,15 +51,14 @@ class _SelectAreaScreenState extends State<SelectAreaScreen> {
     return Scaffold(
         appBar: selectAppBar(context, (widget.child.name + "의 하위영역 선택"),
             searchButton: searchButton),
-        body: widget.programField.subFieldList.length == 0
+        body: widget.subFieldList.length == 0
             ? noTestData()
             : selectedSubField == ""
                 ? ListView.builder(
                     padding: const EdgeInsets.all(16),
-                    itemCount: widget.programField.subFieldList.length,
+                    itemCount: widget.subFieldList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return dataTile(
-                          widget.programField.subFieldList[index], index);
+                      return dataTile(widget.subFieldList[index], index);
                     },
                   )
                 : ListView.builder(
@@ -109,7 +109,9 @@ class _SelectAreaScreenState extends State<SelectAreaScreen> {
             MaterialPageRoute(
                 builder: (context) => SelectItemScreen(
                       child: widget.child,
-                      subField: subField,
+                      subItem: context
+                          .read<FieldManagementNotifier>()
+                          .readSubItem(subField.subFieldName),
                       index: index,
                     )));
       },

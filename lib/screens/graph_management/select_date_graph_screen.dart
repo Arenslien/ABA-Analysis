@@ -150,7 +150,7 @@ class _SelectDateScreenState extends State<SelectDateScreen> {
               .getTestItemList(test.testId, false));
         }
         for (TestItem ti in testItemList) {
-          if (ti.result == null) {
+          if (ti.p == 0 && ti.minus == 0 && ti.plus == 0) {
             notNull = false;
           }
         }

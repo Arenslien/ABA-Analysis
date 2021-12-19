@@ -1,7 +1,7 @@
 import 'package:aba_analysis/components/search_delegate.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/program_field.dart';
-import 'package:aba_analysis/provider/program_field_notifier.dart';
+import 'package:aba_analysis/provider/field_management_notifier.dart';
 import 'package:aba_analysis/components/select_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/screens/graph_management/select_area_screen.dart';
@@ -29,7 +29,7 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
   Widget build(BuildContext context) {
     // Search관련해서 쓰일 ProgramField와 ProgramField의 title Map을 만들어준다.
     for (ProgramField p
-        in context.read<ProgramFieldNotifier>().programFieldList) {
+        in context.read<FieldManagementNotifier>().programFieldList) {
       programFieldAndTitleMap.addAll({p.title: p});
     }
 
@@ -59,13 +59,13 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
                   ? ListView.builder(
                       padding: const EdgeInsets.all(16),
                       itemCount: context
-                          .read<ProgramFieldNotifier>()
+                          .read<FieldManagementNotifier>()
                           .programFieldList
                           .length,
                       itemBuilder: (BuildContext context, int index) {
                         return dataTile(
                             context
-                                .read<ProgramFieldNotifier>()
+                                .read<FieldManagementNotifier>()
                                 .programFieldList[index],
                             index);
                       },
@@ -118,7 +118,9 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
             MaterialPageRoute(
                 builder: (BuildContext context) => SelectAreaScreen(
                       child: widget.child,
-                      programField: programField,
+                      subFieldList: context
+                          .read<FieldManagementNotifier>()
+                          .readSubFieldList(programField.title),
                     ))); // 클릭시 회차별(날짜별) 그래프 스크린으로 이동. 회차마다 다른 그래프 스크린을 만들어야 함.
       },
       trailing: Wrap(
