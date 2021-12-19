@@ -60,30 +60,6 @@ class _SubItemScreenState extends State<SubItemScreen> {
                         fontFamily: 'KoreanGothic',
                       ),
                     ),
-                    trailing: Wrap(
-                      alignment: WrapAlignment.center,
-                      spacing: 10,
-                      children: [
-                        ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minWidth: 44,
-                            minHeight: 48,
-                            maxWidth: 64,
-                            maxHeight: 48,
-                          ),
-                          child: Image.asset('asset/sub_list_icon.png', fit: BoxFit.fill),
-                        ),
-                        ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minWidth: 44,
-                            minHeight: 48,
-                            maxWidth: 64,
-                            maxHeight: 48,
-                          ),
-                          child: widget.index == 0 ? Image.asset('asset/basic_icon.png', fit: BoxFit.fill) : Image.asset('asset/add_icon.png', fit: BoxFit.fill),
-                        ),
-                      ],
-                    ),
                   );
                 },
               ),
