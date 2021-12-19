@@ -13,7 +13,8 @@ import 'package:aba_analysis/components/build_toggle_buttons.dart';
 class ChildGetResultScreen extends StatefulWidget {
   final Child child;
   final Test test;
-  const ChildGetResultScreen({Key? key, required this.child, required this.test}) : super(key: key);
+  final List<TestItem> testItem;
+  const ChildGetResultScreen({Key? key, required this.child, required this.test, required this.testItem}) : super(key: key);
 
   @override
   _ChildGetResultScreenState createState() => _ChildGetResultScreenState();
@@ -27,8 +28,8 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < context.read<TestItemNotifier>().getTestItemList(widget.test.testId, true).length; i++) {
-      countResult.add([0, 0, 0]);
+    for (int i = 0; i < widget.testItem.length; i++) {
+      countResult.add([widget.testItem[i].plus, widget.testItem[i].minus, widget.testItem[i].p]);
     }
   }
 
@@ -61,7 +62,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
               if (!flag) {
                 flag = true;
                 // TestItem 생성
-                List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(widget.test.testId, true);
+                List<TestItem> testItemList = widget.testItem;
 
                 for (int i = 0; i < countResult.length; i++) {
                   // TestItem에 대한 각각의 p, + - 값 업데이트

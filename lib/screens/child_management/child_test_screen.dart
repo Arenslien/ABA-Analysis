@@ -151,7 +151,11 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ChildGetResultScreen(child: widget.child, test: test),
+            builder: (context) => ChildGetResultScreen(
+              child: widget.child,
+              test: test,
+              testItem: context.read<TestItemNotifier>().getTestItemList(test.testId, true),
+            ),
           ),
         );
       },
