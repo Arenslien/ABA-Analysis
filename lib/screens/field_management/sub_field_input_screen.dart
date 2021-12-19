@@ -1,3 +1,4 @@
+import 'package:aba_analysis/models/sub_item.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
@@ -84,7 +85,19 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                     await store.addSubField(addSub);
                     // Subfield를 Notifier에 추가
                     context.read<FieldManagementNotifier>().updateSubFieldList(await store.readAllSubField());
+
+                    // DB에 서브 아이템 추가
+                    SubItem subItem = SubItem(
+                      id: await store.updateId(AutoID.subItem),
+                      subFieldId: addSub.id,
+                      subItemList: subitemList,
+                    );
+                    await store.addSubItem(subItem);
+                    // Provider에 서브 아이템 추가
+                    context.read<FieldManagementNotifier>().updateSubItemList(await store.readAllSubItem());
+                    // 초기화
                     subitemList = List<String>.generate(10, (index) => "");
+
                     Navigator.pop(context);
                   }
                 },

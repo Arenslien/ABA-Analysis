@@ -53,64 +53,65 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-          appBar: selectAppBar(context, "아동관리", searchButton: searchButton, isMain: true),
-          // searchBar(
-          //     controller: searchTextEditingController,
-          //     onChanged: (str) {
-          //       setState(() {
-          //         searchResult.clear();
-          //       });
-          //       for (int i = 0;
-          //           i < context.read<ChildNotifier>().children.length;
-          //           i++) {
-          //         bool flag = false;
-          //         if (context
-          //             .read<ChildNotifier>()
-          //             .children[i]
-          //             .name
-          //             .contains(str)) flag = true;
-          //         if (flag) {
-          //           setState(() {
-          //             searchResult
-          //                 .add(context.read<ChildNotifier>().children[i]);
-          //           });
-          //         }
-          //       }
-          //     },
-          //     clear: () {
-          //       setState(() {
-          //         searchTextEditingController.clear();
-          //       });
-          //     }),
-          body: context.watch<ChildNotifier>().children.length == 0
-              ? noListData(Icons.group, '아동 추가')
-              : selectedChildName == ""
-                  ? ListView.separated(
-                      itemCount: childNameAndChildMap.keys.toList().length + 1,
-                      itemBuilder: (BuildContext context, int index) {
-                        return index < childNameAndChildMap.keys.toList().length ? bulidChildListTile(childNameAndChildMap.values.toList()[index]) : buildListTile(titleText: '');
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const Divider(color: Colors.black);
-                      },
-                    )
-                  : ListView.separated(
-                      itemCount: 2,
-                      itemBuilder: (BuildContext context, int index) {
-                        return index < 1 ? bulidChildListTile(selectedChild) : buildListTile(titleText: '');
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const Divider(color: Colors.black);
-                      },
-                    ),
-          floatingActionButton: bulidFloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ChildInputScreen()),
-              );
-            },
-          )),
+        appBar: selectAppBar(context, "아동관리", searchButton: searchButton, isMain: true),
+        // searchBar(
+        //     controller: searchTextEditingController,
+        //     onChanged: (str) {
+        //       setState(() {
+        //         searchResult.clear();
+        //       });
+        //       for (int i = 0;
+        //           i < context.read<ChildNotifier>().children.length;
+        //           i++) {
+        //         bool flag = false;
+        //         if (context
+        //             .read<ChildNotifier>()
+        //             .children[i]
+        //             .name
+        //             .contains(str)) flag = true;
+        //         if (flag) {
+        //           setState(() {
+        //             searchResult
+        //                 .add(context.read<ChildNotifier>().children[i]);
+        //           });
+        //         }
+        //       }
+        //     },
+        //     clear: () {
+        //       setState(() {
+        //         searchTextEditingController.clear();
+        //       });
+        //     }),
+        body: context.watch<ChildNotifier>().children.length == 0
+            ? noListData(Icons.group, '아동 추가')
+            : selectedChildName == ""
+                ? ListView.separated(
+                    itemCount: childNameAndChildMap.keys.toList().length + 1,
+                    itemBuilder: (BuildContext context, int index) {
+                      return index < childNameAndChildMap.keys.toList().length ? bulidChildListTile(childNameAndChildMap.values.toList()[index]) : buildListTile(titleText: '');
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider(color: Colors.black);
+                    },
+                  )
+                : ListView.separated(
+                    itemCount: 2,
+                    itemBuilder: (BuildContext context, int index) {
+                      return index < 1 ? bulidChildListTile(selectedChild) : buildListTile(titleText: '');
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider(color: Colors.black);
+                    },
+                  ),
+        floatingActionButton: bulidFloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChildInputScreen()),
+            );
+          },
+        ),
+      ),
     );
   }
 
