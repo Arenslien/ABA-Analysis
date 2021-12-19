@@ -29,23 +29,23 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        children: [
-          Expanded(
-            child: Stack(
-              children: [
-                // 백그라운드 배경
-                Container(
-                  width: double.infinity,
-                  margin:
-                      EdgeInsets.only(top: getProportionateScreenHeight(0.15)),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(40),
-                        topRight: Radius.circular(40),
-                      )),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                margin:
+                    EdgeInsets.only(top: getProportionateScreenHeight(0.15)),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                      topRight: Radius.circular(40),
+                    )),
+                child: SingleChildScrollView(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(
                       getProportionateScreenWidth(padding),
@@ -110,10 +110,10 @@ class _BodyState extends State<Body> {
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

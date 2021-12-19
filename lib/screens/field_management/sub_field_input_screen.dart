@@ -10,7 +10,8 @@ import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class SubFieldInputScreen extends StatefulWidget {
   final ProgramField program;
-  const SubFieldInputScreen({Key? key, required this.program}) : super(key: key);
+  const SubFieldInputScreen({Key? key, required this.program})
+      : super(key: key);
 
   @override
   _SubFieldInputScreenState createState() => _SubFieldInputScreenState();
@@ -36,7 +37,8 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
   }
 
   bool isCheckDup(String checkDup) {
-    List<String> s = context.read<FieldManagementNotifier>().readAllSubFieldItemList();
+    List<String> s =
+        context.read<FieldManagementNotifier>().readAllSubFieldItemList();
     if (s.contains(checkDup)) {
       return true;
     } else {
@@ -73,7 +75,7 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                   color: Colors.black,
                 ),
                 onPressed: () async {
-                  print(subitemList);
+                  print("input screen, subitemList: " + subitemList.toString());
                   if (formkey.currentState!.validate() && !flag) {
                     flag = true;
                     SubField addSub = SubField(
@@ -84,7 +86,9 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                     // DB에 서브필드 추가
                     await store.addSubField(addSub);
                     // Subfield를 Notifier에 추가
-                    context.read<FieldManagementNotifier>().updateSubFieldList(await store.readAllSubField());
+                    context
+                        .read<FieldManagementNotifier>()
+                        .updateSubFieldList(await store.readAllSubField());
 
                     // DB에 서브 아이템 추가
                     SubItem subItem = SubItem(
@@ -94,7 +98,10 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                     );
                     await store.addSubItem(subItem);
                     // Provider에 서브 아이템 추가
-                    context.read<FieldManagementNotifier>().updateSubItemList(await store.readAllSubItem());
+
+                    context
+                        .read<FieldManagementNotifier>()
+                        .updateSubItemList(await store.readAllSubItem());
                     // 초기화
                     subitemList = List<String>.generate(10, (index) => "");
 
@@ -120,7 +127,9 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                       return '하위영역 이름을 입력해주세요.';
                     }
 
-                    for (String subFieldName in context.read<FieldManagementNotifier>().readAllSubFieldName()) {
+                    for (String subFieldName in context
+                        .read<FieldManagementNotifier>()
+                        .readAllSubFieldName()) {
                       if (subFieldName == val) {
                         return '중복된 하위영역 이름입니다.';
                       }

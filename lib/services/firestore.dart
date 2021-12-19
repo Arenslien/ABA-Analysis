@@ -250,9 +250,9 @@ class FireStoreService {
         .catchError((error) => print("프로그램 영역 추가를 실패했습니다. : $error"));
   }
 
-  Future deleteProgramField(int index) async {
+  Future deleteProgramField(int id) async {
     await _programField
-        .doc(index.toString())
+        .doc(id.toString())
         .delete()
         .then((value) => print('프로그램 영역 삭제 완료'))
         .catchError((error) => print('프로그램 영역 삭제 실패\n에러 내용: $error'));
@@ -282,10 +282,10 @@ class FireStoreService {
         .catchError((error) => print("하위 영역 추가를 실패했습니다. : $error"));
   }
 
-  Future deleteSubField(int index) async {
+  Future deleteSubField(int id) async {
     // SubField 삭제
-    await _subItem
-        .doc(index.toString())
+    await _subField
+        .doc(id.toString())
         .delete()
         .then((value) => print('하위 영역 삭제 완료'))
         .catchError((error) => print('하위 영역 삭제 실패\n에러 내용: $error'));
@@ -328,12 +328,12 @@ class FireStoreService {
 
   Future<List<SubItem>> readAllSubItem() async {
     List<SubItem> subItemList = [];
-    List<String> subItems = [];
 
     List<QueryDocumentSnapshot> docs =
         await _subItem.get().then((QuerySnapshot snapshot) => snapshot.docs);
 
     for (QueryDocumentSnapshot doc in docs) {
+      List<String> subItems = [];
       dynamic data = doc.data();
 
       for (int i = 0; i < 10; i++) {
@@ -347,6 +347,27 @@ class FireStoreService {
     }
 
     return subItemList;
+  }
+
+  Future<SubItem> readSubItem(int subFieldId) async {
+    List<String> subItems = [];
+    SubItem? subItem;
+    List<QueryDocumentSnapshot> docs =
+        await _subItem.get().then((QuerySnapshot snapshot) => snapshot.docs);
+
+    for (QueryDocumentSnapshot doc in docs) {
+      dynamic data = doc.data();
+
+      if (data['subFieldId'] == subFieldId) {
+        subItem = SubItem(
+            id: data['id'],
+            subFieldId: data['subFieldId'],
+            subItemList: subItems);
+        break;
+      }
+    }
+
+    return subItem!;
   }
 
   //=======================================================================================
