@@ -52,6 +52,19 @@ class FieldManagementNotifier extends ChangeNotifier {
     return allSubFieldItemList;
   }
 
+  // 해당 title을 프로그램 영역으로 가지고 있는 ProgramField 가져오기
+  ProgramField? readProgramField(String title) {
+    ProgramField? programField;
+
+    for (ProgramField pf in _programFieldList) {
+      if (pf.title == title) {
+        programField = pf;
+      }
+    }
+
+    return programField;
+  }
+
   // 해당 title을 상위 영역으로 가지고 있는 SubFieldList 가져오기
   List<SubField> readSubFieldList(String title) {
     List<SubField> subFieldList = [];
@@ -71,9 +84,13 @@ class FieldManagementNotifier extends ChangeNotifier {
   SubItem readSubItem(String title) {
     SubItem? subItem;
     int subFieldId = convertSubFieldTitleToId(title);
+    print("id: " + subFieldId.toString());
+    print("_subItemList: " + _subItemList.toString());
     for (SubItem sI in _subItemList) {
       if (sI.subFieldId == subFieldId) {
         subItem = sI;
+        print(subItem.toString());
+        break;
       }
     }
     return subItem!;

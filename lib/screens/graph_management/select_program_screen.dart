@@ -137,15 +137,6 @@ class _SelectProgramScreenState extends State<SelectProgramScreen> {
             child:
                 Image.asset('asset/program_field_icon.png', fit: BoxFit.fill),
           ),
-          ConstrainedBox(
-            constraints: BoxConstraints(
-              minWidth: 44,
-              minHeight: 48,
-              maxWidth: 44,
-              maxHeight: 48,
-            ),
-            child: Image.asset('asset/basic_icon.png', fit: BoxFit.fill),
-          ),
         ],
       ),
     );

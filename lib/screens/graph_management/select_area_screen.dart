@@ -128,17 +128,6 @@ class _SelectAreaScreenState extends State<SelectAreaScreen> {
             ),
             child: Image.asset('asset/sub_field_icon.png', fit: BoxFit.fill),
           ),
-          ConstrainedBox(
-            constraints: BoxConstraints(
-              minWidth: 44,
-              minHeight: 48,
-              maxWidth: 44,
-              maxHeight: 48,
-            ),
-            child: index == 0
-                ? Image.asset('asset/basic_icon.png', fit: BoxFit.fill)
-                : Image.asset('asset/add_icon.png', fit: BoxFit.fill),
-          ),
         ],
       ),
     );

@@ -96,23 +96,25 @@ class _ChildModifyScreenState extends State<ChildModifyScreen> {
                           for (TestItem testItem in testItemList) {
                             // DB에서 TestItem 제거
                             await store.deleteTestItem(testItem.testItemId);
-                            // Provider에서 TestItem 제거
-                            context
-                                .read<TestItemNotifier>()
-                                .removeTestItem(testItem);
                           }
 
                           // DB에서 TestItem 제거
                           await store.deleteTest(test.testId);
-                          // Provider에서 테스트 제거
-                          context.read<TestNotifier>().removeTest(test);
                         }
 
                         // DB 에서 Child 제거
                         await store.deleteChild(widget.child.childId);
-                        // Provider에서 Child 제거
-                        context.read<ChildNotifier>().removeChild(widget.child);
 
+                        context
+                            .read<TestItemNotifier>()
+                            .updateTestItemList(await store.readAllTestItem());
+
+                        context
+                            .read<TestNotifier>()
+                            .updateTestList(await store.readAllTest());
+                        context.read<ChildNotifier>().updateChildren(
+                            await store.readAllChild(
+                                context.read<UserNotifier>().abaUser!.email));
                         Navigator.pop(context);
                         Navigator.pop(context);
                       }
