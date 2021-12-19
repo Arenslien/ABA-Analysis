@@ -65,7 +65,7 @@ class _DateGraphState extends State<DateGraph> {
 
     _graphType = '날짜';
     _charTitleName = widget.dateString;
-    _tableColumn = ['날짜', '하위목록', '성공여부'];
+    _tableColumn = ['날짜', '하위목록', '하루 평균 성공률'];
     _chartData = getDateGraphData(
         _charTitleName, widget.testList, context, widget.testItemList);
 
@@ -187,9 +187,10 @@ class _DateGraphState extends State<DateGraph> {
   List<List<String>> genTableData(List<GraphData> chartData) {
     List<List<String>> tableData = [];
 
-    // 날짜그래프라면 날짜, 하위목록, 성공여부 순으로
+    // 날짜그래프라면 날짜, 하위목록, 하루평균 성공률 순으로
     for (GraphData d in chartData) {
-      tableData.add(<String>[d.testDate, d.subItem, d.result.toString()]);
+      tableData.add(
+          <String>[d.testDate, d.subItem, d.itemSuccessRate.toString() + "%"]);
     }
 
     print(tableData);
@@ -319,16 +320,21 @@ class _DateGraphState extends State<DateGraph> {
     // get testItemList
     // List<TestItem> testItemList =
     //     context.read<TestItemNotifier>().getTestItemList(test.testId, false);
+
     // 한 테스트 아이템의 총 성공률 맵
     Map<String, int> testItemAllSuccessRate = {};
     // 한 테스트 아이템의 테스트횟수 맵
     Map<String, int> testItemAllCount = {};
     // 위의 두 맵으로 각 테스트 아이템의 평균 성공률을 계산한다.
-
+    List<String> testItemStringList = [];
     // 테스트아이템 리스트를 돌면서 각 테스트 아이템들의 총 성공률 및 총 횟수를 추가한다.
     for (TestItem ti in testItemList) {
       String nowItem = ti.subItem;
       int nowResult = -1;
+      // 테스트아이템 이름 리스트에 현재 서브아이템이 있다면 패스(중복X)
+      if (!testItemStringList.contains(nowItem)) {
+        testItemStringList.add(nowItem);
+      }
       // +라면 성공
       if (ti.result == "+") {
         nowResult = 100;
@@ -347,17 +353,15 @@ class _DateGraphState extends State<DateGraph> {
         testItemAllCount.update(nowItem, (value) => value + 1);
       }
     }
-    // num average = context
-    //     .read<TestItemNotifier>()
-    //     .getAverage(test.testId); // 선택한 하위목록의 전체 날짜 평균 성공률
 
-    for (TestItem testItem in testItemList) {
-      num averageRate = testItemAllSuccessRate[testItem.subItem]! /
-          testItemAllCount[testItem.subItem]!;
-      print(testItem.toString());
+    for (String testItemString in testItemStringList) {
+      // 각 서브아이템 별 평균 성공률을
+      num averageRate = testItemAllSuccessRate[testItemString]! /
+          testItemAllCount[testItemString]!;
+      print(testItemString.toString());
       chartData.add(GraphData(
         testDate: _noChange,
-        subItem: testItem.subItem,
+        subItem: testItemString,
         itemSuccessRate: averageRate,
       ));
     }
