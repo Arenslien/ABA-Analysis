@@ -331,26 +331,22 @@ class _DateGraphState extends State<DateGraph> {
     for (TestItem ti in testItemList) {
       String nowItem = ti.subItem;
       int nowResult = -1;
+      int nowCount = ti.p + ti.minus + ti.plus;
       // 테스트아이템 이름 리스트에 현재 서브아이템이 있다면 패스(중복X)
       if (!testItemStringList.contains(nowItem)) {
         testItemStringList.add(nowItem);
       }
-      // +라면 성공
-      if (ti.result == "+") {
-        nowResult = 100;
-        // -나 P라면 0이다
-      } else {
-        nowResult = 0;
-      }
+
+      nowResult = ti.plus * 100;
 
       // 만약 맵의 키에 서브아이템이 없다면 키,밸류를 다 추가한다.
       if (!testItemAllSuccessRate.containsKey(nowItem)) {
         testItemAllSuccessRate.addAll({nowItem: nowResult});
-        testItemAllCount.addAll({nowItem: 1});
+        testItemAllCount.addAll({nowItem: nowCount});
       } else {
         // 만약 맵의 키에 서브아이템이 있다면, 성공률은 더하고 카운트는 +1 한다.
         testItemAllSuccessRate.update(nowItem, (value) => value + nowResult);
-        testItemAllCount.update(nowItem, (value) => value + 1);
+        testItemAllCount.update(nowItem, (value) => value + nowCount);
       }
     }
 
