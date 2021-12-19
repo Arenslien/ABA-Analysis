@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/program_field.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
-import 'package:aba_analysis/provider/program_field_notifier.dart';
+import 'package:aba_analysis/provider/field_management_notifier.dart';
 import 'package:aba_analysis/screens/subject_management/select_sub_field_screen.dart';
 
 class SubjectMainScreen extends StatefulWidget {

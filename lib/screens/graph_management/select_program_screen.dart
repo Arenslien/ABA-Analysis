@@ -1,7 +1,7 @@
 import 'package:aba_analysis/components/search_delegate.dart';
 import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/program_field.dart';
-import 'package:aba_analysis/provider/program_field_notifier.dart';
+import 'package:aba_analysis/provider/field_management_notifier.dart';
 import 'package:aba_analysis/components/select_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/screens/graph_management/select_area_screen.dart';
