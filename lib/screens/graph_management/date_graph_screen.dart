@@ -328,6 +328,7 @@ class _DateGraphState extends State<DateGraph> {
     // 위의 두 맵으로 각 테스트 아이템의 평균 성공률을 계산한다.
     List<String> testItemStringList = [];
     // 테스트아이템 리스트를 돌면서 각 테스트 아이템들의 총 성공률 및 총 횟수를 추가한다.
+
     for (TestItem ti in testItemList) {
       String nowItem = ti.subItem;
       int nowResult = -1;
@@ -349,12 +350,10 @@ class _DateGraphState extends State<DateGraph> {
         testItemAllCount.update(nowItem, (value) => value + nowCount);
       }
     }
-
     for (String testItemString in testItemStringList) {
       // 각 서브아이템 별 평균 성공률을
       num averageRate = testItemAllSuccessRate[testItemString]! /
           testItemAllCount[testItemString]!;
-      print(testItemString.toString());
       chartData.add(GraphData(
         testDate: _noChange,
         subItem: testItemString,
