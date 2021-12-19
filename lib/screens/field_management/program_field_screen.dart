@@ -37,15 +37,22 @@ class _ProgramFieldScreenState extends State<ProgramFieldScreen> {
         backgroundColor: mainGreenColor,
       ),
       body: ListView.builder(
-        itemCount: context.watch<FieldManagementNotifier>().programFieldList.length,
+        itemCount:
+            context.watch<FieldManagementNotifier>().programFieldList.length,
         itemBuilder: (BuildContext context, int index) {
           return buildListTile(
-            titleText: context.read<FieldManagementNotifier>().programFieldList[index].title,
+            titleText: context
+                .read<FieldManagementNotifier>()
+                .programFieldList[index]
+                .title,
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SubFieldScreen(program: context.read<FieldManagementNotifier>().programFieldList[index]),
+                  builder: (context) => SubFieldScreen(
+                      program: context
+                          .read<FieldManagementNotifier>()
+                          .programFieldList[index]),
                 ),
               );
             },
@@ -98,7 +105,10 @@ class _ProgramFieldScreenState extends State<ProgramFieldScreen> {
 
                           //DB추가
                           await store.addProgramField(title!);
-                          context.read<FieldManagementNotifier>().updateProgramFieldList(await store.readAllProgramField());
+                          context
+                              .read<FieldManagementNotifier>()
+                              .updateProgramFieldList(
+                                  await store.readAllProgramField());
 
                           Navigator.pop(context);
                           title = null;
