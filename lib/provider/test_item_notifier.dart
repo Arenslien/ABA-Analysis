@@ -11,16 +11,19 @@ class TestItemNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+
   // TestItem 추가
   void addTestItem(TestItem testItem) {
     _testItemList.add(testItem);
     notifyListeners();
   }
 
-  void updateTestItem(int testItemId, String result) {
+  void updateTestItem(int testItemId, int p, int plus, int minus) {
     for (TestItem testItem in _testItemList) {
       if (testItem.testItemId == testItemId) {
-        testItem.result = result;
+        testItem.setP(p);
+        testItem.setPlus(plus);
+        testItem.setMinus(minus);
       }
     }
   }
@@ -44,7 +47,7 @@ class TestItemNotifier extends ChangeNotifier {
       });
     } else {
       _testItemList.forEach((TestItem testItem) {
-        if (testItem.testId == testId && testItem.result != null) {
+        if (testItem.testId == testId && (testItem.p + testItem.plus + testItem.minus != 0)) {
           testItemList.add(testItem);
         }
       });
@@ -65,7 +68,7 @@ class TestItemNotifier extends ChangeNotifier {
       });
     } else {
       _testItemList.forEach((TestItem testItem) {
-        if (testItem.childId == childId && testItem.result != null) {
+        if (testItem.childId == childId && (testItem.p + testItem.plus + testItem.minus != 0)) {
           testItemList.add(testItem);
         }
       });
@@ -74,19 +77,19 @@ class TestItemNotifier extends ChangeNotifier {
     return testItemList;
   }
 
-  int getAverage(int testId) {
-    List<TestItem> testItemList = getTestItemList(testId, false);
-    if (testItemList.length == 0) {
-      return 0;
-    }
-    int cnt = 0;
-    for (TestItem testItem in testItemList) {
-      if (testItem.result == '+') {
-        cnt += 1;
-      }
-    }
-    return (cnt / testItemList.length * 100).toInt();
-  }
+  // int getAverage(int testId) {
+  //   List<TestItem> testItemList = getTestItemList(testId, false);
+  //   if (testItemList.length == 0) {
+  //     return 0;
+  //   }
+  //   int cnt = 0;
+  //   for (TestItem testItem in testItemList) {
+  //     if (testItem.p == '+') {
+  //       cnt += 1;
+  //     }
+  //   }
+  //   return (cnt / testItemList.length * 100).toInt();
+  // }
 
   // GETTER FUNCTION: TestItem List 제공
   List<TestItem> get testItemList => _testItemList;

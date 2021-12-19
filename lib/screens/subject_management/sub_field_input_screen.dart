@@ -4,7 +4,7 @@ import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/sub_field.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/models/program_field.dart';
-import 'package:aba_analysis/provider/program_field_notifier.dart';
+import 'package:aba_analysis/provider/field_management_notifier.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
 
 class SubFieldInputScreen extends StatefulWidget {
@@ -35,7 +35,7 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
   }
 
   bool isCheckDup(String checkDup) {
-    List<String> s = context.read<ProgramFieldNotifier>().readAllSubFieldItemList();
+    List<String> s = context.read<FieldManagementNotifier>().readAllSubFieldItemList();
     if (s.contains(checkDup)) {
       return true;
     } else {
@@ -83,7 +83,7 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
 //                    await store.create
                     await store.addSubField(convertProgramFieldTitle(widget.program.title)!, addSub);
                     // Subfield를 Notifier에 추가
-                    context.read<ProgramFieldNotifier>().updateProgramFieldList(await store.readProgramField());
+                    context.read<FieldManagementNotifier>().updateProgramFieldList(await store.readProgramField());
                     subitemList = List<String>.generate(10, (index) => "");
                     Navigator.pop(context);
                   }
@@ -107,7 +107,7 @@ class _SubFieldInputScreenState extends State<SubFieldInputScreen> {
                       return '하위영역 이름을 입력해주세요.';
                     }
 
-                    for (String subFieldName in context.read<ProgramFieldNotifier>().readAllSubFieldName()) {
+                    for (String subFieldName in context.read<FieldManagementNotifier>().readAllSubFieldName()) {
                       if (subFieldName == val) {
                         return '중복된 하위영역 이름입니다.';
                       }
