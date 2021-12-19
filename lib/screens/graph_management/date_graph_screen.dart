@@ -169,6 +169,7 @@ class _DateGraphState extends State<DateGraph> {
         excelTableData, graphImageBytes, _graphType, _isDate, exportData);
     final List<int> excelBytes = graphWorkbook.saveAsStream();
     final dir = await DownloadsPathProvider.downloadsDirectory;
+    // print("Directory: ${dir!.path.toString()}");
     String filePath = dir!.path + '/abaGraph/';
     if (!(await Directory(filePath).exists())) {
       // 폴더가 없다
