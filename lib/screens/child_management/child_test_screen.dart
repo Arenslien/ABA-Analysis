@@ -1,3 +1,4 @@
+import 'package:aba_analysis/screens/child_management/child_total_test_item_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -62,25 +63,44 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
           iconTheme: IconThemeData(color: Colors.black),
           backgroundColor: mainGreenColor,
         ),
+        // 드로우 추가 정보
         endDrawer: Drawer(
           child: Scaffold(
             appBar: AppBar(
               title: Text(
-                '${widget.child.name} 추가 정보',
+                '${widget.child.name}의 추가 정보',
                 style: TextStyle(color: Colors.black),
               ),
               backgroundColor: mainGreenColor,
               iconTheme: IconThemeData(color: mainGreenColor),
             ),
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextButton(
-                  child: Text("a"),
-                  style: TextButton.styleFrom(),
-                  onPressed: () {},
-                ),
-              ],
+            body: Center(
+              child: Column(
+                children: [
+                  SizedBox(height: 20),
+                  TextButton(
+                    child: Text(
+                      "모든 테스트 아이템 보기",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChildTotalTestItemScreen(
+                            totalTestItemMap: context.read<TestItemNotifier>().getTotalTestItemByChild(widget.child.childId),
+                            child: widget.child,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
