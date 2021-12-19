@@ -44,14 +44,14 @@ xio.Workbook genExcel(
   sheet.getRangeByName('B1').columnWidth = 20;
   if (excelTableColumns[0] == '하위목록') {
     // 아이템그래프일 경우
-    sheet.getRangeByName('I1').columnWidth = 22.5;
-    sheet.getRangeByName('J1').columnWidth = 17;
-    sheet.getRangeByName('K1').columnWidth = 22.5;
+    sheet.getRangeByName('I1').columnWidth = 22.5; // 하위 목록
+    sheet.getRangeByName('J1').columnWidth = 17; // 날짜
+    sheet.getRangeByName('K1').columnWidth = 22.5; // 하루 평균 성공률
   } else if (excelTableColumns[0] == '날짜') {
     // 날짜그래프일 경우
-    sheet.getRangeByName('I1').columnWidth = 17;
-    sheet.getRangeByName('J1').columnWidth = 22.5;
-    sheet.getRangeByName('K1').columnWidth = 13;
+    sheet.getRangeByName('I1').columnWidth = 17; // 날짜
+    sheet.getRangeByName('J1').columnWidth = 22.5; // 하위목록
+    sheet.getRangeByName('K1').columnWidth = 22.5; // 하루 평균 성공률
   }
   sheet.getRangeByName('L1').setText(''); // 마지막 column을 비워둔다.
   // 기본 Column Width 설정
