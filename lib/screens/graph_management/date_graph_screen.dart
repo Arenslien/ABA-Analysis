@@ -64,8 +64,6 @@ class _DateGraphState extends State<DateGraph> {
 
     _fileName = null;
     valueText = null;
-
-    _averageRate = _chartData[0].averageRate;
   }
 
   @override
@@ -76,8 +74,10 @@ class _DateGraphState extends State<DateGraph> {
     _charTitleName = DateFormat(graphDateFormat).format(widget.test.date);
     _tableColumn = ['날짜', '하위목록', '성공여부'];
     _chartData = getDateGraphData(_charTitleName, widget.test, context);
-    exportData = ExportData(context.read<UserNotifier>().abaUser!.nickname,
-        _childName, _averageRate, '', '');
+    exportData = ExportData(
+      context.read<UserNotifier>().abaUser!.nickname,
+      _childName,
+    );
     return Scaffold(
       appBar: selectAppBar(context, _childName + "의 " + _graphType + "별 그래프"),
       body: Center(
@@ -318,8 +318,11 @@ class _DateGraphState extends State<DateGraph> {
 
     for (TestItem testItem in testItemList) {
       print(testItem.toString());
-      chartData.add(
-          GraphData(_noChange, testItem.subItem, testItem.result!, average));
+      chartData.add(GraphData(
+        testDate: _noChange,
+        subItem: testItem.subItem,
+        result: testItem.result!,
+      ));
     }
 
     return chartData;
