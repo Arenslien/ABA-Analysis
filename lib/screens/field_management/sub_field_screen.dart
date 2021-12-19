@@ -1,6 +1,6 @@
 import 'package:aba_analysis/models/sub_field.dart';
 import 'package:aba_analysis/screens/field_management/sub_field_input_screen.dart';
-import 'package:aba_analysis/screens/field_management/sub_field_view_screen.dart';
+import 'package:aba_analysis/screens/field_management/sub_item_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
@@ -59,7 +59,7 @@ class _SubFieldScreenState extends State<SubFieldScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SelectSubitemScreen(
+                    builder: (context) => SubItemScreen(
                       subItemList: context.read<FieldManagementNotifier>().readSubItem(subFieldName).subItemList,
                       subFieldName: subFieldName,
                       index: index,
