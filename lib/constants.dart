@@ -7,7 +7,7 @@ const mainPurpleColor = Color(0xFFE1BEE7);
 const mainGreenColor = Color(0xFFA5D6A7);
 
 // ENUM 타입
-enum AutoID { child, test, testItem, programField }
+enum AutoID { child, test, testItem, programField, subField, subItem, childResult }
 
 final Map<String, String> korToEngAboutPF = {
   "수용 언어": "acceptance",

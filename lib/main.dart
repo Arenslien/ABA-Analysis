@@ -10,7 +10,7 @@ import 'package:aba_analysis/provider/user_notifier.dart';
 import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:aba_analysis/provider/child_notifier.dart';
 import 'package:aba_analysis/provider/test_item_notifier.dart';
-import 'package:aba_analysis/provider/program_field_notifier.dart';
+import 'package:aba_analysis/provider/field_management_notifier.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +18,7 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => UserNotifier()),
     ChangeNotifierProvider(create: (_) => ChildNotifier()),
-    ChangeNotifierProvider(create: (_) => ProgramFieldNotifier()),
+    ChangeNotifierProvider(create: (_) => FieldManagementNotifier()),
     ChangeNotifierProvider(create: (_) => TestNotifier()),
     ChangeNotifierProvider(create: (_) => TestItemNotifier()),
   ], child: MyApp()));
@@ -48,8 +48,8 @@ class _MyAppState extends State<MyApp> {
             .readAllChild(context.read<UserNotifier>().abaUser!.email));
       }
       context
-          .read<ProgramFieldNotifier>()
-          .updateProgramFieldList(await _store.readProgramField());
+          .read<FieldManagementNotifier>()
+          .updateProgramFieldList(await _store.readAllProgramField());
       context.read<TestNotifier>().updateTestList(await _store.readAllTest());
       context
           .read<TestItemNotifier>()

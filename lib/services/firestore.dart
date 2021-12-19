@@ -3,6 +3,7 @@ import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/aba_user.dart';
 import 'package:aba_analysis/models/program_field.dart';
 import 'package:aba_analysis/models/sub_field.dart';
+import 'package:aba_analysis/models/sub_item.dart';
 import 'package:aba_analysis/models/test.dart';
 import 'package:aba_analysis/models/test_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,14 +11,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FireStoreService {
   // Firebase DB 컬렉션
   CollectionReference _user = FirebaseFirestore.instance.collection('User');
-  CollectionReference _programField =
-      FirebaseFirestore.instance.collection('Program Field');
   CollectionReference _child = FirebaseFirestore.instance.collection('Child');
   CollectionReference _test = FirebaseFirestore.instance.collection('Test');
-  CollectionReference _testItem =
-      FirebaseFirestore.instance.collection('Test Item');
-  CollectionReference _totalResult =
-      FirebaseFirestore.instance.collection('Total Result');
+  CollectionReference _testItem = FirebaseFirestore.instance.collection('Test Item');
+  CollectionReference _programField = FirebaseFirestore.instance.collection('Program Field');
+  CollectionReference _subField = FirebaseFirestore.instance.collection('Sub Field');
+  CollectionReference _subItem = FirebaseFirestore.instance.collection('Sub Item');
+  CollectionReference _childResult =
+      FirebaseFirestore.instance.collection('Child Result');
   CollectionReference _autoId =
       FirebaseFirestore.instance.collection('Auto ID');
 
@@ -234,11 +235,12 @@ class FireStoreService {
   //=======================================================================================
 
   Future addProgramField(String title) async {
-    ProgramField programField = new ProgramField(title: title);
+    int id = await updateId(AutoID.programField);
+    ProgramField programField = new ProgramField(id: id, title: title);
 
     // 변경된 새로운 programField 추가
     _programField
-        .doc((await updateId(AutoID.programField)).toString())
+        .doc(id.toString())
         .set(programField.toMap())
         .then((value) => print("프로그램 영역이 추가 되었습니다."))
         .catchError((error) => print("프로그램 영역 추가를 실패했습니다. : $error"));
@@ -253,92 +255,88 @@ class FireStoreService {
   }
 
 
-  Future readProgramField() async {
-    // return result
-    List<ProgramField> result = [];
-
-    // Firebase Program Field docs
-    List<QueryDocumentSnapshot> docs = await _programField
+  Future<List<ProgramField>> readAllProgramField() async {
+    List<ProgramField> programFieldList= [];
+    // 모든 프로그램 영역 가져오기
+    await _programField
         .get()
-        .then((QuerySnapshot snapshot) => snapshot.docs);
-
-    // docs -> to Program Field
-    docs.forEach((snapshot) {
-      // 데이터 초기화
-      dynamic data = snapshot.data()!;
-
-      // Sub Field List 생성
-      List<SubField> subFieldList = [];
-
-      // DB의 Sub Field List 생성
-      List<dynamic> subFieldListOfDB = data['sub-field-list'];
-
-      subFieldListOfDB.forEach((subField) {
-        // Sub Item List 생성
-        List<String> subItemList = [];
-
-        // DB의 Sub Item List 생성
-        List<dynamic> subItemListOfDB = subField['sub-item-list'];
-
-        // Sub Item 추가
-        subItemListOfDB.forEach((element) {
-          subItemList.add(element.toString());
-        });
-
-        // SubField 인스턴스 생성 & 추가
-        subFieldList.add(SubField(
-            subFieldName: subField['sub-field-name'],
-            subItemList: subItemList));
-      });
-
-      // Program Field 인스턴스 생성 & 추가
-      ProgramField programField = ProgramField(title: data['title']);
-      programField.setSubFieldList(subFieldList);
-      result
-          .add(programField);
-    });
-
-    return result;
+        .then((QuerySnapshot snapshot) => snapshot.docs.forEach((element) { 
+          dynamic data = element.data();
+          ProgramField programField = ProgramField(id: data['id'], title: data['title']);
+          programFieldList.add(programField);
+        }))
+        .catchError((error) => print('모든 프로그램 영역 가져오기 실패\n에러 내용: $error'));
+    return programFieldList;
   }
 
-  Future addSubField(String title, SubField subField) async {
-    // 기존의 sub-field-list 가져오기
-    dynamic result = await _programField
-        .doc(title)
-        .get()
-        .then((DocumentSnapshot snapshot) => snapshot.data());
-    List<dynamic> newSubFieldList = result['sub-field-list'];
-    // 기존의 sub-field-list에 새로운 sub-field 추가
-    newSubFieldList.add({
-      'sub-field-name': subField.subFieldName,
-      'sub-item-list': subField.subItemList,
-    });
-
-    // 변경된 sub-field DB에 저장
-    _programField
-        .doc(title)
-        .update({'sub-field-list': newSubFieldList})
-        .then((value) => print("하위 영역이 업데이트 되었습니다."))
-        .catchError((error) => print("하위 영역 업데이트를 실패했습니다. : $error"));
+  Future addSubField(SubField subField) async {
+    // 새로운 Sub Field 추가
+    await _subField
+        .doc(subField.id.toString())
+        .set(subField.toMap())
+        .then((value) => print("하위 영역이 추가 되었습니다."))
+        .catchError((error) => print("하위 영역 추가를 실패했습니다. : $error"));
   }
 
-  Future deleteSubField(String title, int index) async {
-    // 기존의 sub-field-list 가져오기
-    dynamic result = await _programField
-        .doc(title)
+  Future deleteSubField(int index) async {
+    // SubField 삭제
+    await _subItem
+        .doc(index.toString())
+        .delete()
+        .then((value) => print('하위 영역 삭제 완료'))
+        .catchError((error) => print('하위 영역 삭제 실패\n에러 내용: $error'));
+  }
+
+  Future<List<SubField>> readAllSubField() async {
+    List<SubField> subFieldList= [];
+    // 모든 프로그램 영역 가져오기
+    await _subField
         .get()
-        .then((DocumentSnapshot snapshot) => snapshot.data());
-    List<dynamic> newSubFieldList = result['sub-field-list'];
+        .then((QuerySnapshot snapshot) => snapshot.docs.forEach((element) { 
+          dynamic data = element.data();
+          SubField subField = SubField(id: data['id'], programFieldId: data['programFieldId'], subFieldName: data['subFieldName']);
+          subFieldList.add(subField);
+        }))
+        .catchError((error) => print('모든 프로그램 영역 가져오기 실패\n에러 내용: $error'));
+    return subFieldList;
+  }
 
-    // 기존의 sub-field-list에 해당 인덱sub-field
-    newSubFieldList.removeAt(index);
+  Future addSubItem(SubItem subItem) async {
+    // 새로운 Sub Item 추가
+    await _subItem
+        .doc(subItem.id.toString())
+        .set(subItem.toMap())
+        .then((value) => print("하위 목록이 추가 되었습니다."))
+        .catchError((error) => print("하위 목록 추가를 실패했습니다. : $error"));
+  }
 
-    // 변경된 sub-field DB에 저장
-    _programField
-        .doc(title)
-        .update({'sub-field-list': newSubFieldList})
-        .then((value) => print("하위 영역이 업데이트 되었습니다."))
-        .catchError((error) => print("하위 영역 업데이트를 실패했습니다. : $error"));
+  Future deleteSubItem(int index) async {
+    // SubItem 삭제
+    await _subItem
+        .doc(index.toString())
+        .delete()
+        .then((value) => print('하위 목록 삭제 완료'))
+        .catchError((error) => print('하위 목록 삭제 실패\n에러 내용: $error'));
+  }
+
+  Future<List<SubItem>> readAllSubItem() async {
+    List<SubItem> subItemList = [];
+    List<String> subItems = [];
+
+    List<QueryDocumentSnapshot> docs =
+        await _subItem.get().then((QuerySnapshot snapshot) => snapshot.docs);
+
+    for (QueryDocumentSnapshot doc in docs) {
+      dynamic data = doc.data();
+
+      for (int i=0; i<10; i++) {
+        subItems.add(data['item${i+1}']);
+      }
+      SubItem subField = SubItem(id: data['id'], subFieldId: data['subFieldId'], subItemList: subItems);
+      subItemList.add(subField);
+    }
+
+    return subItemList;
   }
 
   //=======================================================================================
@@ -489,7 +487,6 @@ class FireStoreService {
       programField: testItem.programField,
       subField: testItem.subField,
       subItem: testItem.subItem,
-      result: null,
     );
     await _testItem
         .doc(copiedTestItem.testItemId.toString())
@@ -500,10 +497,10 @@ class FireStoreService {
   }
 
   // TestItem 열람
-  Future<TestItem?> readTestItem(int testId) async {
-    // 해당 testId에 대한 Document 정보 가져오기
+  Future<TestItem?> readTestItem(int index) async {
+    // 해당 testItemId에 대한 Document 정보 가져오기
     dynamic data = await _testItem
-        .doc(testId.toString())
+        .doc(index.toString())
         .get()
         .then((DocumentSnapshot snapshot) => snapshot.data());
     if (data == null) return null;
@@ -516,10 +513,12 @@ class FireStoreService {
       programField: data['program-field'],
       subField: data['sub-field'],
       subItem: data['sub-item'],
-      result: data['result'],
     );
+    testItem.setP(data['p']);
+    testItem.setP(data['plus']);
+    testItem.setP(data['minus']);
 
-    // Test 반환
+    // TestItem 반환
     return testItem;
   }
 
@@ -535,13 +534,13 @@ class FireStoreService {
 
       // Test Item 문서의 데이터를 기반으로 TestItem 객체 생성
       TestItem testItem = TestItem(
-          testItemId: data['test-item-id'],
-          testId: data['test-id'],
-          childId: data['child-id'],
-          programField: data['program-field'],
-          subField: data['sub-field'],
-          subItem: data['sub-item'],
-          result: data['result']);
+        testItemId: data['test-item-id'],
+        testId: data['test-id'],
+        childId: data['child-id'],
+        programField: data['program-field'],
+        subField: data['sub-field'],
+        subItem: data['sub-item'],
+      );
 
       // TestItemList에 TestItem 객체 추가
       testItemList.add(testItem);
@@ -602,6 +601,15 @@ class FireStoreService {
       case AutoID.programField:
         autoId = data['program-field-id'];
         break;
+      case AutoID.subField:
+        autoId = data['sub-field-id'];
+        break;
+      case AutoID.subItem:
+        autoId = data['sub-item-id'];
+        break;  
+      case AutoID.childResult:
+        autoId = data['child-result-id'];
+        break;  
     }
 
     // autoId 반환
@@ -625,6 +633,16 @@ class FireStoreService {
         break;
       case AutoID.programField:
         _autoId.doc('AutoId').update({'program-field-id': id + 1});
+        break;
+      case AutoID.subField:
+        _autoId.doc('AutoId').update({'sub-field-id': id + 1});
+        break;
+      case AutoID.subItem:
+        _autoId.doc('AutoId').update({'sub-item-id': id + 1});
+        break;
+      case AutoID.childResult:
+        _autoId.doc('AutoId').update({'child-result-id': id + 1});
+        break;
     }
 
     // update 된 ID 값 반환

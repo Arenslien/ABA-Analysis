@@ -72,7 +72,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
 
                     // DB에 테스트 아이템 추가 & TestItem Notifier에 테스트 아이템 추가
                     for (TestItemInfo testItemInfo in testItemInfoList) {
-                      TestItem testItem = TestItem(testItemId: await store.updateId(AutoID.testItem), testId: test.testId, childId: test.childId, programField: testItemInfo.programField, subField: testItemInfo.subField, subItem: testItemInfo.subItem, result: null);
+                      TestItem testItem = TestItem(testItemId: await store.updateId(AutoID.testItem), testId: test.testId, programField: testItemInfo.programField, subField: testItemInfo.subField, subItem: testItemInfo.subItem);
 
                       await store.createTestItem(testItem);
 

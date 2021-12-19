@@ -4,7 +4,7 @@ import 'package:aba_analysis/components/authenticate/auth_google_button.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/aba_user.dart';
 import 'package:aba_analysis/provider/child_notifier.dart';
-import 'package:aba_analysis/provider/program_field_notifier.dart';
+import 'package:aba_analysis/provider/field_management_notifier.dart';
 import 'package:aba_analysis/provider/test_item_notifier.dart';
 import 'package:aba_analysis/provider/test_notifier.dart';
 import 'package:aba_analysis/provider/user_notifier.dart';
@@ -109,8 +109,8 @@ class _SignInFormState extends State<SignInForm> {
                     context
                         .read<ChildNotifier>()
                         .updateChildren(await _store.readAllChild(email));
-                    context.read<ProgramFieldNotifier>().updateProgramFieldList(
-                        await _store.readProgramField());
+                    context.read<FieldManagementNotifier>().updateProgramFieldList(
+                        await _store.readAllProgramField());
                     context
                         .read<TestNotifier>()
                         .updateTestList(await _store.readAllTest());
@@ -230,8 +230,8 @@ class _SignInFormState extends State<SignInForm> {
             .read<ChildNotifier>()
             .updateChildren(await _store.readAllChild(user.email!));
         context
-            .read<ProgramFieldNotifier>()
-            .updateProgramFieldList(await _store.readProgramField());
+            .read<FieldManagementNotifier>()
+            .updateProgramFieldList(await _store.readAllProgramField());
         context.read<TestNotifier>().updateTestList(await _store.readAllTest());
         context
             .read<TestItemNotifier>()
