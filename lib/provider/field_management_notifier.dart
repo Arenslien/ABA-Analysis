@@ -36,7 +36,7 @@ class FieldManagementNotifier extends ChangeNotifier {
     for (SubField subField in _subFieldList) {
       allSubFieldNameList.add(subField.subFieldName);
     }
-    
+
     return allSubFieldNameList;
   }
 
@@ -56,13 +56,7 @@ class FieldManagementNotifier extends ChangeNotifier {
   List<SubField> readSubFieldList(String title) {
     List<SubField> subFieldList = [];
 
-    int programFieldId = 0;
-    for (ProgramField programField in _programFieldList) {
-      if (programField.title == title) {
-        programFieldId = programField.id;
-        break;
-      }
-    }
+    int programFieldId = convertProgramFieldTitleToId(title);
 
     for (SubField subField in _subFieldList) {
       if (subField.programFieldId == programFieldId) {
@@ -71,5 +65,39 @@ class FieldManagementNotifier extends ChangeNotifier {
     }
 
     return subFieldList;
+  }
+
+  // 해당 title을 하위영역으로 가지고 있는 SubItemList 가져오기
+  SubItem readSubItem(String title) {
+    SubItem? subItem;
+    int subFieldId = convertSubFieldTitleToId(title);
+    for (SubItem sI in _subItemList) {
+      if (sI.subFieldId == subFieldId) {
+        subItem = sI;
+      }
+    }
+    return subItem!;
+  }
+
+  int convertProgramFieldTitleToId(String title) {
+    int? id;
+    for (ProgramField programField in _programFieldList) {
+      if (programField.title == title) {
+        id = programField.id;
+        break;
+      }
+    }
+    return id!;
+  }
+
+  int convertSubFieldTitleToId(String title) {
+    int? id;
+    for (SubField subField in _subFieldList) {
+      if (subField.subFieldName == title) {
+        id = subField.id;
+        break;
+      }
+    }
+    return id!;
   }
 }

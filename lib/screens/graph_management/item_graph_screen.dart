@@ -371,28 +371,28 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
     // 두개를 통해 전체 평균 성공률을 구한다.
     for (SubItemAndDate subItemAndDate in subItemList) {
       // 성공률
-      int success = 0;
+      int nowResult = subItemAndDate.testItem.plus * 100;
+      int nowCount = subItemAndDate.testItem.plus +
+          subItemAndDate.testItem.minus +
+          subItemAndDate.testItem.p;
       // 현재 날짜(Datetime => String)
       String dateString = subItemAndDate.dateString;
-      if (subItemAndDate.testItem.result == "+") {
-        success = 100;
-      }
       // 맵에 이미 추가되어있다면 기존 값 업데이트
       if (successRateMap.containsKey(dateString)) {
         // 총 성공률은 이전까지의 성공률 + 현재성공률
-        successRateMap.update(dateString, (value) => value + success);
+        successRateMap.update(dateString, (value) => value + nowResult);
         // 개수는 1개 추가
-        testCountMap.update(dateString, (value) => value += 1);
-        allSuccessRate += success;
-        allTestCount++;
+        testCountMap.update(dateString, (value) => value += nowCount);
+        allSuccessRate += nowResult;
+        allTestCount += nowCount;
       } else {
         // 성공률 맵에 키가 없다면 새로 추가
         // 총 성공률은 현재 성공률
-        successRateMap.addAll({dateString: success});
+        successRateMap.addAll({dateString: nowResult});
         // 개수는 1로 시작
-        testCountMap.addAll({dateString: 1});
-        allSuccessRate += success;
-        allTestCount++;
+        testCountMap.addAll({dateString: nowCount});
+        allSuccessRate += nowResult;
+        allTestCount += nowCount;
       }
     }
     // 전체 평균 성공률
@@ -419,7 +419,6 @@ class _ItemGraphScreenState extends State<ItemGraphScreen> {
 
 class SubItemAndDate {
   final TestItem testItem;
-  List<TestItem>? testItemList;
   DateTime date;
   final String dateString;
   SubItemAndDate(

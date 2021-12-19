@@ -1,3 +1,4 @@
+import 'package:aba_analysis/screens/field_management/program_field_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,7 +7,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:aba_analysis/screens/setting/setting_screen.dart';
 import 'package:aba_analysis/screens/graph_management/graph_main_screen.dart';
 import 'package:aba_analysis/screens/child_management/child_main_screen.dart';
-import 'package:aba_analysis/screens/subject_management/subject_main_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -48,14 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
       // 권한이 permantlyDenied일 경우, 앱 세팅에 들어가서 사용자가 직접 permission을 허락해줘야 한다.
       if (status.isPermanentlyDenied) {
         // 사용자에게 알리기 위해 토스트 메세지 출력
-        Fluttertoast.showToast(
-            msg: "직접 파일 접근 권한을 허락해주세요.",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        Fluttertoast.showToast(msg: "직접 파일 접근 권한을 허락해주세요.", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.CENTER, timeInSecForIosWeb: 1, backgroundColor: Colors.red, textColor: Colors.white, fontSize: 16.0);
         await openAppSettings();
       }
     }
@@ -80,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Container(
             color: Colors.white,
-            child: SubjectMainScreen(),
+            child: ProgramFieldScreen(),
           ),
           Container(
             color: Colors.white,

@@ -11,7 +11,6 @@ class TestItemNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-
   // TestItem 추가
   void addTestItem(TestItem testItem) {
     _testItemList.add(testItem);
@@ -37,22 +36,20 @@ class TestItemNotifier extends ChangeNotifier {
   // TestItem 불러오기
   List<TestItem> getTestItemList(int testId, bool nullValue) {
     List<TestItem> testItemList = [];
-
     if (nullValue) {
       _testItemList.forEach((TestItem testItem) {
-        print(testItem.testId);
         if (testItem.testId == testId) {
           testItemList.add(testItem);
         }
       });
     } else {
       _testItemList.forEach((TestItem testItem) {
-        if (testItem.testId == testId && (testItem.p + testItem.plus + testItem.minus != 0)) {
+        if (testItem.testId == testId &&
+            (testItem.p + testItem.plus + testItem.minus != 0)) {
           testItemList.add(testItem);
         }
       });
     }
-
     return testItemList;
   }
 
@@ -68,7 +65,8 @@ class TestItemNotifier extends ChangeNotifier {
       });
     } else {
       _testItemList.forEach((TestItem testItem) {
-        if (testItem.childId == childId && (testItem.p + testItem.plus + testItem.minus != 0)) {
+        if (testItem.childId == childId &&
+            (testItem.p + testItem.plus + testItem.minus != 0)) {
           testItemList.add(testItem);
         }
       });

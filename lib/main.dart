@@ -26,7 +26,7 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
-  
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -44,16 +44,14 @@ class _MyAppState extends State<MyApp> {
       // await _auth.signIn('test1234@gmail.com', 'test1234');
       context.read<UserNotifier>().updateUser(await _auth.abaUser);
       if (context.read<UserNotifier>().abaUser != null) {
-        context.read<ChildNotifier>().updateChildren(await _store
-            .readAllChild(context.read<UserNotifier>().abaUser!.email));
+        context.read<ChildNotifier>().updateChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
       }
-      context
-          .read<FieldManagementNotifier>()
-          .updateProgramFieldList(await _store.readAllProgramField());
+      context.read<FieldManagementNotifier>().updateProgramFieldList(await _store.readAllProgramField());
+      context.read<FieldManagementNotifier>().updateSubFieldList(await _store.readAllSubField());
+      context.read<FieldManagementNotifier>().updateSubItemList(await _store.readAllSubItem());
+
       context.read<TestNotifier>().updateTestList(await _store.readAllTest());
-      context
-          .read<TestItemNotifier>()
-          .updateTestItemList(await _store.readAllTestItem());
+      context.read<TestItemNotifier>().updateTestItemList(await _store.readAllTestItem());
     });
   }
 

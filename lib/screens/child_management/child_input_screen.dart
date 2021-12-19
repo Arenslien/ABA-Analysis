@@ -26,7 +26,9 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
   bool? isGenderSelected;
   bool? isBirthSelected;
   FireStoreService _store = FireStoreService();
+
   final formkey = GlobalKey<FormState>();
+
   bool flag = false;
 
   @override
@@ -66,18 +68,9 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                     setState(() {
                       isBirthSelected = false;
                     });
-                  if (formkey.currentState!.validate() &&
-                      isGenderSelected! &&
-                      isBirthSelected! &&
-                      !flag) {
+                  if (formkey.currentState!.validate() && isGenderSelected! && isBirthSelected! && !flag) {
                     flag = true;
-                    Child child = Child(
-                        childId: await _store.updateId(AutoID.child),
-                        teacherEmail:
-                            context.read<UserNotifier>().abaUser!.email,
-                        name: name,
-                        birthday: birth!,
-                        gender: gender);
+                    Child child = Child(childId: await _store.updateId(AutoID.child), teacherEmail: context.read<UserNotifier>().abaUser!.email, name: name, birthday: birth!, gender: gender);
 
                     // Firestore에 아동 추가
                     await _store.createChild(child);
@@ -132,9 +125,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                                 });
                               },
                               child: Text(
-                                birth == null
-                                    ? '생년월일 선택'
-                                    : DateFormat('yyyyMMdd').format(birth!),
+                                birth == null ? '생년월일 선택' : DateFormat('yyyyMMdd').format(birth!),
                                 style: TextStyle(color: Colors.black),
                               ),
                               style: OutlinedButton.styleFrom(
@@ -148,9 +139,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                                 '생년월일을 선택해 주세요.',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: isBirthSelected == false
-                                      ? Colors.redAccent[700]
-                                      : Colors.white,
+                                  color: isBirthSelected == false ? Colors.redAccent[700] : Colors.white,
                                 ),
                               ),
                             ),
@@ -169,9 +158,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                                       gender = '남자';
                                     else
                                       gender = '여자';
-                                    for (int buttonIndex = 0;
-                                        buttonIndex < genderSelected.length;
-                                        buttonIndex++) {
+                                    for (int buttonIndex = 0; buttonIndex < genderSelected.length; buttonIndex++) {
                                       if (buttonIndex == index) {
                                         genderSelected[buttonIndex] = true;
                                       } else {
@@ -187,9 +174,7 @@ class _ChildInputScreenState extends State<ChildInputScreen> {
                                 '성별을 선택해 주세요.',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: isGenderSelected == false
-                                      ? Colors.redAccent[700]
-                                      : Colors.white,
+                                  color: isGenderSelected == false ? Colors.redAccent[700] : Colors.white,
                                 ),
                               ),
                             ),

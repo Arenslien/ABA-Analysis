@@ -13,10 +13,14 @@ class FireStoreService {
   CollectionReference _user = FirebaseFirestore.instance.collection('User');
   CollectionReference _child = FirebaseFirestore.instance.collection('Child');
   CollectionReference _test = FirebaseFirestore.instance.collection('Test');
-  CollectionReference _testItem = FirebaseFirestore.instance.collection('Test Item');
-  CollectionReference _programField = FirebaseFirestore.instance.collection('Program Field');
-  CollectionReference _subField = FirebaseFirestore.instance.collection('Sub Field');
-  CollectionReference _subItem = FirebaseFirestore.instance.collection('Sub Item');
+  CollectionReference _testItem =
+      FirebaseFirestore.instance.collection('Test Item');
+  CollectionReference _programField =
+      FirebaseFirestore.instance.collection('Program Field');
+  CollectionReference _subField =
+      FirebaseFirestore.instance.collection('Sub Field');
+  CollectionReference _subItem =
+      FirebaseFirestore.instance.collection('Sub Item');
   CollectionReference _childResult =
       FirebaseFirestore.instance.collection('Child Result');
   CollectionReference _autoId =
@@ -254,17 +258,17 @@ class FireStoreService {
         .catchError((error) => print('프로그램 영역 삭제 실패\n에러 내용: $error'));
   }
 
-
   Future<List<ProgramField>> readAllProgramField() async {
-    List<ProgramField> programFieldList= [];
+    List<ProgramField> programFieldList = [];
     // 모든 프로그램 영역 가져오기
     await _programField
         .get()
-        .then((QuerySnapshot snapshot) => snapshot.docs.forEach((element) { 
-          dynamic data = element.data();
-          ProgramField programField = ProgramField(id: data['id'], title: data['title']);
-          programFieldList.add(programField);
-        }))
+        .then((QuerySnapshot snapshot) => snapshot.docs.forEach((element) {
+              dynamic data = element.data();
+              ProgramField programField =
+                  ProgramField(id: data['id'], title: data['title']);
+              programFieldList.add(programField);
+            }))
         .catchError((error) => print('모든 프로그램 영역 가져오기 실패\n에러 내용: $error'));
     return programFieldList;
   }
@@ -288,15 +292,18 @@ class FireStoreService {
   }
 
   Future<List<SubField>> readAllSubField() async {
-    List<SubField> subFieldList= [];
+    List<SubField> subFieldList = [];
     // 모든 프로그램 영역 가져오기
     await _subField
         .get()
-        .then((QuerySnapshot snapshot) => snapshot.docs.forEach((element) { 
-          dynamic data = element.data();
-          SubField subField = SubField(id: data['id'], programFieldId: data['programFieldId'], subFieldName: data['subFieldName']);
-          subFieldList.add(subField);
-        }))
+        .then((QuerySnapshot snapshot) => snapshot.docs.forEach((element) {
+              dynamic data = element.data();
+              SubField subField = SubField(
+                  id: data['id'],
+                  programFieldId: data['programFieldId'],
+                  subFieldName: data['subFieldName']);
+              subFieldList.add(subField);
+            }))
         .catchError((error) => print('모든 프로그램 영역 가져오기 실패\n에러 내용: $error'));
     return subFieldList;
   }
@@ -329,10 +336,13 @@ class FireStoreService {
     for (QueryDocumentSnapshot doc in docs) {
       dynamic data = doc.data();
 
-      for (int i=0; i<10; i++) {
-        subItems.add(data['item${i+1}']);
+      for (int i = 0; i < 10; i++) {
+        subItems.add(data['item${i + 1}']);
       }
-      SubItem subField = SubItem(id: data['id'], subFieldId: data['subFieldId'], subItemList: subItems);
+      SubItem subField = SubItem(
+          id: data['id'],
+          subFieldId: data['subFieldId'],
+          subItemList: subItems);
       subItemList.add(subField);
     }
 
@@ -541,6 +551,9 @@ class FireStoreService {
         subField: data['sub-field'],
         subItem: data['sub-item'],
       );
+      testItem.setP(data['p']);
+      testItem.setPlus(data['plus']);
+      testItem.setMinus(data['minus']);
 
       // TestItemList에 TestItem 객체 추가
       testItemList.add(testItem);
@@ -551,14 +564,19 @@ class FireStoreService {
   }
 
   // TestItem 수정
-  Future updateTestItem(int testItemId, String result) async {
+  Future updateTestItem(TestItem testItem) async {
     // 해당 Test의 Document 업데이트 -> 사전에 변경될 date, title, testItemList 값이 필수로 꼭 필요! 변경이 없다면 기존의 값을 그대로 넣어야 함
     await _testItem
-        .doc(testItemId.toString())
-        .update({'result': result})
-        .then((value) => print("[테스트 아이템: $testItemId]의 테스트 아이템이 업데이트 되었습니다."))
-        .catchError((error) =>
-            print("[테스트 아이템: $testItemId]의 테스트 아이템 업데이트를 실패했습니다. : $error"));
+        .doc(testItem.testItemId.toString())
+        .update({
+          'p': testItem.p,
+          'plus': testItem.plus,
+          'minus': testItem.minus,
+        })
+        .then((value) =>
+            print("[테스트 아이템: ${testItem.testItemId}]의 테스트 아이템이 업데이트 되었습니다."))
+        .catchError((error) => print(
+            "[테스트 아이템: ${testItem.testItemId}]의 테스트 아이템 업데이트를 실패했습니다. : $error"));
   }
 
   // Test 삭제
@@ -606,10 +624,10 @@ class FireStoreService {
         break;
       case AutoID.subItem:
         autoId = data['sub-item-id'];
-        break;  
+        break;
       case AutoID.childResult:
         autoId = data['child-result-id'];
-        break;  
+        break;
     }
 
     // autoId 반환
@@ -632,16 +650,16 @@ class FireStoreService {
         _autoId.doc('AutoID').update({'test-item-id': id + 1});
         break;
       case AutoID.programField:
-        _autoId.doc('AutoId').update({'program-field-id': id + 1});
+        _autoId.doc('AutoID').update({'program-field-id': id + 1});
         break;
       case AutoID.subField:
-        _autoId.doc('AutoId').update({'sub-field-id': id + 1});
+        _autoId.doc('AutoID').update({'sub-field-id': id + 1});
         break;
       case AutoID.subItem:
-        _autoId.doc('AutoId').update({'sub-item-id': id + 1});
+        _autoId.doc('AutoID').update({'sub-item-id': id + 1});
         break;
       case AutoID.childResult:
-        _autoId.doc('AutoId').update({'child-result-id': id + 1});
+        _autoId.doc('AutoID').update({'child-result-id': id + 1});
         break;
     }
 
