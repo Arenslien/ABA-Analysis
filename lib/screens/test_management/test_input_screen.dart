@@ -63,7 +63,13 @@ class _TestInputScreenState extends State<TestInputScreen> {
                   // 완료 버튼 누르면 실행
                   if (formkey.currentState!.validate() && !flag) {
                     flag = true;
-                    Test test = Test(testId: await store.updateId(AutoID.test), childId: widget.child.childId, title: title, date: date!, isInput: false);
+                    Test test = Test(
+                      testId: await store.updateId(AutoID.test),
+                      childId: widget.child.childId,
+                      title: title,
+                      date: date!,
+                      isInput: false,
+                    );
                     // DB에 테스트 추가
                     await store.createTest(test);
 
@@ -157,9 +163,6 @@ class _TestInputScreenState extends State<TestInputScreen> {
                               IconButton(
                                 icon: Icon(Icons.add_rounded),
                                 onPressed: () {
-                                  late int selectedProgramFieldIndex;
-                                  late int selectedSubFieldIndex;
-                                  late int selectedSubItemIndex;
                                   String? selectedProgramField;
                                   String? selectedSubField;
                                   String? selectedSubItem;
@@ -189,7 +192,6 @@ class _TestInputScreenState extends State<TestInputScreen> {
                                                       );
                                                     }).toList(),
                                                     onChanged: (String? value) {
-                                                      selectedProgramFieldIndex = context.read<FieldManagementNotifier>().programFieldList.indexWhere((element) => value == element.title);
                                                       setState1(() {
                                                         selectedProgramField = value;
                                                         selectedSubField = null;
@@ -203,11 +205,10 @@ class _TestInputScreenState extends State<TestInputScreen> {
                                                     value: selectedSubField,
                                                     items: selectedProgramField == null
                                                         ? null
-                                                        : context.read<FieldManagementNotifier>().programFieldList[selectedProgramFieldIndex].subFieldList.map((value) {
+                                                        : context.read<FieldManagementNotifier>().readSubFieldList(selectedProgramField!).map((value) {
                                                             return DropdownMenuItem(value: value.subFieldName, child: Text(value.subFieldName));
                                                           }).toList(),
                                                     onChanged: (String? value) {
-                                                      selectedSubFieldIndex = context.read<FieldManagementNotifier>().programFieldList[selectedProgramFieldIndex].subFieldList.indexWhere((element) => value == element.subFieldName);
                                                       setState1(() {
                                                         selectedSubField = value;
                                                         selectedSubItem = null;
@@ -220,14 +221,13 @@ class _TestInputScreenState extends State<TestInputScreen> {
                                                     value: selectedSubItem,
                                                     items: selectedProgramField == null || selectedSubField == null
                                                         ? null
-                                                        : context.read<FieldManagementNotifier>().programFieldList[selectedProgramFieldIndex].subFieldList[selectedSubFieldIndex].subItemList.map((value) {
+                                                        : context.read<FieldManagementNotifier>().readSubItem(selectedSubField!).subItemList.map((value) {
                                                             return DropdownMenuItem(
                                                               value: value,
                                                               child: Text(value),
                                                             );
                                                           }).toList(),
                                                     onChanged: (String? value) {
-                                                      selectedSubItemIndex = context.read<FieldManagementNotifier>().programFieldList[selectedProgramFieldIndex].subFieldList[selectedSubFieldIndex].subItemList.indexWhere((element) => value == element);
                                                       setState1(() {
                                                         selectedSubItem = value;
                                                       });
@@ -257,9 +257,9 @@ class _TestInputScreenState extends State<TestInputScreen> {
                                                     // 저장
                                                     // 리스트에 테스트 아이템 담기
                                                     TestItemInfo testItemInfo = TestItemInfo(
-                                                      programField: context.read<FieldManagementNotifier>().programFieldList[selectedProgramFieldIndex].title,
-                                                      subField: context.read<FieldManagementNotifier>().programFieldList[selectedProgramFieldIndex].subFieldList[selectedSubFieldIndex].subFieldName,
-                                                      subItem: context.read<FieldManagementNotifier>().programFieldList[selectedProgramFieldIndex].subFieldList[selectedSubFieldIndex].subItemList[selectedSubItemIndex],
+                                                      programField: selectedProgramField!,
+                                                      subField: selectedSubField!,
+                                                      subItem: selectedSubItem!,
                                                     );
 
                                                     // 리스트에 추가

@@ -29,7 +29,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    for (Child c in context.watch<ChildNotifier>().children) {
+    for (Child c in context.read<ChildNotifier>().children) {
       childNameAndChildMap.addAll({c.name: c});
     }
     IconButton searchButton = IconButton(
@@ -82,7 +82,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
           //         searchTextEditingController.clear();
           //       });
           //     }),
-          body: context.read<ChildNotifier>().children.length == 0
+          body: context.watch<ChildNotifier>().children.length == 0
               ? noListData(Icons.group, '아동 추가')
               : selectedChildName == ""
                   ? ListView.separated(
