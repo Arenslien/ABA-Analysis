@@ -44,9 +44,13 @@ class _MyAppState extends State<MyApp> {
       // await _auth.signIn('test1234@gmail.com', 'test1234');
       context.read<UserNotifier>().updateUser(await _auth.abaUser);
       if (context.read<UserNotifier>().abaUser != null) {
-        context.read<ChildNotifier>().updateChildren(await _store
-            .readAllChild(context.read<UserNotifier>().abaUser!.email));
+        context.read<ChildNotifier>().updateChildren(await _store.readAllChild(context.read<UserNotifier>().abaUser!.email));
       }
+<<<<<<< HEAD
+      context.read<FieldManagementNotifier>().updateProgramFieldList(await _store.readAllProgramField());
+      context.read<FieldManagementNotifier>().updateSubFieldList(await _store.readAllSubField());
+      context.read<FieldManagementNotifier>().updateSubItemList(await _store.readAllSubItem());
+=======
       context
           .read<FieldManagementNotifier>()
           .updateProgramFieldList(await _store.readAllProgramField());
@@ -57,10 +61,9 @@ class _MyAppState extends State<MyApp> {
           .read<FieldManagementNotifier>()
           .updateSubItemList(await _store.readAllSubItem());
 
+>>>>>>> 8c3150227e86d2084df5ef2bb9befd458015d094
       context.read<TestNotifier>().updateTestList(await _store.readAllTest());
-      context
-          .read<TestItemNotifier>()
-          .updateTestItemList(await _store.readAllTestItem());
+      context.read<TestItemNotifier>().updateTestItemList(await _store.readAllTestItem());
     });
   }
 

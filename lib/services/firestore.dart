@@ -421,9 +421,17 @@ class FireStoreService {
   }
 
   // TestItem 수정
-  Future updateTestItem(int testItemId, String result) async {
+  Future updateTestItem(TestItem testItem) async {
     // 해당 Test의 Document 업데이트 -> 사전에 변경될 date, title, testItemList 값이 필수로 꼭 필요! 변경이 없다면 기존의 값을 그대로 넣어야 함
-    await _testItem.doc(testItemId.toString()).update({'result': result}).then((value) => print("[테스트 아이템: $testItemId]의 테스트 아이템이 업데이트 되었습니다.")).catchError((error) => print("[테스트 아이템: $testItemId]의 테스트 아이템 업데이트를 실패했습니다. : $error"));
+    await _testItem
+        .doc(testItem.testItemId.toString())
+        .update({
+          'p': testItem.p,
+          'plus': testItem.plus,
+          'minus': testItem.minus,
+        })
+        .then((value) => print("[테스트 아이템: ${testItem.testItemId}]의 테스트 아이템이 업데이트 되었습니다."))
+        .catchError((error) => print("[테스트 아이템: ${testItem.testItemId}]의 테스트 아이템 업데이트를 실패했습니다. : $error"));
   }
 
   // Test 삭제

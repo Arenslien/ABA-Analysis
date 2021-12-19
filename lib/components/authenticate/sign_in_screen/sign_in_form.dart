@@ -45,8 +45,7 @@ class _SignInFormState extends State<SignInForm> {
     return Form(
       key: _formKey,
       child: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: getProportionateScreenWidth(padding)),
+        padding: EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(padding)),
         child: Column(
           children: [
             SizedBox(height: getProportionateScreenHeight(0.1)),
@@ -98,27 +97,16 @@ class _SignInFormState extends State<SignInForm> {
                   // 로그인 시도
                   String result = await _auth.signIn(email, password);
                   if (result != '로그인 성공') {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(makeSnackBar(result, false));
+                    ScaffoldMessenger.of(context).showSnackBar(makeSnackBar(result, false));
                   } else {
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(makeSnackBar(result, true));
+                    ScaffoldMessenger.of(context).showSnackBar(makeSnackBar(result, true));
 
                     // Provider 업데이트
                     ABAUser? abaUser = await _store.readUser(email);
-                    context
-                        .read<ChildNotifier>()
-                        .updateChildren(await _store.readAllChild(email));
-                    context
-                        .read<FieldManagementNotifier>()
-                        .updateProgramFieldList(
-                            await _store.readAllProgramField());
-                    context
-                        .read<TestNotifier>()
-                        .updateTestList(await _store.readAllTest());
-                    context
-                        .read<TestItemNotifier>()
-                        .updateTestItemList(await _store.readAllTestItem());
+                    context.read<ChildNotifier>().updateChildren(await _store.readAllChild(email));
+                    context.read<FieldManagementNotifier>().updateProgramFieldList(await _store.readAllProgramField());
+                    context.read<TestNotifier>().updateTestList(await _store.readAllTest());
+                    context.read<TestItemNotifier>().updateTestItemList(await _store.readAllTestItem());
                     context.read<UserNotifier>().updateUser(abaUser);
                   }
                 }
@@ -190,8 +178,7 @@ class _SignInFormState extends State<SignInForm> {
         accessToken: authentication.accessToken,
       );
 
-      UserCredential authResult =
-          await auth.signInWithCredential(authCredential);
+      UserCredential authResult = await auth.signInWithCredential(authCredential);
       // 로그인 결과에 따라 구글 로그인 정보를 받아온다.
       User? user = authResult.user;
 
@@ -199,14 +186,7 @@ class _SignInFormState extends State<SignInForm> {
       ABAUser? abaUser = await _store.readUser(user!.email!);
       if (abaUser == null) {
         // 등록도 안되어있는 경우
-        abaUser = ABAUser(
-            email: user.email!,
-            password: null,
-            nickname:
-                user.displayName == null ? "nickname1" : user.displayName!,
-            duty: "치료사",
-            approvalStatus: false,
-            deleteRequest: false);
+        abaUser = ABAUser(email: user.email!, password: null, nickname: user.displayName == null ? "nickname1" : user.displayName!, duty: "치료사", approvalStatus: false, deleteRequest: false);
         await _store.createUser(abaUser);
 
         // 토스트 메시지
@@ -225,25 +205,14 @@ class _SignInFormState extends State<SignInForm> {
         GoogleSignIn().signOut();
       } else {
         // 로그인 성공. 데이터 읽기
-        ScaffoldMessenger.of(context)
-            .showSnackBar(makeSnackBar('로그인 성공', true));
+        ScaffoldMessenger.of(context).showSnackBar(makeSnackBar('로그인 성공', true));
         abaUser = await _store.readUser(user.email!);
-        context
-            .read<ChildNotifier>()
-            .updateChildren(await _store.readAllChild(user.email!));
-        context
-            .read<FieldManagementNotifier>()
-            .updateProgramFieldList(await _store.readAllProgramField());
+        context.read<ChildNotifier>().updateChildren(await _store.readAllChild(user.email!));
+        context.read<FieldManagementNotifier>().updateProgramFieldList(await _store.readAllProgramField());
+        context.read<FieldManagementNotifier>().updateSubFieldList(await _store.readAllSubField());
+        context.read<FieldManagementNotifier>().updateSubItemList(await _store.readAllSubItem());
         context.read<TestNotifier>().updateTestList(await _store.readAllTest());
-        context
-            .read<TestItemNotifier>()
-            .updateTestItemList(await _store.readAllTestItem());
-        context
-            .read<FieldManagementNotifier>()
-            .updateSubFieldList(await _store.readAllSubField());
-        context
-            .read<FieldManagementNotifier>()
-            .updateSubItemList(await _store.readAllSubItem());
+        context.read<TestItemNotifier>().updateTestItemList(await _store.readAllTestItem());
         context.read<UserNotifier>().updateUser(abaUser);
       }
     }

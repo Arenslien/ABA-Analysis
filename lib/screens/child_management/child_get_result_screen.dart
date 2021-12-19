@@ -20,29 +20,15 @@ class ChildGetResultScreen extends StatefulWidget {
 }
 
 class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
-  List<TestItem> testItemList = [];
-  List<String?> result = [];
-  List<List<bool>> resultSelected = [];
   List<List<int>> countResult = [];
 
   bool flag = false;
 
-  bool checkResultList() {
-    // 참일 때 문제 없음
-    bool returnValue = true;
-    for (int i = 0; i < result.length; i++) if (result[i] == null) return false;
-    return returnValue;
-  }
-
   @override
   void initState() {
     super.initState();
-    testItemList = context.read<TestItemNotifier>().getTestItemList(widget.test.testId, true);
-    for (TestItem testItem in testItemList) {
+    for (int i = 0; i < context.read<TestItemNotifier>().getTestItemList(widget.test.testId, true).length; i++) {
       countResult.add([0, 0, 0]);
-
-      result.add(null);
-      resultSelected.add([false, false, false]);
     }
   }
 
@@ -74,7 +60,26 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
             onPressed: () async {
               if (!flag) {
                 flag = true;
+                // TestItem 생성
+                List<TestItem> testItemList = context.read<TestItemNotifier>().getTestItemList(widget.test.testId, true);
+
+                for (int i = 0; i < countResult.length; i++) {
+                  // TestItem에 대한 각각의 p, + - 값 업데이트
+                  TestItem testItem = testItemList[i];
+                  testItem.setPlus(countResult[i][0]);
+                  testItem.setMinus(countResult[i][1]);
+                  testItem.setP(countResult[i][2]);
+
+                  // DB 적용
+                  await store.updateTestItem(testItem);
+                }
+                // TestItem Provider에 적용
+                context.read<TestItemNotifier>().updateTestItemList(await store.readAllTestItem());
+
+                // Test 업데이트
                 await store.updateTest(widget.test.testId, widget.test.date, widget.test.title, true);
+
+                // Test Provider에 적용
                 context.read<TestNotifier>().updateTest(widget.test.testId, widget.test.date, widget.test.title, true);
 
                 Navigator.pop(context);
@@ -85,12 +90,12 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
         backgroundColor: mainGreenColor,
       ),
       body: ListView.builder(
-        itemCount: testItemList.length,
+        itemCount: context.watch<TestItemNotifier>().getTestItemList(widget.test.testId, true).length,
         itemBuilder: (BuildContext context, int index) {
           return Column(
             children: [
               buildListTile(
-                titleText: testItemList[index].subItem,
+                titleText: context.read<TestItemNotifier>().getTestItemList(widget.test.testId, true)[index].subItem,
                 trailing: buildToggleButtons(
                   text: ['+', '-', 'P'],
                   onPressed: (buttonIndex) {
