@@ -109,8 +109,10 @@ class _SignInFormState extends State<SignInForm> {
                     context
                         .read<ChildNotifier>()
                         .updateChildren(await _store.readAllChild(email));
-                    context.read<FieldManagementNotifier>().updateProgramFieldList(
-                        await _store.readAllProgramField());
+                    context
+                        .read<FieldManagementNotifier>()
+                        .updateProgramFieldList(
+                            await _store.readAllProgramField());
                     context
                         .read<TestNotifier>()
                         .updateTestList(await _store.readAllTest());
@@ -236,6 +238,12 @@ class _SignInFormState extends State<SignInForm> {
         context
             .read<TestItemNotifier>()
             .updateTestItemList(await _store.readAllTestItem());
+        context
+            .read<FieldManagementNotifier>()
+            .updateSubFieldList(await _store.readAllSubField());
+        context
+            .read<FieldManagementNotifier>()
+            .updateSubItemList(await _store.readAllSubItem());
         context.read<UserNotifier>().updateUser(abaUser);
       }
     }

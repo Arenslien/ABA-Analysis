@@ -5,7 +5,12 @@ class SubItemScreen extends StatefulWidget {
   final List<String> subItemList;
   final String subFieldName;
   final int index;
-  const SubItemScreen({Key? key, required this.subItemList, required this.index, required this.subFieldName}) : super(key: key);
+  const SubItemScreen(
+      {Key? key,
+      required this.subItemList,
+      required this.index,
+      required this.subFieldName})
+      : super(key: key);
 
   @override
   _SubItemScreenState createState() => _SubItemScreenState();
@@ -59,6 +64,32 @@ class _SubItemScreenState extends State<SubItemScreen> {
                         fontSize: 20,
                         fontFamily: 'KoreanGothic',
                       ),
+                    ),
+                    trailing: Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 10,
+                      children: <Widget>[
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minWidth: 44,
+                            minHeight: 48,
+                            maxWidth: 64,
+                            maxHeight: 64,
+                          ),
+                          child: Image.asset('asset/sub_list_icon.png',
+                              fit: BoxFit.fill),
+                        ),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minWidth: 44,
+                            minHeight: 48,
+                            maxWidth: 44,
+                            maxHeight: 48,
+                          ),
+                          child: Image.asset('asset/basic_icon.png',
+                              fit: BoxFit.fill),
+                        ),
+                      ],
                     ),
                   );
                 },
