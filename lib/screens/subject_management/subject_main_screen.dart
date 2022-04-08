@@ -1,10 +1,10 @@
+import 'package:aba_analysis/screens/field_management/sub_field_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/program_field.dart';
 import 'package:aba_analysis/components/build_list_tile.dart';
 import 'package:aba_analysis/provider/field_management_notifier.dart';
-import 'package:aba_analysis/screens/subject_management/select_sub_field_screen.dart';
 
 class SubjectMainScreen extends StatefulWidget {
   const SubjectMainScreen({Key? key}) : super(key: key);
@@ -19,7 +19,7 @@ class _SubjectMainScreenState extends State<SubjectMainScreen> {
   @override
   Widget build(BuildContext context) {
     List<ProgramField> programList =
-        context.read<ProgramFieldNotifier>().programFieldList;
+        context.read<FieldManagementNotifier>().programFieldList;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -38,7 +38,7 @@ class _SubjectMainScreenState extends State<SubjectMainScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      SelectSubfieldScreen(program: programList[index]),
+                      SubFieldScreen(program: programList[index]),
                 ),
               );
             },
