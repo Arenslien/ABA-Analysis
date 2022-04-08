@@ -204,7 +204,7 @@ class _ChildTestScreenState extends State<ChildTestScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TestModifyScreen(child: widget.child, test: test),
+                builder: (context) => TestModifyScreen(test: test),
               ),
             );
             setState(() {

@@ -1,9 +1,9 @@
+import 'package:aba_analysis/provider/field_management_notifier.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:aba_analysis/constants.dart';
 import 'package:aba_analysis/models/test.dart';
-import 'package:aba_analysis/models/child.dart';
 import 'package:aba_analysis/models/test_item.dart';
 import 'package:aba_analysis/services/firestore.dart';
 import 'package:aba_analysis/provider/test_notifier.dart';
@@ -11,11 +11,9 @@ import 'package:aba_analysis/provider/test_item_notifier.dart';
 import 'package:aba_analysis/components/show_date_picker.dart';
 import 'package:aba_analysis/components/show_dialog_delete.dart';
 import 'package:aba_analysis/components/build_text_form_field.dart';
-import 'package:aba_analysis/provider/field_management_notifier.dart';
 
 class TestModifyScreen extends StatefulWidget {
-  const TestModifyScreen({required this.test, required this.child, Key? key}) : super(key: key);
-  final Child child;
+  const TestModifyScreen({required this.test, Key? key}) : super(key: key);
   final Test test;
 
   @override
@@ -60,7 +58,7 @@ class _TestInputScreenState extends State<TestModifyScreen> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              '${widget.child.name} 테스트 수정',
+              '테스트 수정',
               style: TextStyle(color: Colors.black),
             ),
             centerTitle: true,
@@ -131,14 +129,7 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                       }
                       // 테스트 만들기
                       for (TestItemInfo testItemInfo in testItemInfoList) {
-                        TestItem testItem = TestItem(
-                          testItemId: await store.updateId(AutoID.testItem),
-                          testId: widget.test.testId,
-                          childId: widget.test.childId,
-                          programField: testItemInfo.programField,
-                          subField: testItemInfo.subField,
-                          subItem: testItemInfo.subItem,
-                        );
+                        TestItem testItem = TestItem(testItemId: await store.updateId(AutoID.testItem), testId: widget.test.testId, childId: widget.test.childId, programField: testItemInfo.programField, subField: testItemInfo.subField, subItem: testItemInfo.subItem);
                         await store.createTestItem(testItem);
                         context.read<TestItemNotifier>().addTestItem(testItem);
                       }
@@ -217,6 +208,9 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                               IconButton(
                                 icon: Icon(Icons.add_rounded),
                                 onPressed: () {
+                                  late int selectedProgramFieldIndex;
+                                  late int selectedSubFieldIndex;
+                                  late int selectedSubItemIndex;
                                   String? selectedProgramField;
                                   String? selectedSubField;
                                   String? selectedSubItem;
@@ -246,6 +240,7 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                                                       );
                                                     }).toList(),
                                                     onChanged: (String? value) {
+                                                      selectedProgramFieldIndex = context.read<FieldManagementNotifier>().programFieldList.indexWhere((element) => value == element.title);
                                                       setState1(() {
                                                         selectedProgramField = value;
                                                         selectedSubField = null;
@@ -259,12 +254,20 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                                                     value: selectedSubField,
                                                     items: selectedProgramField == null
                                                         ? null
-                                                        : context.read<FieldManagementNotifier>().readSubFieldList(selectedProgramField!).map((value) {
-                                                            return DropdownMenuItem(value: value.subFieldName, child: Text(value.subFieldName));
+                                                        : context.read<FieldManagementNotifier>()
+                                                            .readSubFieldList(
+                                                                selectedProgramField!)
+                                                            .map((value) {
+                                                            return DropdownMenuItem(
+                                                                value: value
+                                                                    .subFieldName,
+                                                                child: Text(value
+                                                                    .subFieldName));
                                                           }).toList(),
                                                     onChanged: (String? value) {
                                                       setState1(() {
-                                                        selectedSubField = value;
+                                                        selectedSubField =
+                                                            value;
                                                         selectedSubItem = null;
                                                       });
                                                     },
@@ -273,12 +276,22 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                                                   DropdownButton(
                                                     hint: Text('하위 목록 선택'),
                                                     value: selectedSubItem,
-                                                    items: selectedProgramField == null || selectedSubField == null
+                                                    items: selectedProgramField ==
+                                                                null ||
+                                                            selectedSubField ==
+                                                                null
                                                         ? null
-                                                        : context.read<FieldManagementNotifier>().readSubItem(selectedSubField!).subItemList.map((value) {
+                                                        : context
+                                                            .read<
+                                                                FieldManagementNotifier>()
+                                                            .readSubItem(
+                                                                selectedSubField!)
+                                                            .subItemList
+                                                            .map((value) {
                                                             return DropdownMenuItem(
                                                               value: value,
-                                                              child: Text(value),
+                                                              child:
+                                                                  Text(value),
                                                             );
                                                           }).toList(),
                                                     onChanged: (String? value) {
@@ -310,15 +323,19 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                                                   if (selectedSubItem != null) {
                                                     // 저장
                                                     // 리스트에 테스트 아이템 담기
-                                                    TestItemInfo testItemInfo = TestItemInfo(
-                                                      programField: selectedProgramField!,
-                                                      subField: selectedSubField!,
+                                                    TestItemInfo testItemInfo =
+                                                        TestItemInfo(
+                                                      programField:
+                                                          selectedProgramField!,
+                                                      subField:
+                                                          selectedSubField!,
                                                       subItem: selectedSubItem!,
                                                     );
 
                                                     // 리스트에 추가
                                                     setState(() {
-                                                      testItemInfoList.add(testItemInfo);
+                                                      testItemInfoList
+                                                          .add(testItemInfo);
                                                     });
                                                     Navigator.pop(context);
                                                   }
