@@ -44,8 +44,7 @@ class TestItemNotifier extends ChangeNotifier {
       });
     } else {
       _testItemList.forEach((TestItem testItem) {
-        if (testItem.testId == testId &&
-            (testItem.p + testItem.plus + testItem.minus != 0)) {
+        if (testItem.testId == testId && (testItem.p + testItem.plus + testItem.minus != 0)) {
           testItemList.add(testItem);
         }
       });
@@ -65,8 +64,7 @@ class TestItemNotifier extends ChangeNotifier {
       });
     } else {
       _testItemList.forEach((TestItem testItem) {
-        if (testItem.childId == childId &&
-            (testItem.p + testItem.plus + testItem.minus != 0)) {
+        if (testItem.childId == childId && (testItem.p + testItem.plus + testItem.minus != 0)) {
           testItemList.add(testItem);
         }
       });
@@ -75,19 +73,24 @@ class TestItemNotifier extends ChangeNotifier {
     return testItemList;
   }
 
-  // int getAverage(int testId) {
-  //   List<TestItem> testItemList = getTestItemList(testId, false);
-  //   if (testItemList.length == 0) {
-  //     return 0;
-  //   }
-  //   int cnt = 0;
-  //   for (TestItem testItem in testItemList) {
-  //     if (testItem.p == '+') {
-  //       cnt += 1;
-  //     }
-  //   }
-  //   return (cnt / testItemList.length * 100).toInt();
-  // }
+  // Total TestItem
+  // 테스트 아이템 -> 특정 child에 대한 모든 TestItem
+  // Map<String, List<int>>
+  Map<String, List<int>> getTotalTestItemByChild(int childId) {
+    Map<String, List<int>> map = {};
+
+    List<TestItem> testItemList = getTestItemListFromChildId(childId, false);
+
+    for (TestItem testItem in testItemList) {
+      if (map.containsKey(testItem.subItem)) {
+        map.update(testItem.subItem, (value) => [value[0] + testItem.plus, value[1] + testItem.minus, value[2] + testItem.p, value[3] + 1]);
+      } else {
+        map[testItem.subItem] = [testItem.plus, testItem.minus, testItem.p, 1];
+      }
+    }
+
+    return map;
+  }
 
   // GETTER FUNCTION: TestItem List 제공
   List<TestItem> get testItemList => _testItemList;

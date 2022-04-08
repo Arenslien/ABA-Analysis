@@ -91,12 +91,12 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
         backgroundColor: mainGreenColor,
       ),
       body: ListView.builder(
-        itemCount: context.watch<TestItemNotifier>().getTestItemList(widget.test.testId, true).length,
+        itemCount: widget.testItem.length,
         itemBuilder: (BuildContext context, int index) {
           return Column(
             children: [
               buildListTile(
-                titleText: context.read<TestItemNotifier>().getTestItemList(widget.test.testId, true)[index].subItem,
+                titleText: widget.testItem[index].subItem,
                 trailing: buildToggleButtons(
                   text: ['+', '-', 'P'],
                   onPressed: (buttonIndex) {

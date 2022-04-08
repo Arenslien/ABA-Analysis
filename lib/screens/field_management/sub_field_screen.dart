@@ -90,16 +90,6 @@ class _SubFieldScreenState extends State<SubFieldScreen> {
                     child: Image.asset('asset/sub_field_icon.png',
                         fit: BoxFit.fill),
                   ),
-                  ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minWidth: 44,
-                      minHeight: 48,
-                      maxWidth: 44,
-                      maxHeight: 48,
-                    ),
-                    child:
-                        Image.asset('asset/basic_icon.png', fit: BoxFit.fill),
-                  ),
                   // 삭제 버튼
                   IconButton(
                       onPressed: () {
@@ -164,6 +154,7 @@ class _SubFieldScreenState extends State<SubFieldScreen> {
         },
       ),
       floatingActionButton: bulidFloatingActionButton(onPressed: () {
+        print("readAllSubItem(): " + store.readAllSubItem().toString());
         Navigator.push(
           context,
           MaterialPageRoute(

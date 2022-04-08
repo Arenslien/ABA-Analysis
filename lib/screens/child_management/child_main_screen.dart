@@ -29,6 +29,7 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("childmain");
     for (Child c in context.read<ChildNotifier>().children) {
       childNameAndChildMap.addAll({c.name: c});
     }
@@ -53,7 +54,8 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        appBar: selectAppBar(context, "아동관리", searchButton: searchButton, isMain: true),
+        appBar: selectAppBar(context, "아동관리",
+            searchButton: searchButton, isMain: true),
         // searchBar(
         //     controller: searchTextEditingController,
         //     onChanged: (str) {
@@ -86,9 +88,14 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
             ? noListData(Icons.group, '아동 추가')
             : selectedChildName == ""
                 ? ListView.separated(
-                    itemCount: childNameAndChildMap.keys.toList().length + 1,
+                    itemCount:
+                        context.watch<ChildNotifier>().children.length + 1,
                     itemBuilder: (BuildContext context, int index) {
-                      return index < childNameAndChildMap.keys.toList().length ? bulidChildListTile(childNameAndChildMap.values.toList()[index]) : buildListTile(titleText: '');
+                      return index <
+                              context.read<ChildNotifier>().children.length
+                          ? bulidChildListTile(
+                              context.read<ChildNotifier>().children[index])
+                          : buildListTile(titleText: '');
                     },
                     separatorBuilder: (BuildContext context, int index) {
                       return const Divider(color: Colors.black);
@@ -97,7 +104,9 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
                 : ListView.separated(
                     itemCount: 2,
                     itemBuilder: (BuildContext context, int index) {
-                      return index < 1 ? bulidChildListTile(selectedChild) : buildListTile(titleText: '');
+                      return index < 1
+                          ? bulidChildListTile(selectedChild)
+                          : buildListTile(titleText: '');
                     },
                     separatorBuilder: (BuildContext context, int index) {
                       return const Divider(color: Colors.black);
@@ -122,7 +131,8 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ChildTestScreen(child: child)),
+            MaterialPageRoute(
+                builder: (context) => ChildTestScreen(child: child)),
           );
         },
         trailing: IconButton(
@@ -130,8 +140,10 @@ class _ChildMainScreenState extends State<ChildMainScreen> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ChildModifyScreen(child: child)),
+              MaterialPageRoute(
+                  builder: (context) => ChildModifyScreen(child: child)),
             );
+            selectedChildName = "";
           },
           color: Colors.black,
         ));
