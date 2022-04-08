@@ -129,7 +129,7 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                       }
                       // 테스트 만들기
                       for (TestItemInfo testItemInfo in testItemInfoList) {
-                        TestItem testItem = TestItem(testItemId: await store.updateId(AutoID.testItem), testId: widget.test.testId, childId: widget.test.childId, programField: testItemInfo.programField, subField: testItemInfo.subField, subItem: testItemInfo.subItem, result: null);
+                        TestItem testItem = TestItem(testItemId: await store.updateId(AutoID.testItem), testId: widget.test.testId, childId: widget.test.childId, programField: testItemInfo.programField, subField: testItemInfo.subField, subItem: testItemInfo.subItem);
                         await store.createTestItem(testItem);
                         context.read<TestItemNotifier>().addTestItem(testItem);
                       }
