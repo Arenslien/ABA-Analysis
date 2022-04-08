@@ -22,7 +22,7 @@ class ChildGetResultScreen extends StatefulWidget {
 
 class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
   List<List<int>> countResult = [];
-
+  String memo = "";
   bool flag = false;
 
   @override
@@ -78,7 +78,7 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
                 context.read<TestItemNotifier>().updateTestItemList(await store.readAllTestItem());
 
                 // Test 업데이트
-                await store.updateTest(widget.test.testId, widget.test.date, widget.test.title, true);
+                await store.updateTest(widget.test.testId, widget.test.date, widget.test.title, true, memo);
 
                 // Test Provider에 적용
                 context.read<TestNotifier>().updateTest(widget.test.testId, widget.test.date, widget.test.title, true);

@@ -24,6 +24,7 @@ class _TestInputScreenState extends State<TestModifyScreen> {
   _TestInputScreenState();
   late String title;
   late DateTime date;
+  late String memo = "";
   final formkey = GlobalKey<FormState>();
   List<TestItem> testItemList = [];
   List<TestItemInfo> testItemInfoList = [];
@@ -36,6 +37,7 @@ class _TestInputScreenState extends State<TestModifyScreen> {
     setState(() {
       title = widget.test.title;
       date = widget.test.date;
+      memo = widget.test.memo;
       testItemList = context.read<TestItemNotifier>().getTestItemList(widget.test.testId, true);
 
       for (TestItem testItem in testItemList) {
@@ -116,7 +118,7 @@ class _TestInputScreenState extends State<TestModifyScreen> {
                     // 완료 버튼 누르면 실행
                     if (formkey.currentState!.validate()) {
                       // 테스트의 날짜와 테스트 제목 수정
-                      store.updateTest(widget.test.testId, date, title, widget.test.isInput);
+                      store.updateTest(widget.test.testId, date, title, widget.test.isInput, memo);
                       context.read<TestNotifier>().updateTest(widget.test.testId, date, title, widget.test.isInput);
 
                       // 기존의 테스트에 대한 테스트 아이템 모두 제거

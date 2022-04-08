@@ -391,7 +391,8 @@ class FireStoreService {
         childId: test.childId,
         date: DateTime.now(),
         title: '${test.title} 복사본',
-        isInput: false);
+        isInput: false,
+        memo: "");
     await _test
         .doc(copiedTest.testId.toString())
         .set(copiedTest.toMap())
@@ -415,7 +416,8 @@ class FireStoreService {
         childId: data['child-id'],
         date: data['date'],
         title: data['title'],
-        isInput: data['is-input']);
+        isInput: data['is-input'],
+        memo: data['memo']);
 
     // Test 반환
     return test;
@@ -437,7 +439,8 @@ class FireStoreService {
           childId: data['child-id'],
           date: date.toDate(),
           title: data['title'],
-          isInput: data['is-input']);
+          isInput: data['is-input'],
+          memo: data['memo']);
       allTestList.add(test);
     }
 
@@ -463,7 +466,8 @@ class FireStoreService {
           childId: data['child-id'],
           date: date.toDate(),
           title: data['title'],
-          isInput: data['is-input']);
+          isInput: data['is-input'],
+          memo: data['memo']);
       testList.add(test);
     }
 
@@ -472,7 +476,7 @@ class FireStoreService {
 
   // Test 수정
   Future updateTest(
-      int testId, DateTime date, String title, bool isInput) async {
+      int testId, DateTime date, String title, bool isInput, String memo) async {
     // 해당 Test의 Document 업데이트 -> 사전에 변경될 date, title 값이 필수로 꼭 필요! 변경이 없다면 기존의 값을 그대로 넣어야 함
     await _test
         .doc(testId.toString())
@@ -480,6 +484,7 @@ class FireStoreService {
           'date': date,
           'title': title,
           'is-input': isInput,
+          'memo': memo,
         })
         .then((value) => print("[ID: $testId]의 테스트가 업데이트 되었습니다."))
         .catchError(
