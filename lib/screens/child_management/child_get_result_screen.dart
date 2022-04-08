@@ -90,43 +90,50 @@ class _ChildGetResultScreenState extends State<ChildGetResultScreen> {
         ],
         backgroundColor: mainGreenColor,
       ),
-      body: ListView.builder(
-        itemCount: widget.testItem.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            children: [
-              buildListTile(
-                titleText: widget.testItem[index].subItem,
-                trailing: buildToggleButtons(
-                  text: ['+', '-', 'P'],
-                  onPressed: (buttonIndex) {
-                    setState(() {
-                      if (buttonIndex == 0)
-                        countResult[index][0]++;
-                      else if (buttonIndex == 1)
-                        countResult[index][1]++;
-                      else if (buttonIndex == 2) countResult[index][2]++;
-                    });
-                  },
-                  minWidth: 50,
-                ),
-                bottom: 0,
-              ),
-              buildListTile(
-                titleText: '',
-                trailing: buildToggleButtons(
-                  text: [
-                    '${countResult[index][0]}',
-                    '${countResult[index][1]}',
-                    '${countResult[index][2]}',
+      body: Column(
+        children: [
+          Container(
+            height: 500,
+            child: ListView.builder(
+              itemCount: widget.testItem.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Column(
+                  children: [
+                    buildListTile(
+                      titleText: widget.testItem[index].subItem,
+                      trailing: buildToggleButtons(
+                        text: ['+', '-', 'P'],
+                        onPressed: (buttonIndex) {
+                          setState(() {
+                            if (buttonIndex == 0)
+                              countResult[index][0]++;
+                            else if (buttonIndex == 1)
+                              countResult[index][1]++;
+                            else if (buttonIndex == 2) countResult[index][2]++;
+                          });
+                        },
+                        minWidth: 50,
+                      ),
+                      bottom: 0,
+                    ),
+                    buildListTile(
+                      titleText: '',
+                      trailing: buildToggleButtons(
+                        text: [
+                          '${countResult[index][0]}',
+                          '${countResult[index][1]}',
+                          '${countResult[index][2]}',
+                        ],
+                        minWidth: 50,
+                      ),
+                      top: 0,
+                    ),
                   ],
-                  minWidth: 50,
-                ),
-                top: 0,
-              ),
-            ],
-          );
-        },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
