@@ -69,6 +69,7 @@ class _TestInputScreenState extends State<TestInputScreen> {
                       title: title,
                       date: date!,
                       isInput: false,
+                      memo: "",
                     );
                     // DB에 테스트 추가
                     await store.createTest(test);

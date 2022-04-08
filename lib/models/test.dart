@@ -4,8 +4,9 @@ class Test {
   DateTime date;
   String title;
   bool isInput;
+  String memo = "";
 
-  Test({ required this.testId, required this.childId, required this.date, required this.title, required this.isInput});
+  Test({ required this.testId, required this.childId, required this.date, required this.title, required this.isInput, required this.memo});
 
   Map<String, dynamic> toMap() {
     return {
@@ -14,6 +15,7 @@ class Test {
       'date': date,
       'title': title,
       'is-input': isInput,
+      'memo': memo,
     };
   }
 
